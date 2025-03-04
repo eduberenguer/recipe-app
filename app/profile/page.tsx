@@ -17,7 +17,7 @@ export default function Profile() {
       const { data, error } = await supabase
         .from("users")
         .select("*")
-        .eq("email", "user@example.com")
+        .eq("email", "eddi9@hotmail.com")
         .single();
 
       if (error) throw new Error(error.message);

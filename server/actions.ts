@@ -17,7 +17,8 @@ export async function registerUser(
     {
       id: data.user?.id, // ID generado por Supabase Auth
       email: data.user?.email,
-      name: name,
+      name,
+      password,
     },
   ]);
 
