@@ -1,75 +1,50 @@
 "use client";
 
-import { registerUserApi } from "@/lib/api/users";
-import { useRouter } from "next/navigation";
+import { fetchRegister } from "@/lib/api/users";
 import { useState } from "react";
 
 export default function RegisterPage() {
-  const router = useRouter();
-  const [user, setUser] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [message, setMessage] = useState("");
 
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSucces] = useState<string | null>(null);
+  async function handleRegister(e: React.FormEvent) {
+    e.preventDefault();
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    const data = await fetchRegister(form);
 
-    try {
-      await registerUserApi(user);
-      setSucces("Registro exitoso");
-      setError(null);
-      router.push("/profile");
-    } catch (err) {
-      console.log(err);
-      setError("Error en el registro");
-      setSucces(null);
-    }
-  };
+    setMessage(data.success ? "Registro exitoso" : data.error);
+  }
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h1 className="text-2xl font-bold mb-4">Registro</h1>
-      {error && <p className="text-red-500">{error}</p>}
-      {success && <p className="text-green-500">{success}</p>}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <div className="max-w-md mx-auto mt-10">
+      <h1 className="text-xl font-bold mb-4">Registro</h1>
+      <form onSubmit={handleRegister} className="flex flex-col gap-4">
         <input
           type="text"
           placeholder="Nombre"
-          value={user.name}
-          name="name"
-          onChange={(e) => setUser({ ...user, name: e.target.value })}
-          required
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
           className="border p-2 rounded"
         />
         <input
           type="email"
-          placeholder="Email"
-          name="email"
-          value={user.email}
-          onChange={(e) => setUser({ ...user, email: e.target.value })}
-          required
+          placeholder="Correo"
+          value={form.email}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
           className="border p-2 rounded"
         />
         <input
           type="password"
           placeholder="Contraseña"
-          value={user.password}
-          name="password"
-          onChange={(e) => setUser({ ...user, password: e.target.value })}
-          required
+          value={form.password}
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
           className="border p-2 rounded"
         />
-        <button
-          type="submit"
-          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-        >
-          Register
+        <button type="submit" className="bg-blue-500 text-white p-2 rounded">
+          Registrarse
         </button>
       </form>
+      {message && <p className="mt-2">{message}</p>}
     </div>
   );
 }

@@ -1,21 +1,18 @@
-import { registerUser } from "@/server/actions";
+import { registerUser } from "@/server/auth";
 import { NextResponse } from "next/server";
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const { name, email, password } = await request.json();
+    const { name, email, password } = await req.json();
+    const result = await registerUser(name, email, password);
 
-    const result = await registerUser(email, password, name);
-
-    if (result.error) {
-      return NextResponse.json({ error: result.error }, { status: 400 });
-    }
-
-    return NextResponse.json({ message: result.message }, { status: 201 });
-  } catch (err) {
-    console.error("Error en el registro:", err);
+    return NextResponse.json(result, { status: result.success ? 200 : 400 });
+  } catch (error: unknown) {
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      {
+        success: false,
+        error: (error as Error).message || "Error desconocido",
+      },
       { status: 500 }
     );
   }

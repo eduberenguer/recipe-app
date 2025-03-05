@@ -1,8 +1,6 @@
-export async function registerUserApi(user: {
-  name: string;
-  email: string;
-  password: string;
-}) {
+import { User } from "@/types";
+
+export async function fetchRegister(user: Partial<User>) {
   const res = await fetch("/api/auth/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
