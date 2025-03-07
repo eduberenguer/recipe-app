@@ -24,3 +24,18 @@ export async function registerUser(
     return { success: false, error: "Ocurrió un error desconocido" };
   }
 }
+
+export async function loginUser(email: string, password: string) {
+  try {
+    const authData = await pb
+      .collection("users")
+      .authWithPassword(email, password);
+
+    return { success: true, user: authData.record, token: authData.token };
+  } catch (error) {
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: "Ocurrió un error desconocido" };
+  }
+}

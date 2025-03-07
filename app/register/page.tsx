@@ -1,18 +1,30 @@
 "use client";
 
-import { fetchRegister } from "@/lib/api/users";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { registerUserApi } from "@/lib/api/users";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [message, setMessage] = useState("");
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
 
-    const data = await fetchRegister(form);
+    const data = await registerUserApi(form);
 
-    setMessage(data.success ? "Registro exitoso" : data.error);
+    setMessage(data.success ? "Sign up successfully" : data.error);
+
+    if (data.success) {
+      setForm({ name: "", email: "", password: "" });
+
+      setTimeout(() => {
+        setMessage("");
+      }, 3000);
+
+      router.push("/login");
+    }
   }
 
   return (
@@ -21,27 +33,27 @@ export default function RegisterPage() {
       <form onSubmit={handleRegister} className="flex flex-col gap-4">
         <input
           type="text"
-          placeholder="Nombre"
+          placeholder="Name"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
           className="border p-2 rounded"
         />
         <input
           type="email"
-          placeholder="Correo"
+          placeholder="Email"
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
           className="border p-2 rounded"
         />
         <input
           type="password"
-          placeholder="Contraseña"
+          placeholder="Password"
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
           className="border p-2 rounded"
         />
         <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-          Registrarse
+          Sign up
         </button>
       </form>
       {message && <p className="mt-2">{message}</p>}

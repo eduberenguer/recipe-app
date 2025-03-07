@@ -2,21 +2,20 @@
 
 import { loginUserApi } from "@/lib/api/users";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Login() {
-  const router = useRouter();
   const [user, setUser] = useState({ email: "", password: "" });
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    try {
-      await loginUserApi(user);
-      router.push("/profile");
-    } catch (error) {
-      console.error(error);
+    const data = await loginUserApi(user);
+
+    if (data.success) {
+      alert("Login successfully");
+    } else {
+      alert(data.error);
     }
   };
 
