@@ -1,3 +1,4 @@
+import { AuthProvider } from "./context/auth.context";
 import Layout from "@/components/Layout";
 
 export default function RootLayout({
@@ -8,7 +9,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Layout>{children}</Layout>
+        <AuthProvider>
+          <Layout>{children}</Layout>
+        </AuthProvider>
       </body>
     </html>
   );

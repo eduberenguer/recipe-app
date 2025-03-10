@@ -31,7 +31,12 @@ export async function loginUser(email: string, password: string) {
       .collection("users")
       .authWithPassword(email, password);
 
-    return { success: true, user: authData.record, token: authData.token };
+    return {
+      success: true,
+      user: authData.record,
+      token: authData.token,
+      isAuthenticated: pb.authStore.isValid,
+    };
   } catch (error) {
     if (error instanceof Error) {
       return { success: false, error: error.message };

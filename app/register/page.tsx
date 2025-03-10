@@ -1,18 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useRouter } from "next/navigation";
-import { registerUserApi } from "@/lib/api/users";
+
+import { AuthContext } from "../context/auth.context";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const auth = useContext(AuthContext);
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [message, setMessage] = useState("");
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
 
-    const data = await registerUserApi(form);
+    const data = await auth?.register(form);
 
     setMessage(data.success ? "Sign up successfully" : data.error);
 

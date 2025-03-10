@@ -1,0 +1,53 @@
+import { useState } from "react";
+
+import pb from "@/lib/pocketbase";
+import { loginUserApi, registerUserApi } from "@/lib/api/users";
+
+import { User } from "@/types";
+
+type AuthUser = Pick<User, "id" | "created" | "name" | "email"> & {
+  token: string;
+  isAuthenticated: boolean;
+};
+
+export function useAuth() {
+  const [user, setUser] = useState<Partial<AuthUser> | null>(
+    pb.authStore.model
+  );
+
+  async function register(user: Partial<User>) {
+    const data = await registerUserApi(user);
+
+    return data;
+  }
+
+  async function login(user: Partial<User>) {
+    const data = await loginUserApi(user);
+
+    if (data.success) {
+      setUser({
+        ...user,
+        id: data.user.id,
+        created: data.user.created,
+        name: data.user.name,
+        email: data.user.email,
+        token: data.token,
+        isAuthenticated: data.isAuthenticated,
+      });
+    }
+
+    return data;
+  }
+
+  async function logout() {
+    pb.authStore.clear();
+    setUser(null);
+  }
+
+  return {
+    user,
+    register,
+    login,
+    logout,
+  };
+}
