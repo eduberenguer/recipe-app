@@ -3,7 +3,7 @@ import { useContext } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { AuthContext } from "../app/context/auth.context";
+import { AuthContext } from "../app/context/context";
 
 export default function Header() {
   const router = useRouter();
@@ -19,8 +19,8 @@ export default function Header() {
       <h1>
         <Link href="/">Header</Link>
       </h1>
+      {auth?.user && <Link href="/create-recipes">Create recipe</Link>}
       {auth?.user && <Link href="/profile">Profile</Link>}
-
       {auth?.user && <button onClick={logout}>Logout</button>}
     </header>
   );

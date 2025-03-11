@@ -2,7 +2,7 @@
 import { useContext, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AuthContext } from "../context/auth.context";
+import { AuthContext } from "../context/context";
 
 export default function Login() {
   const auth = useContext(AuthContext);

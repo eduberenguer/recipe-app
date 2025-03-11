@@ -1,12 +1,11 @@
 "use client";
 
 import { useContext } from "react";
-import { AuthContext } from "../context/auth.context";
+import { AuthContext } from "../context/context";
 
 export default function Profile() {
   const data = useContext(AuthContext);
 
-  console.log("profile", data?.user);
   return (
     <div>
       <p>{data?.user?.name}</p>

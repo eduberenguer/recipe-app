@@ -13,9 +13,9 @@ export interface UserCredentials {
 
 export interface Recipe {
   id: string;
-  user_id: string;
+  owner: string;
   name: string;
-  servings: number;
-  containers: number;
-  ingredients: { name: string; quantity: number; unit: string }[];
+  tupperwares: number;
+  ingredients: { name: string; quantity: number }[];
+  photo: File;
 }

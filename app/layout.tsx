@@ -1,4 +1,4 @@
-import { AuthProvider } from "./context/auth.context";
+import { ContexProvider } from "./context/context";
 import Layout from "@/components/Layout";
 
 export default function RootLayout({
@@ -9,9 +9,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AuthProvider>
+        <ContexProvider>
           <Layout>{children}</Layout>
-        </AuthProvider>
+        </ContexProvider>
       </body>
     </html>
   );
