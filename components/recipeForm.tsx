@@ -1,19 +1,21 @@
 "use client";
 import { AuthContext, RecipesContext } from "@/app/context/context";
-import { useContext, useState } from "react";
+import { useContext, useState, useRef } from "react";
 
 export default function RecipeForm() {
   const contextUser = useContext(AuthContext);
   const contextRecipes = useContext(RecipesContext);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const [recipe, setRecipe] = useState<{
     title: string;
-    tupperware: number;
+    servings: number | string;
     ingredients: { name: string; quantity: string }[];
     photo: File | null;
   }>({
     title: "",
-    tupperware: 0,
+    servings: "",
     ingredients: [],
     photo: null as File | null,
   });
@@ -62,9 +64,24 @@ export default function RecipeForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (recipe.title === "") {
+      setError("Please enter a title");
+      return;
+    }
+
+    if (recipe.servings === "" || recipe.servings === 0) {
+      setError("Please enter a number of servings");
+      return;
+    }
+
+    if (recipe.ingredients.length === 0) {
+      setError("Please enter at least one ingredient");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("title", recipe.title);
-    formData.append("tupperware", recipe.tupperware.toString());
+    formData.append("servings", recipe.servings.toString());
     formData.append("owner", contextUser?.user?.id || "");
     formData.append("ingredients", JSON.stringify(recipe.ingredients));
 
@@ -77,10 +94,16 @@ export default function RecipeForm() {
     if (newRecipe)
       setRecipe({
         title: "",
-        tupperware: 0,
+        servings: "",
         ingredients: [],
         photo: null as File | null,
       });
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+
+    setError(null);
   };
 
   return (
@@ -96,10 +119,15 @@ export default function RecipeForm() {
         />
         <input
           type="number"
-          placeholder="Numbers of tuperwares"
-          value={recipe.tupperware}
-          name="tupperwares"
-          onChange={(e) => updateRecipes("tupperware", Number(e.target.value))}
+          placeholder="Numbers of servings"
+          value={recipe.servings}
+          name="servings"
+          onChange={(e) =>
+            updateRecipes(
+              "servings",
+              e.target.value === "" ? "" : Number(e.target.value)
+            )
+          }
           required
         />
 
@@ -121,6 +149,7 @@ export default function RecipeForm() {
         <input
           type="file"
           accept="image/*"
+          ref={fileInputRef}
           onChange={(e) => updateRecipes("photo", e.target.files?.[0] || null)}
         />
       </form>
@@ -138,6 +167,7 @@ export default function RecipeForm() {
       <button type="submit" onClick={(e) => handleSubmit(e)}>
         Save recipe
       </button>
+      {error && <p>{error}</p>}
     </div>
   );
 }

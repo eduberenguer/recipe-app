@@ -1,8 +1,13 @@
-import { createNewRecipesApi, retrieveAllRecipes } from "@/lib/api/recipes";
+import {
+  createNewRecipesApi,
+  deleteRecipeApi,
+  retrieveAllRecipesApi,
+} from "@/lib/api/recipes";
+import { Recipe } from "@/types";
 import { useState } from "react";
 
 export function useRecipes() {
-  const [stateRecipes, setStateRecipes] = useState([]);
+  const [stateRecipes, setStateRecipes] = useState<Recipe[]>([]);
 
   async function createRecipe(recipe: FormData) {
     const data = await createNewRecipesApi(recipe);
@@ -11,14 +16,27 @@ export function useRecipes() {
   }
 
   async function retrieveRecipesList() {
-    const data = await retrieveAllRecipes();
+    const data = await retrieveAllRecipesApi();
 
     setStateRecipes(data);
+  }
+
+  async function deleteRecipeById(recipeId: string) {
+    const result = await deleteRecipeApi(recipeId);
+
+    if (result) {
+      const newRecipes = stateRecipes.filter(
+        (recipe) => recipe.id !== recipeId
+      );
+
+      setStateRecipes(newRecipes);
+    }
   }
 
   return {
     stateRecipes,
     createRecipe,
     retrieveRecipesList,
+    deleteRecipeById,
   };
 }

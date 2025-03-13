@@ -12,7 +12,7 @@ export async function createNewRecipesApi(recipe: FormData) {
   return res.json();
 }
 
-export async function retrieveAllRecipes() {
+export async function retrieveAllRecipesApi() {
   const res = await fetch("/api/recipes/retrieveRecipes");
 
   if (!res.ok) {
@@ -21,4 +21,17 @@ export async function retrieveAllRecipes() {
   }
 
   return res.json();
+}
+
+export async function deleteRecipeApi(recipeId: string) {
+  const res = await fetch(`/api/recipes/deletedRecipes/${recipeId}`, {
+    method: "DELETE",
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.error || "Error desconocido");
+  }
+
+  return true;
 }

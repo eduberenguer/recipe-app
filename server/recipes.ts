@@ -9,26 +9,36 @@ export async function createRecipe(recipe: Partial<Recipe>) {
     return { success: true, user };
   } catch (error) {
     if (error instanceof Error) {
-      return { success: false, error: error.message };
+      throw new Error(error.message);
     }
-    return { success: false, error: "Ocurrió un error desconocido" };
+    throw new Error("Ocurrió un error desconocido");
   }
 }
 
-export async function retrieveAllRecipes() {
+export async function retrieveAllRecipes(): Promise<Partial<Recipe>[]> {
   try {
-    console.log("llega");
     const data = await pb.collection("recipes").getFullList({
       sort: "title",
     });
 
-    console.log(data);
+    return data;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    throw new Error("Ocurrió un error desconocido");
+  }
+}
+
+export async function deleteRecipeById(recipeId: string): Promise<boolean> {
+  try {
+    const data = await pb.collection("recipes").delete(recipeId);
 
     return data;
   } catch (error) {
     if (error instanceof Error) {
-      return { success: false, error: error.message };
+      throw new Error(error.message);
     }
-    return { success: false, error: "Ocurrió un error desconocido" };
+    throw new Error("Ocurrió un error desconocido");
   }
 }
