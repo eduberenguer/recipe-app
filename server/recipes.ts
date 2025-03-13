@@ -14,3 +14,21 @@ export async function createRecipe(recipe: Partial<Recipe>) {
     return { success: false, error: "Ocurrió un error desconocido" };
   }
 }
+
+export async function retrieveAllRecipes() {
+  try {
+    console.log("llega");
+    const data = await pb.collection("recipes").getFullList({
+      sort: "title",
+    });
+
+    console.log(data);
+
+    return data;
+  } catch (error) {
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: "Ocurrió un error desconocido" };
+  }
+}

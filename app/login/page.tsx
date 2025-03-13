@@ -15,7 +15,7 @@ export default function Login() {
     const data = await auth?.login(user);
 
     if (data.success) {
-      router.push("/profile");
+      router.push("/main");
     } else {
       console.log(data.error);
     }

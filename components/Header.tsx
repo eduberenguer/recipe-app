@@ -22,6 +22,7 @@ export default function Header() {
       {auth?.user && <Link href="/create-recipes">Create recipe</Link>}
       {auth?.user && <Link href="/profile">Profile</Link>}
       {auth?.user && <button onClick={logout}>Logout</button>}
+      {auth?.user && <Link href="/main">Main</Link>}
     </header>
   );
 }

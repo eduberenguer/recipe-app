@@ -11,3 +11,14 @@ export async function createNewRecipesApi(recipe: FormData) {
 
   return res.json();
 }
+
+export async function retrieveAllRecipes() {
+  const res = await fetch("/api/recipes/retrieveRecipes");
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.error || "Error desconocido");
+  }
+
+  return res.json();
+}
