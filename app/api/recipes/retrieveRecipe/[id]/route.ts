@@ -1,20 +1,27 @@
-import { deleteRecipeById } from "@/server/recipes";
+import { retrieveRecipeById } from "@/server/recipes";
 import { NextResponse } from "next/server";
 
-export async function DELETE(
+export async function GET(
   request: Request,
   { params }: { params: { id?: string } }
 ) {
   try {
-    if (!params || !params.id) {
+    const { id } = params;
+
+    if (!id) {
       return NextResponse.json({ error: "ID requerido" }, { status: 400 });
     }
 
-    const { id } = params;
+    const result = await retrieveRecipeById(id);
 
-    deleteRecipeById(id);
+    if (!result) {
+      return NextResponse.json(
+        { success: false, error: "Receta no encontrada" },
+        { status: 404 }
+      );
+    }
 
-    return NextResponse.json({ success: true, message: "Receta eliminada" });
+    return NextResponse.json(result);
   } catch (error) {
     console.log(error);
     return NextResponse.json(

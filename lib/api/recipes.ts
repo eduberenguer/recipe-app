@@ -35,3 +35,14 @@ export async function deleteRecipeApi(recipeId: string) {
 
   return true;
 }
+
+export async function retrieveRecipeByIdApi(recipeId: string) {
+  const res = await fetch(`/api/recipes/retrieveRecipe/${recipeId}`);
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.error || "Error desconocido");
+  }
+
+  return res.json();
+}

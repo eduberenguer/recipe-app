@@ -42,3 +42,18 @@ export async function deleteRecipeById(recipeId: string): Promise<boolean> {
     throw new Error("Ocurrió un error desconocido");
   }
 }
+
+export async function retrieveRecipeById(
+  recipe: string
+): Promise<Partial<Recipe>> {
+  try {
+    const data = await pb.collection("recipes").getOne(recipe);
+
+    return data;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    throw new Error("Ocurrió un error desconocido");
+  }
+}
