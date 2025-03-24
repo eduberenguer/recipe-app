@@ -18,4 +18,5 @@ export interface Recipe {
   servings: number;
   ingredients: { name: string; quantity: number }[];
   photo: File | string;
+  description: string;
 }

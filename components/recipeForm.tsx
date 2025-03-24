@@ -13,11 +13,13 @@ export default function RecipeForm() {
     servings: number | string;
     ingredients: { name: string; quantity: string }[];
     photo: File | null;
+    description?: string;
   }>({
     title: "",
     servings: "",
     ingredients: [],
     photo: null as File | null,
+    description: "",
   });
 
   const [ingredients, setIngredients] = useState({
@@ -84,6 +86,7 @@ export default function RecipeForm() {
     formData.append("servings", recipe.servings.toString());
     formData.append("owner", contextUser?.user?.id || "");
     formData.append("ingredients", JSON.stringify(recipe.ingredients));
+    formData.append("description", recipe.description || "");
 
     if (recipe.photo) {
       formData.append("photo", recipe.photo);
@@ -97,6 +100,7 @@ export default function RecipeForm() {
         servings: "",
         ingredients: [],
         photo: null as File | null,
+        description: "",
       });
 
     if (fileInputRef.current) {
@@ -151,6 +155,11 @@ export default function RecipeForm() {
           accept="image/*"
           ref={fileInputRef}
           onChange={(e) => updateRecipes("photo", e.target.files?.[0] || null)}
+        />
+        <textarea
+          placeholder="Description"
+          value={recipe.description}
+          onChange={(e) => updateRecipes("description", e.target.value)}
         />
       </form>
       {recipe.ingredients.map((ingredients, key) => {
