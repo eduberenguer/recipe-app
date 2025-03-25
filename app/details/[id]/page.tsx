@@ -20,31 +20,44 @@ export default function Details() {
   }, [id]);
 
   return (
-    <div>
-      <h1>Details</h1>
+    <div className="p-4 max-w-4xl mx-auto">
+      <h1 className="text-xl font-semibold mb-6">Recipe Details</h1>
       {recipes?.stateRecipe ? (
-        <div>
-          <div>
-            <h2>{recipes.stateRecipe.title}</h2>
+        <div className="bg-white p-6 rounded-lg shadow-md flex gap-8">
+          {/* Imagen y descripción a la izquierda */}
+          <div className="flex-shrink-0 w-2/3">
             <Image
               src={photoSrc(
                 recipes.stateRecipe.id,
                 recipes.stateRecipe.photo as string
               )}
               alt={recipes.stateRecipe.title}
-              width={300}
+              width={250}
               height={200}
+              className="rounded-lg"
             />
-            {recipes.stateRecipe.ingredients.map((ingredient, index) => {
-              return (
-                <div key={index}>
-                  <p>{ingredient.name}</p>
-                  <p>{ingredient.quantity}</p>
-                </div>
-              );
-            })}
+            <p className="mt-4 text-gray-600">
+              {recipes.stateRecipe.description}
+            </p>
           </div>
-          <p>{recipes.stateRecipe.description}</p>
+
+          {/* Título e ingredientes a la derecha */}
+          <div className="flex-1">
+            <h2 className="text-2xl font-semibold mb-2">
+              {recipes.stateRecipe.title}
+            </h2>
+            <div>
+              <h3 className="font-semibold text-lg mb-2">Ingredients</h3>
+              <ul className="list-disc pl-6 space-y-2">
+                {recipes.stateRecipe.ingredients.map((ingredient, index) => (
+                  <li key={index} className="text-gray-700">
+                    <span className="font-medium">{ingredient.name}:</span>{" "}
+                    {ingredient.quantity}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
       ) : (
         <p>Loading...</p>

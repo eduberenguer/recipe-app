@@ -2,8 +2,11 @@
 import { useContext } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-
 import { AuthContext } from "../app/context/context";
+
+import Button from "./Button";
+import NavLink from "./NavLink";
+import Logo from "./Logo";
 
 export default function Header() {
   const router = useRouter();
@@ -16,18 +19,34 @@ export default function Header() {
   }
 
   return (
-    <header>
+    <header className="flex justify-between items-center text-stone-500 h-max p-4">
       <h1>
-        <Link href="/">Logo</Link>
+        {auth?.user ? (
+          <Link href="/main">
+            <Logo />
+          </Link>
+        ) : (
+          <Link href="/login">
+            <Logo />
+          </Link>
+        )}
       </h1>
-      {auth?.user && pathname !== "/main" && <Link href="/main">Main</Link>}
-      {auth?.user && pathname !== "/create-recipes" && (
-        <Link href="/create-recipes">Create recipe</Link>
-      )}
-      {auth?.user && pathname !== "/profile" && (
-        <Link href="/profile">Profile</Link>
-      )}
-      {auth?.user && <button onClick={logout}>Logout</button>}
+      <div className="flex gap-4">
+        {auth?.user && pathname !== "/main" && (
+          <NavLink href="/main">Recipes</NavLink>
+        )}
+        {auth?.user && pathname !== "/create-recipes" && (
+          <NavLink href="/create-recipes">Create recipe</NavLink>
+        )}
+        {auth?.user && pathname !== "/profile" && (
+          <NavLink href="/profile">Profile</NavLink>
+        )}
+        {auth?.user && (
+          <Button onClick={logout} backgroundColor="bg-red-500">
+            Logout
+          </Button>
+        )}
+      </div>
     </header>
   );
 }

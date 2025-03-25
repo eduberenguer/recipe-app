@@ -3,45 +3,67 @@ import { useContext, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "../context/context";
+import Button from "@/components/Button";
 
 export default function Login() {
   const auth = useContext(AuthContext);
   const router = useRouter();
   const [user, setUser] = useState({ email: "", password: "" });
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (!user.email || !user.password) {
+      setError("Please fill in both fields.");
+      return;
+    }
 
     const data = await auth?.login(user);
 
     if (data.success) {
       router.push("/main");
     } else {
-      console.log(data.error);
+      setError(data.error || "Login failed.");
     }
   };
 
   return (
-    <div>
-      <Link href="/login">Login</Link>
-      <form onSubmit={handleSubmit}>
+    <div className="p-6 max-w-sm mx-auto">
+      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+        Login
+      </h2>
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 bg-white p-6 rounded-lg shadow-md text-center"
+      >
         <input
-          type="text"
+          type="email"
           value={user.email}
           onChange={(e) => setUser({ ...user, email: e.target.value })}
           placeholder="Email"
+          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <input
           type="password"
           value={user.password}
           onChange={(e) => setUser({ ...user, password: e.target.value })}
           placeholder="Password"
+          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <button type="submit">Login</button>
+        {error && <p className="text-red-500 text-center">{error}</p>}
+        <Button type="submit" backgroundColor="bg-blue-500">
+          Login
+        </Button>
       </form>
-      <div>
-        Si no tienes cuenta, puedes registrarte aquí:
-        <Link href="/register">registrarse</Link>
+      <div className="mt-4 text-center">
+        If you dont have an account, you can sign up here:
+        <Link
+          href="/register"
+          className="text-blue-500 font-semibold hover:underline"
+        >
+          Sign up
+        </Link>
       </div>
     </div>
   );
