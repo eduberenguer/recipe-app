@@ -1,3 +1,3 @@
 Recipe App (WIP)
 
-![Recipe App](images/githubImages/githubImages-1.png)
+![Recipe App](./public/images/githubImages/githubImages-1.png)
