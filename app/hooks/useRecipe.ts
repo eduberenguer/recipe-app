@@ -3,6 +3,7 @@ import {
   deleteRecipeApi,
   retrieveAllRecipesApi,
   retrieveRecipeByIdApi,
+  retrieveRecipesByFilterNameApi,
 } from "@/lib/api/recipes";
 import { Recipe } from "@/types";
 import { useState } from "react";
@@ -41,6 +42,11 @@ export function useRecipes() {
     setstateRecipe(result);
   }
 
+  async function retrieveRecipesByFilterName(filter: string) {
+    const result = await retrieveRecipesByFilterNameApi(filter);
+    setStateAllRecipes(result);
+  }
+
   return {
     stateAllRecipes,
     stateRecipe,
@@ -48,5 +54,6 @@ export function useRecipes() {
     retrieveRecipesList,
     deleteRecipe,
     retrieveRecipe,
+    retrieveRecipesByFilterName,
   };
 }

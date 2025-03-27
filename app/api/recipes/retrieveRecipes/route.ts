@@ -12,7 +12,7 @@ export async function GET() {
     return NextResponse.json(
       {
         success: false,
-        error: (error as Error).message || "Error desconocido",
+        error: (error as Error).message || "Unknown error",
       },
       { status: 500 }
     );

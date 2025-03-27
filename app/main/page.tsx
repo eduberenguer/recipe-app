@@ -6,6 +6,7 @@ import checkOwnerRecipe from "../utils/check.owner.recipe";
 import Link from "next/link";
 import photoSrc from "../utils/photoSrc";
 import Button from "@/components/Button";
+import FilterByName from "@/components/filterByName";
 
 export default function Main() {
   const contextAuth = useContext(AuthContext);
@@ -17,9 +18,12 @@ export default function Main() {
 
   return (
     <div className="p-6">
-      <h2 className="text-3xl font-bold text-gray-800 mb-6">
-        Recipe Collection
-      </h2>
+      <header className="flex flex-row justify-between items-center mb-6">
+        <h2 className="text-3xl font-bold text-gray-800 mb-6">
+          Recipe Collection
+        </h2>
+        <FilterByName />
+      </header>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
         {contextRecipes?.stateAllRecipes.map((recipe) => {
           return (

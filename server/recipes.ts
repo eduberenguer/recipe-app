@@ -57,3 +57,20 @@ export async function retrieveRecipeById(
     throw new Error("Ocurrió un error desconocido");
   }
 }
+
+export async function retrieveRecipesByFilterName(
+  filter: string
+): Promise<Recipe[]> {
+  try {
+    const data = await pb.collection("recipes").getList(1, 50, {
+      filter: `title ~ "${filter}"`,
+    });
+    console.log("data", data);
+    return data.items as unknown as Recipe[];
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    throw new Error("Ocurrió un error desconocido");
+  }
+}

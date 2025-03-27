@@ -26,27 +26,25 @@ export default function Header() {
             <Logo />
           </Link>
         ) : (
-          <Link href="/login">
+          <Link href="/">
             <Logo />
           </Link>
         )}
       </h1>
-      <div className="flex gap-4">
-        {auth?.user && pathname !== "/main" && (
-          <NavLink href="/main">Recipes</NavLink>
-        )}
-        {auth?.user && pathname !== "/create-recipes" && (
-          <NavLink href="/create-recipes">Create recipe</NavLink>
-        )}
-        {auth?.user && pathname !== "/profile" && (
-          <NavLink href="/profile">Profile</NavLink>
-        )}
-        {auth?.user && (
+      {auth?.user && (
+        <div className="flex gap-4">
+          {pathname !== "/main" && <NavLink href="/main">Recipes</NavLink>}
+          {pathname !== "/create-recipes" && (
+            <NavLink href="/create-recipes">Create recipe</NavLink>
+          )}
+          {pathname !== "/profile" && (
+            <NavLink href="/profile">Profile</NavLink>
+          )}
           <Button onClick={logout} backgroundColor="bg-red-500">
             Logout
           </Button>
-        )}
-      </div>
+        </div>
+      )}
     </header>
   );
 }

@@ -7,18 +7,18 @@ export async function DELETE(
 ) {
   try {
     if (!params || !params.id) {
-      return NextResponse.json({ error: "ID requerido" }, { status: 400 });
+      return NextResponse.json({ error: "ID required" }, { status: 400 });
     }
 
     const { id } = params;
 
     deleteRecipeById(id);
 
-    return NextResponse.json({ success: true, message: "Receta eliminada" });
+    return NextResponse.json({ success: true, message: "Recipe deleted" });
   } catch (error) {
     console.log(error);
     return NextResponse.json(
-      { success: false, error: "Error eliminando la receta" },
+      { success: false, error: "Error deleting recipe" },
       { status: 500 }
     );
   }

@@ -9,14 +9,14 @@ export async function GET(
     const { id } = params;
 
     if (!id) {
-      return NextResponse.json({ error: "ID requerido" }, { status: 400 });
+      return NextResponse.json({ error: "ID required" }, { status: 400 });
     }
 
     const result = await retrieveRecipeById(id);
 
     if (!result) {
       return NextResponse.json(
-        { success: false, error: "Receta no encontrada" },
+        { success: false, error: "Recipe not found" },
         { status: 404 }
       );
     }
@@ -25,7 +25,7 @@ export async function GET(
   } catch (error) {
     console.log(error);
     return NextResponse.json(
-      { success: false, error: "Error eliminando la receta" },
+      { success: false, error: "Error deleting recipe" },
       { status: 500 }
     );
   }
