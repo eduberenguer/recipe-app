@@ -149,7 +149,7 @@ export default function RecipeForm() {
         Recipe Form
       </h2>
       <form className="space-y-4 text-center">
-        <div className="flex gap-4">
+        <div className="flex gap-2">
           <input
             type="text"
             placeholder="Recipe title"
@@ -173,7 +173,7 @@ export default function RecipeForm() {
             className="w-1/3 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-2">
           <input
             type="text"
             placeholder="Ingredient"
@@ -196,24 +196,39 @@ export default function RecipeForm() {
             className="w-1/2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           >
+            <option value="" disabled>
+              Choose a unit
+            </option>
             {Object.entries(unityOptions).map(([key, label]) => (
               <option key={key} value={key}>
                 {label}
               </option>
             ))}
           </select>
+          <Button
+            type="button"
+            onClick={addIngredient}
+            backgroundColor="bg-blue-500"
+          >
+            +
+          </Button>
         </div>
-        <Button onClick={addIngredient} backgroundColor="bg-blue-500">
-          Add Ingredient
-        </Button>
+
         <div className="flex items-center mt-4 justify-center gap-4">
           <input
+            id="fileInput"
             type="file"
             accept="image/*"
             ref={fileInputRef}
             onChange={handleImageUpload}
-            className="flex-1 p-3 border border-gray-300 rounded-lg cursor-pointer"
+            className="flex-1 p-3 border border-gray-300 rounded-lg cursor-pointer hidden"
           />
+          <label
+            htmlFor="fileInput"
+            className="block w-full p-3 border border-gray-300 rounded-lg text-center cursor-pointer bg-gray-100 hover:bg-gray-200"
+          >
+            {recipe.photo ? recipe.photo.name : "Select an image"}
+          </label>
           {previewImage && (
             <div>
               <Image
@@ -231,6 +246,7 @@ export default function RecipeForm() {
           placeholder="Description"
           value={recipe.description}
           onChange={(e) => updateRecipes("description", e.target.value)}
+          rows={7}
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
         />
 
