@@ -1,18 +1,23 @@
 "use client";
 import { AuthContext, RecipesContext } from "@/app/context/context";
 import { useContext, useState, useRef } from "react";
-import Button from "./Button";
+import Image from "next/image";
+import Button from "../Button";
+import { Unity } from "@/types";
+import { unityOptions } from "./unityOptions";
 
 export default function RecipeForm() {
   const contextUser = useContext(AuthContext);
   const contextRecipes = useContext(RecipesContext);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+
   const [error, setError] = useState<string | null>(null);
 
   const [recipe, setRecipe] = useState<{
     title: string;
     servings: number | string;
-    ingredients: { name: string; quantity: string }[];
+    ingredients: { name: string; quantity: string; unity: Unity }[];
     photo: File | null;
     description?: string;
   }>({
@@ -26,13 +31,28 @@ export default function RecipeForm() {
   const [ingredients, setIngredients] = useState({
     name: "",
     quantity: "",
+    unity: "" as Unity,
   });
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    updateRecipes("photo", file);
+
+    if (file) {
+      setPreviewImage(URL.createObjectURL(file));
+    } else {
+      setPreviewImage(null);
+    }
+  };
 
   const updateRecipes = (field: string, value: unknown) => {
     setRecipe((prev) => ({ ...prev, [field]: value }));
   };
 
-  const updateIngredient = (key: "name" | "quantity", value: string) => {
+  const updateIngredient = (
+    key: "name" | "quantity" | "unity",
+    value: string
+  ) => {
     setIngredients((prev) => ({
       ...prev,
       [key]: value,
@@ -40,6 +60,15 @@ export default function RecipeForm() {
   };
 
   const addIngredient = () => {
+    if (
+      ingredients.name === "" ||
+      ingredients.quantity === "" ||
+      !ingredients.unity
+    ) {
+      setError("Please fill in all ingredient fields");
+      return;
+    }
+
     setRecipe((prev) => ({
       ...prev,
       ingredients: [...prev.ingredients, ingredients],
@@ -48,7 +77,10 @@ export default function RecipeForm() {
       ...prev,
       name: "",
       quantity: "",
+      unit: "",
     }));
+
+    setError(null);
   };
 
   const deleteIngredient = (ingredient: string) => {
@@ -117,28 +149,30 @@ export default function RecipeForm() {
         Recipe Form
       </h2>
       <form className="space-y-4 text-center">
-        <input
-          type="text"
-          placeholder="Recipe title"
-          value={recipe.title}
-          onChange={(e) => updateRecipes("title", e.target.value)}
-          required
-          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <input
-          type="number"
-          placeholder="Number of servings"
-          value={recipe.servings}
-          name="servings"
-          onChange={(e) =>
-            updateRecipes(
-              "servings",
-              e.target.value === "" ? "" : Number(e.target.value)
-            )
-          }
-          required
-          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        <div className="flex gap-4">
+          <input
+            type="text"
+            placeholder="Recipe title"
+            value={recipe.title}
+            onChange={(e) => updateRecipes("title", e.target.value)}
+            required
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="number"
+            placeholder="Servings"
+            value={recipe.servings}
+            name="servings"
+            onChange={(e) =>
+              updateRecipes(
+                "servings",
+                e.target.value === "" ? "" : Number(e.target.value)
+              )
+            }
+            required
+            className="w-1/3 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
         <div className="flex gap-4">
           <input
             type="text"
@@ -154,20 +188,45 @@ export default function RecipeForm() {
             value={ingredients.quantity}
             onChange={(e) => updateIngredient("quantity", e.target.value)}
             required
-            className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-1/2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          <select
+            value={ingredients.unity}
+            onChange={(e) => updateIngredient("unity", e.target.value)}
+            className="w-1/2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          >
+            {Object.entries(unityOptions).map(([key, label]) => (
+              <option key={key} value={key}>
+                {label}
+              </option>
+            ))}
+          </select>
         </div>
         <Button onClick={addIngredient} backgroundColor="bg-blue-500">
           Add Ingredient
         </Button>
+        <div className="flex items-center mt-4 justify-center gap-4">
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={handleImageUpload}
+            className="flex-1 p-3 border border-gray-300 rounded-lg cursor-pointer"
+          />
+          {previewImage && (
+            <div>
+              <Image
+                src={previewImage}
+                width={100}
+                height={100}
+                alt="Preview"
+                className="w-full h-auto rounded-lg shadow-md"
+              />
+            </div>
+          )}
+        </div>
 
-        <input
-          type="file"
-          accept="image/*"
-          ref={fileInputRef}
-          onChange={(e) => updateRecipes("photo", e.target.files?.[0] || null)}
-          className="w-full p-3 border border-gray-300 rounded-lg cursor-pointer"
-        />
         <textarea
           placeholder="Description"
           value={recipe.description}
@@ -177,30 +236,32 @@ export default function RecipeForm() {
 
         {recipe.ingredients.length > 0 && (
           <div className="space-y-2 mt-4">
-            {recipe.ingredients.map((ingredient, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
-              >
-                <span>
-                  {ingredient.name} - {ingredient.quantity}
-                </span>
-                <Button
-                  type="button"
-                  onClick={() => deleteIngredient(ingredient.name)}
-                  backgroundColor="bg-red-500"
+            <ul>
+              {recipe.ingredients.map((ingredient, index) => (
+                <li
+                  key={index}
+                  className="flex items-center justify-between p-1"
                 >
-                  X
-                </Button>
-              </div>
-            ))}
+                  {ingredient.quantity} {ingredient.unity} {ingredient.name}
+                  <Button
+                    type="button"
+                    onClick={() => deleteIngredient(ingredient.name)}
+                    backgroundColor="bg-red-500"
+                  >
+                    X
+                  </Button>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 
         <Button
           type="submit"
           onClick={(e) => handleSubmit(e)}
-          backgroundColor="bg-green-500"
+          backgroundColor={
+            !ingredients.quantity.length ? "bg-gray-500" : "bg-green-500"
+          }
         >
           Save Recipe
         </Button>
