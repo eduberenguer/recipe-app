@@ -33,7 +33,7 @@ export async function deleteRecipeApi(recipeId: string) {
     throw new Error(errorData.error || "Error desconocido");
   }
 
-  return true;
+  return recipeId;
 }
 
 export async function retrieveRecipeByIdApi(recipeId: string) {

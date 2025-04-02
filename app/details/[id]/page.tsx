@@ -19,6 +19,8 @@ export default function Details() {
     fetchRecipe();
   }, [id]);
 
+  console.log(recipes?.stateRecipe);
+
   return (
     <div className="p-4 max-w-4xl mx-auto">
       <h1 className="text-xl font-semibold mb-6">Recipe Details</h1>
@@ -28,10 +30,10 @@ export default function Details() {
           <div className="flex-shrink-0 w-2/3">
             <Image
               src={photoSrc(
-                recipes.stateRecipe.id,
+                recipes.stateRecipe.id ?? "",
                 recipes.stateRecipe.photo as string
               )}
-              alt={recipes.stateRecipe.title}
+              alt={recipes.stateRecipe.title || "Recipe image"}
               width={250}
               height={200}
               className="rounded-lg"
@@ -49,10 +51,10 @@ export default function Details() {
             <div>
               <h3 className="font-semibold text-lg mb-2">Ingredients</h3>
               <ul className="list-disc pl-6 space-y-2">
-                {recipes.stateRecipe.ingredients.map((ingredient, index) => (
+                {recipes.stateRecipe.ingredients?.map((ingredient, index) => (
                   <li key={index} className="text-gray-700">
                     <span className="font-medium">{ingredient.name}:</span>{" "}
-                    {ingredient.quantity}
+                    {ingredient.quantity} {ingredient.unity}
                   </li>
                 ))}
               </ul>

@@ -18,27 +18,28 @@ export default function Main() {
 
   return (
     <div className="p-6">
-      <header className="flex flex-row justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6">
-          Recipe Collection
+      <header className="flex items-center justify-between mb-6">
+        <h2 className="text-3xl font-bold text-gray-800 flex-grow text-center">
+          Recipes Collection
         </h2>
         <FilterByName />
       </header>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
+      <div className="flex flex-wrap justify-center gap-4 mt-20">
+        {" "}
         {contextRecipes?.stateAllRecipes.map((recipe) => {
           return (
             <div
               key={recipe.id}
-              className="bg-white shadow-lg rounded-lg overflow-hidden max-w-[320px] h-auto mx-auto transition-transform duration-200 hover:scale-105"
+              className="bg-white shadow-lg rounded-lg overflow-hidden w-[420px] h-[350px] mx-auto transition-transform duration-200 hover:scale-105 flex flex-col justify-between"
             >
-              <div className="relative">
+              <div className="relative w-full">
                 <Link href={`/details/${recipe.id}`}>
                   <Image
                     src={photoSrc(recipe.id, recipe.photo as string)}
                     alt={recipe.title}
-                    width={300}
-                    height={200}
-                    className="w-full h-48 object-cover rounded-t-md"
+                    width={420} // Mismo ancho que la tarjeta
+                    height={250}
+                    className="w-full h-64 object-cover rounded-t-md"
                   />
                 </Link>
                 {contextAuth?.user?.id &&
@@ -51,7 +52,7 @@ export default function Main() {
                     </Button>
                   )}
               </div>
-              <div className="p-4">
+              <div className="p-4 flex flex-col justify-between flex-grow">
                 <h3 className="text-xl font-semibold text-gray-900">
                   {recipe.title}
                 </h3>
