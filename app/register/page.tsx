@@ -5,28 +5,40 @@ import { useRouter } from "next/navigation";
 import { AuthContext } from "../context/context";
 import Button from "@/components/Button";
 import Link from "next/link";
+import { showToast } from "../utils/showToast";
 
 export default function RegisterPage() {
   const router = useRouter();
   const auth = useContext(AuthContext);
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
-  const [message, setMessage] = useState("");
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    repeatPassword: "",
+  });
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
 
+    if (!form.name || !form.email || !form.password) {
+      showToast("Please fill in all fields.", "error");
+      return;
+    }
+
+    if (form.password.length < 6) {
+      showToast("Password must be at least 6 characters long.", "error");
+      return;
+    }
+
+    if (form.password !== form.repeatPassword) {
+      showToast("Passwords do not match. Please try again.", "error");
+      return;
+    }
+
     const data = await auth?.register(form);
 
-    setMessage(data.success ? "Sign up successfully" : data.error);
-
     if (data.success) {
-      setForm({ name: "", email: "", password: "" });
-
-      setTimeout(() => {
-        setMessage("");
-      }, 3000);
-
-      router.push("/login");
+      router.push("/");
     }
   }
 
@@ -58,14 +70,19 @@ export default function RegisterPage() {
           onChange={(e) => setForm({ ...form, password: e.target.value })}
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        <input
+          type="password"
+          placeholder="Repeat password"
+          value={form.repeatPassword}
+          onChange={(e) => setForm({ ...form, repeatPassword: e.target.value })}
+          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
         <div className="flex justify-center">
           <Button type="submit" backgroundColor="bg-green-500">
             Sign Up
           </Button>
         </div>
       </form>
-
-      {message && <p className="text-center mt-4 text-red-500">{message}</p>}
 
       <div className="mt-4 text-center">
         <span>Already have an account? </span>

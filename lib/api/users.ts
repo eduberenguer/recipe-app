@@ -23,8 +23,8 @@ export async function loginUserApi(user: Partial<User>) {
   });
 
   if (!res.ok) {
-    const errorData = await res.json();
-    throw new Error(errorData.error || "Error desconocido");
+    const errorData = await res.json().catch(() => {});
+    throw new Error(errorData.error || "Failed to authenticate");
   }
 
   return res.json();

@@ -5,14 +5,13 @@ import Image from "next/image";
 import Button from "../Button";
 import { Unity } from "@/types";
 import { unityOptions } from "./unityOptions";
+import { showToast } from "@/app/utils/showToast";
 
 export default function RecipeForm() {
   const contextUser = useContext(AuthContext);
   const contextRecipes = useContext(RecipesContext);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-
-  const [error, setError] = useState<string | null>(null);
 
   const [recipe, setRecipe] = useState<{
     title: string;
@@ -65,7 +64,7 @@ export default function RecipeForm() {
       ingredients.quantity === "" ||
       !ingredients.unity
     ) {
-      setError("Please fill in all ingredient fields");
+      showToast("Please fill in all ingredient fields", "warning");
       return;
     }
 
@@ -79,8 +78,6 @@ export default function RecipeForm() {
       quantity: "",
       unit: "",
     }));
-
-    setError(null);
   };
 
   const deleteIngredient = (ingredient: string) => {
@@ -100,17 +97,17 @@ export default function RecipeForm() {
     e.preventDefault();
 
     if (recipe.title === "") {
-      setError("Please enter a title");
+      showToast("Please enter a title", "warning");
       return;
     }
 
     if (recipe.servings === "" || recipe.servings === 0) {
-      setError("Please enter a number of servings");
+      showToast("Please enter a number of servings", "warning");
       return;
     }
 
     if (recipe.ingredients.length === 0) {
-      setError("Please enter at least one ingredient");
+      showToast("Please enter at least one ingredient", "warning");
       return;
     }
 
@@ -127,20 +124,18 @@ export default function RecipeForm() {
 
     const newRecipe = await contextRecipes?.createRecipe(formData);
 
-    if (newRecipe)
-      setRecipe({
-        title: "",
-        servings: "",
-        ingredients: [],
-        photo: null as File | null,
-        description: "",
-      });
+    if (newRecipe) showToast("Recipe created successfully", "success");
+    setRecipe({
+      title: "",
+      servings: "",
+      ingredients: [],
+      photo: null as File | null,
+      description: "",
+    });
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
-
-    setError(null);
   };
 
   return (
@@ -282,8 +277,6 @@ export default function RecipeForm() {
           Save Recipe
         </Button>
       </form>
-
-      {error && <p className="text-red-500 text-center mt-4">{error}</p>}
     </div>
   );
 }

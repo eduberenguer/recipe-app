@@ -4,18 +4,18 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "../context/context";
 import Button from "@/components/Button";
+import { showToast } from "../utils/showToast";
 
 export default function Login() {
   const auth = useContext(AuthContext);
   const router = useRouter();
   const [user, setUser] = useState({ email: "", password: "" });
-  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!user.email || !user.password) {
-      setError("Please fill in both fields.");
+      showToast("Please fill in all fields.", "error");
       return;
     }
 
@@ -23,8 +23,6 @@ export default function Login() {
 
     if (data.success) {
       router.push("/main");
-    } else {
-      setError(data.error || "Login failed.");
     }
   };
 
@@ -51,7 +49,7 @@ export default function Login() {
           placeholder="Password"
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        {error && <p className="text-red-500 text-center">{error}</p>}
+
         <Button type="submit" backgroundColor="bg-blue-500">
           Login
         </Button>

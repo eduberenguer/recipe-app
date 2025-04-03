@@ -4,6 +4,7 @@ import pb from "@/lib/pocketbase";
 import { loginUserApi, registerUserApi } from "@/lib/api/users";
 
 import { User } from "@/types";
+import { showToast } from "../utils/showToast";
 
 type AuthUser = Pick<User, "id" | "created" | "name" | "email"> & {
   token: string;
@@ -15,28 +16,42 @@ export function useAuth() {
     pb.authStore.model
   );
 
-  async function register(user: Partial<User>) {
-    const data = await registerUserApi(user);
+  async function register(userData: Partial<User>) {
+    try {
+      const newUser = await registerUserApi(userData);
+      setUser(newUser);
 
-    return data;
+      return newUser;
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error ? err.message : "An unknown error occurred.";
+      showToast(errorMessage, "error");
+    }
   }
 
   async function login(user: Partial<User>) {
-    const data = await loginUserApi(user);
-
-    if (data.success) {
-      setUser({
-        ...user,
-        id: data.user.id,
-        created: data.user.created,
-        name: data.user.name,
-        email: data.user.email,
-        token: data.token,
-        isAuthenticated: data.isAuthenticated,
-      });
+    try {
+      const data = await loginUserApi(user);
+      if (data.success) {
+        setUser({
+          ...user,
+          id: data.user.id,
+          created: data.user.created,
+          name: data.user.name,
+          email: data.user.email,
+          token: data.token,
+          isAuthenticated: data.isAuthenticated,
+        });
+        showToast("Login succesfully", "success");
+        return data;
+      }
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error
+          ? "Invalid email or password."
+          : "An unknown error occurred.";
+      showToast(errorMessage, "error");
     }
-
-    return data;
   }
 
   async function logout() {
