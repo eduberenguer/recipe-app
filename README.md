@@ -21,10 +21,11 @@ Recipe App (WIP)
 - Responsive Design (Desktop/Mobile)
 - Toast Notifications for Errors/Success
 - Private Routes (Authenticated users only)
+- Testing with Cypress
+- Testing with Jest
 
 ## Upcoming Features
 
-- Testing with Jest
 - Favorites System
 - Recipe Rating System
 - Recipe API (for food data)
