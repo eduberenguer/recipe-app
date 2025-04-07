@@ -1,49 +1,52 @@
 "use client";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { AuthContext } from "../app/context/context";
 
-import Button from "./Button";
-import NavLink from "./NavLink";
 import Logo from "./Logo";
+import DesktopNav from "./navbar/DesktopNav";
+import MobileNav from "./navbar/MobileNav";
+import { Menu, X } from "lucide-react";
 
 export default function Header() {
   const router = useRouter();
-  const pathname = usePathname();
   const auth = useContext(AuthContext);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   function logout() {
     auth?.logout();
+    setIsMenuOpen(false);
     router.push("/login");
   }
 
   return (
-    <header className="flex justify-between items-center text-stone-500 h-max p-4">
+    <header className="relative flex justify-between items-center text-stone-500 h-max p-4">
+      {" "}
       <h1>
-        {auth?.user ? (
-          <Link href="/main">
-            <Logo />
-          </Link>
-        ) : (
-          <Link href="/">
-            <Logo />
-          </Link>
-        )}
+        <Link href={auth?.user ? "/main" : "/"}>
+          <Logo />
+        </Link>
       </h1>
       {auth?.user && (
-        <div className="flex gap-4">
-          {pathname !== "/main" && <NavLink href="/main">Recipes</NavLink>}
-          {pathname !== "/create-recipes" && (
-            <NavLink href="/create-recipes">Create recipe</NavLink>
+        <>
+          <nav className="hidden md:flex gap-4 items-center">
+            <DesktopNav logout={logout} />
+          </nav>
+          <button
+            className="md:hidden"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
+          {isMenuOpen && (
+            <MobileNav
+              logout={logout}
+              isMenuOpen={isMenuOpen}
+              setIsMenuOpen={setIsMenuOpen}
+            />
           )}
-          {pathname !== "/profile" && (
-            <NavLink href="/profile">Profile</NavLink>
-          )}
-          <Button onClick={logout} backgroundColor="bg-red-500">
-            Logout
-          </Button>
-        </div>
+        </>
       )}
     </header>
   );

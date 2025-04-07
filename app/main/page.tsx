@@ -6,7 +6,7 @@ import checkOwnerRecipe from "../utils/check.owner.recipe";
 import Link from "next/link";
 import photoSrc from "../utils/photoSrc";
 import Button from "@/components/Button";
-import FilterByName from "@/components/filterByName";
+import FilterByName from "@/components/FilterByName";
 
 export default function Main() {
   const contextAuth = useContext(AuthContext);
