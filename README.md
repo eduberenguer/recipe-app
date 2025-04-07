@@ -10,7 +10,7 @@ Recipe App (WIP)
 - Cypress
 - TypeScript
 - React Context API
-- Next.js Toast Notify
+- Next.js Toast Notify / React Multi Carousel
 
 ## Features
 
