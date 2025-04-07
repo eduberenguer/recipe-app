@@ -42,7 +42,7 @@ export function useAuth() {
           token: data.token,
           isAuthenticated: data.isAuthenticated,
         });
-        showToast("Login succesfully", "success");
+
         return data;
       }
     } catch (err: unknown) {

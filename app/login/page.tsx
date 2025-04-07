@@ -19,10 +19,16 @@ export default function Login() {
       return;
     }
 
-    const data = await auth?.login(user);
+    try {
+      const data = await auth?.login(user);
 
-    if (data.success) {
-      router.push("/main");
+      if (data?.success) {
+        showToast("Login successfully", "success");
+        router.push("/main");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      showToast("An error occurred. Please try again.", "error");
     }
   };
 
