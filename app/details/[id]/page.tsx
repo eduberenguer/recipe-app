@@ -19,8 +19,6 @@ export default function Details() {
     fetchRecipe();
   }, [id]);
 
-  console.log(recipes?.stateRecipe);
-
   return (
     <div className="p-4 max-w-4xl mx-auto">
       <h1 className="text-xl font-semibold mb-6">Recipe Details</h1>
