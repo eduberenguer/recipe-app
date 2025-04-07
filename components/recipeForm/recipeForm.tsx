@@ -5,7 +5,7 @@ import Image from "next/image";
 import Button from "../Button";
 import { Unity } from "@/types";
 import { unityOptions } from "./unityOptions";
-import { showToast } from "@/app/utils/showToast";
+import { customToast } from "@/app/utils/showToast";
 
 export default function RecipeForm() {
   const contextUser = useContext(AuthContext);
@@ -64,7 +64,7 @@ export default function RecipeForm() {
       ingredients.quantity === "" ||
       !ingredients.unity
     ) {
-      showToast("Please fill in all ingredient fields", "warning");
+      customToast("Please fill in all ingredient fields", "warning");
       return;
     }
 
@@ -97,17 +97,17 @@ export default function RecipeForm() {
     e.preventDefault();
 
     if (recipe.title === "") {
-      showToast("Please enter a title", "warning");
+      customToast("Please enter a title", "warning");
       return;
     }
 
     if (recipe.servings === "" || recipe.servings === 0) {
-      showToast("Please enter a number of servings", "warning");
+      customToast("Please enter a number of servings", "warning");
       return;
     }
 
     if (recipe.ingredients.length === 0) {
-      showToast("Please enter at least one ingredient", "warning");
+      customToast("Please enter at least one ingredient", "warning");
       return;
     }
 
@@ -124,7 +124,7 @@ export default function RecipeForm() {
 
     const newRecipe = await contextRecipes?.createRecipe(formData);
 
-    if (newRecipe) showToast("Recipe created successfully", "success");
+    if (newRecipe) customToast("Recipe created successfully", "success");
     setRecipe({
       title: "",
       servings: "",

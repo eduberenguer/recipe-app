@@ -1,11 +1,11 @@
-import { toast } from "nextjs-toast-notify";
+import { showToast } from "nextjs-toast-notify";
 
-export function showToast(
+export function customToast(
   message: string,
   type: "success" | "error" | "warning" | "info" = "info",
   duration = 4000
 ) {
-  toast[type](message, {
+  showToast[type](message, {
     duration,
     progress: true,
     position: "bottom-right",

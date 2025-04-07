@@ -4,7 +4,7 @@ import pb from "@/lib/pocketbase";
 import { loginUserApi, registerUserApi } from "@/lib/api/users";
 
 import { User } from "@/types";
-import { showToast } from "../utils/showToast";
+import { customToast } from "../utils/showToast";
 
 type AuthUser = Pick<User, "id" | "created" | "name" | "email"> & {
   token: string;
@@ -25,7 +25,7 @@ export function useAuth() {
     } catch (err: unknown) {
       const errorMessage =
         err instanceof Error ? err.message : "An unknown error occurred.";
-      showToast(errorMessage, "error");
+      customToast(errorMessage, "error");
     }
   }
 
@@ -50,7 +50,7 @@ export function useAuth() {
         err instanceof Error
           ? "Invalid email or password."
           : "An unknown error occurred.";
-      showToast(errorMessage, "error");
+      customToast(errorMessage, "error");
     }
   }
 

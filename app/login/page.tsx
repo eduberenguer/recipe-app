@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "../context/context";
 import Button from "@/components/Button";
-import { showToast } from "../utils/showToast";
+import { customToast } from "../utils/showToast";
 
 export default function Login() {
   const auth = useContext(AuthContext);
@@ -15,7 +15,7 @@ export default function Login() {
     event.preventDefault();
 
     if (!user.email || !user.password) {
-      showToast("Please fill in all fields.", "error");
+      customToast("Please fill in all fields.", "error");
       return;
     }
 
@@ -23,12 +23,12 @@ export default function Login() {
       const data = await auth?.login(user);
 
       if (data?.success) {
-        showToast("Login successfully", "success");
+        customToast("Login successfully", "success");
         router.push("/main");
       }
     } catch (error) {
       console.error("Login error:", error);
-      showToast("An error occurred. Please try again.", "error");
+      customToast("An error occurred. Please try again.", "error");
     }
   };
 

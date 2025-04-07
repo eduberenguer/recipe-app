@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { AuthContext } from "../context/context";
 import Button from "@/components/Button";
 import Link from "next/link";
-import { showToast } from "../utils/showToast";
+import { customToast } from "../utils/showToast";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -21,17 +21,17 @@ export default function RegisterPage() {
     e.preventDefault();
 
     if (!form.name || !form.email || !form.password) {
-      showToast("Please fill in all fields.", "error");
+      customToast("Please fill in all fields.", "error");
       return;
     }
 
     if (form.password.length < 6) {
-      showToast("Password must be at least 6 characters long.", "error");
+      customToast("Password must be at least 6 characters long.", "error");
       return;
     }
 
     if (form.password !== form.repeatPassword) {
-      showToast("Passwords do not match. Please try again.", "error");
+      customToast("Passwords do not match. Please try again.", "error");
       return;
     }
 
