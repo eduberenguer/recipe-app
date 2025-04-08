@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         success: false,
-        error: (error as Error).message || "Error desconocido",
+        error: (error as Error).message || "Something wrong",
       },
       { status: 500 }
     );
