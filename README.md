@@ -22,7 +22,7 @@ Recipe App (WIP)
 - Toast Notifications for Errors/Success
 - Private Routes (Authenticated users only)
 - Testing with Cypress
-- Testing with Jest
+- Testing with Jest and Supertest
 
 ## Upcoming Features
 

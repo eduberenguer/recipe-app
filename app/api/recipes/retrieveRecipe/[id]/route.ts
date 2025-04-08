@@ -20,12 +20,11 @@ export async function GET(
         { status: 404 }
       );
     }
-
     return NextResponse.json(result);
   } catch (error) {
-    console.log(error);
+    console.log("Error in GET:", error);
     return NextResponse.json(
-      { success: false, error: "Error deleting recipe" },
+      { success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

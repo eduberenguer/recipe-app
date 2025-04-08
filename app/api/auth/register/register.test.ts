@@ -1,0 +1,112 @@
+import request from "supertest";
+import { createServer } from "http";
+
+import { POST } from "./route";
+import { registerUser } from "@/server/auth";
+
+jest.mock("@/server/auth");
+
+jest.mock("next/server", () => ({
+  NextResponse: {
+    json: jest.fn((data, { status }) => ({
+      json: async () => data,
+      status,
+    })),
+  },
+}));
+
+describe("POST /api/auth/register", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  let server: ReturnType<typeof createServer>;
+
+  beforeAll(() => {
+    server = createServer(async (req, res) => {
+      if (req.method === "POST") {
+        const body = await new Promise<string>((resolve) => {
+          let data = "";
+          req.on("data", (chunk) => (data += chunk));
+          req.on("end", () => resolve(data));
+        });
+
+        const request = new Request("http://localhost/api/auth/register", {
+          method: "POST",
+          body,
+          headers: { "Content-Type": "application/json" },
+        });
+
+        const result = await POST(request);
+        res.statusCode = result.status;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify(await result.json()));
+      }
+    });
+  });
+
+  afterAll(() => {
+    server.close();
+  });
+
+  it("should return 200 and success response when registerUser succeeds", async () => {
+    const mockResponse = { success: true, token: "mockToken" };
+    (registerUser as jest.Mock).mockResolvedValue(mockResponse);
+
+    const response = await request(server).post("/api/auth/register").send({
+      name: "john",
+      email: "test@example.com",
+      password: "password123",
+    });
+
+    expect(registerUser).toHaveBeenCalledWith(
+      "john",
+      "test@example.com",
+      "password123"
+    );
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(mockResponse);
+    expect(registerUser).toHaveBeenCalledTimes(1);
+  });
+
+  it("should return 400 when email or password wrong", async () => {
+    const mockResponse = { success: false };
+    (registerUser as jest.Mock).mockResolvedValue(mockResponse);
+
+    const response = await request(server).post("/api/auth/login").send({
+      name: "john",
+      email: "test@example.com",
+      password: "wrongPassword",
+    });
+
+    expect(registerUser).toHaveBeenCalledWith(
+      "john",
+      "test@example.com",
+      "wrongPassword"
+    );
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual(mockResponse);
+    expect(registerUser).toHaveBeenCalledTimes(1);
+  });
+
+  it("should return 500 when something wrong", async () => {
+    const mockResponse = { success: false, error: "Something wrong" };
+    (registerUser as jest.Mock).mockRejectedValue(mockResponse);
+
+    const response = await request(server).post("/api/auth/login").send({
+      name: "john",
+      email: "test@example.com",
+      password: "password123",
+    });
+
+    expect(registerUser).toHaveBeenCalledWith(
+      "john",
+      "test@example.com",
+      "password123"
+    );
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual(mockResponse);
+    expect(registerUser).toHaveBeenCalledTimes(1);
+  });
+});
