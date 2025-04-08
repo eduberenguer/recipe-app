@@ -38,7 +38,7 @@ export default function RegisterPage() {
     const data = await auth?.register(form);
 
     if (data.success) {
-      router.push("/");
+      router.push("/main");
     }
   }
 

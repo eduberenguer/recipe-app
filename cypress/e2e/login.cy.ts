@@ -1,3 +1,4 @@
+/// <reference types="cypress" />
 describe("Login test", () => {
   it("should log in wrong with void field", () => {
     cy.visit("/login");
