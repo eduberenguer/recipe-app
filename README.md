@@ -38,6 +38,4 @@ Recipe App (WIP)
 - Multi-language Support
 - Dark Mode
 
-<img src="./public/images/githubImages/githubImages-1.png" alt="Recipe App" width="300"/>  
-<img src="./public/images/githubImages/githubImages-3.png" alt="Recipe App" width="200"/>
-<img src="./public/images/githubImages/githubImages-2.png" alt="Recipe App" width="200"/>
+
