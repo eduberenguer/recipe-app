@@ -12,7 +12,7 @@ export async function DELETE(
 
     const { id } = params;
 
-    deleteRecipeById(id);
+    await deleteRecipeById(id);
 
     return NextResponse.json({ success: true, message: "Recipe deleted" });
   } catch (error) {
