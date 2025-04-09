@@ -25,7 +25,9 @@ const config: Config = {
     "app/**/*.{ts,tsx}",
     "components/**/*.{ts,tsx}",
     "!**/node_modules/**",
-    "!**/test-utils/**",
+    "!**/utils/**",
+    "!components/recipeForm/unityOptions.ts",
+    "!app/context/recipes/recipeActionTypes.ts",
   ],
   coverageReporters: ["text", "lcov"],
 };
