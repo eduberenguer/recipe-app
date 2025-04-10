@@ -35,6 +35,7 @@ export default function Header() {
           </nav>
           <button
             className="md:hidden"
+            aria-label="Toggle menu"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
