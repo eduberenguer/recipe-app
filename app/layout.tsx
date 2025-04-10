@@ -1,8 +1,6 @@
-import { ContexProvider } from "./context/context";
-import Layout from "@/components/Layout";
-
 import type { Metadata } from "next";
 
+import AppLayout from "./app.layout";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -12,15 +10,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body>
-        <ContexProvider>
-          <Layout>{children}</Layout>
-        </ContexProvider>
+        <AppLayout>{children}</AppLayout>
       </body>
     </html>
   );

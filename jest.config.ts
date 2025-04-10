@@ -28,6 +28,7 @@ const config: Config = {
     "!**/utils/**",
     "!components/recipeForm/unityOptions.ts",
     "!app/context/recipes/recipeActionTypes.ts",
+    "!app/layout.tsx",
   ],
   coverageReporters: ["text", "lcov"],
 };
