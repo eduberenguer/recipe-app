@@ -112,6 +112,18 @@ describe("Main component", () => {
       </AuthContext.Provider>
     );
 
+    const recipeImage = screen.getByAltText("Test Recipe");
+
+    expect(recipeImage).toHaveAttribute(
+      "src",
+      "undefined/recipe123/test-photo.jpg"
+    );
+    expect(screen.getByAltText("Test Recipe")).toBeInTheDocument();
+    expect(screen.getByText("4 servings")).toBeInTheDocument();
+
+    expect(screen.getByAltText("Test Recipe 2")).toBeInTheDocument();
+    expect(screen.getByText("2 servings")).toBeInTheDocument();
+
     const deleteButton = screen.getAllByRole("button", { name: /x/i });
     expect(deleteButton[0]).toBeInTheDocument();
 
