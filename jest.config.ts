@@ -1,4 +1,3 @@
-// filepath: /Users/edu/Projects/recipe-app/jest.config.ts
 import type { Config } from "jest";
 
 const config: Config = {
@@ -13,7 +12,7 @@ const config: Config = {
     "^.+\\.(ts|tsx)$": [
       "ts-jest",
       {
-        tsconfig: "<rootDir>/tsconfig.jest.json", // Usa el archivo específico para Jest
+        tsconfig: "<rootDir>/tsconfig.jest.json",
       },
     ],
   },

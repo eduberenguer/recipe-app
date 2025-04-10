@@ -1,6 +1,6 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "jsx": "react-jsx" // Sobrescribe solo para Jest
+    "jsx": "react-jsx"
   }
 }

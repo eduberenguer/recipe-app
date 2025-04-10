@@ -27,7 +27,7 @@ export default function Login() {
         router.push("/main");
       }
     } catch (error) {
-      console.error("Login error:", error);
+      console.log("Login error:", error);
       customToast("An error occurred. Please try again.", "error");
     }
   };

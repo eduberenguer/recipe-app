@@ -4,7 +4,7 @@ import React from "react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  backgroundColor?: string; // Propiedad opcional para cambiar el color de fondo
+  backgroundColor?: string;
 }
 
 export default function Button({

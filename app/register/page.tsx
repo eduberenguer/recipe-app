@@ -7,7 +7,7 @@ import Button from "@/components/Button";
 import Link from "next/link";
 import { customToast } from "../utils/showToast";
 
-export default function RegisterPage() {
+export default function Register() {
   const router = useRouter();
   const auth = useContext(AuthContext);
   const [form, setForm] = useState({
