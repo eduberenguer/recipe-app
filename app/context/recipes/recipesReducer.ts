@@ -4,7 +4,7 @@ import { RecipeActionTypes } from "./recipeActionTypes";
 
 type RecipesState = {
   allRecipes: Recipe[];
-  selectedRecipe: Partial<Recipe>;
+  selectedRecipe: Partial<Recipe> | null;
 };
 
 export function recipesReducer(
