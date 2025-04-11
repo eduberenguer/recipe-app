@@ -11,8 +11,8 @@ export default function Details() {
 
   useEffect(() => {
     const fetchRecipe = async () => {
-      if (typeof id === "string") {
-        await recipes?.retrieveRecipe(id);
+      if (typeof id === "string" && recipes) {
+        await recipes.retrieveRecipe(id);
       }
     };
 
@@ -24,7 +24,6 @@ export default function Details() {
       <h1 className="text-xl font-semibold mb-6">Recipe Details</h1>
       {recipes?.stateRecipe ? (
         <div className="bg-white p-6 rounded-lg shadow-md flex gap-8">
-          {/* Imagen y descripción a la izquierda */}
           <div className="flex-shrink-0 w-2/3">
             <Image
               src={photoSrc(
@@ -40,8 +39,6 @@ export default function Details() {
               {recipes.stateRecipe.description}
             </p>
           </div>
-
-          {/* Título e ingredientes a la derecha */}
           <div className="flex-1">
             <h2 className="text-2xl font-semibold mb-2">
               {recipes.stateRecipe.title}
