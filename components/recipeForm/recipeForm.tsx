@@ -1,6 +1,7 @@
 "use client";
 import { AuthContext, RecipesContext } from "@/app/context/context";
 import { useContext, useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Button from "../Button";
 import { Unity } from "@/types";
@@ -11,6 +12,7 @@ export default function RecipeForm() {
   const contextUser = useContext(AuthContext);
   const contextRecipes = useContext(RecipesContext);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const [recipe, setRecipe] = useState<{
@@ -76,7 +78,7 @@ export default function RecipeForm() {
       ...prev,
       name: "",
       quantity: "",
-      unit: "",
+      unity: "gr",
     }));
   };
 
@@ -136,6 +138,8 @@ export default function RecipeForm() {
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+
+    router.push("/main");
   };
 
   return (
@@ -192,7 +196,7 @@ export default function RecipeForm() {
             required
           >
             <option value="" disabled>
-              Choose a unit
+              Choose a unity
             </option>
             {Object.entries(unityOptions).map(([key, label]) => (
               <option key={key} value={key}>
