@@ -71,14 +71,18 @@ describe("Main component", () => {
     jest.clearAllMocks();
   });
 
-  it("Main is render", () => {
-    render(
+  const customRender = () => {
+    return render(
       <AuthContext.Provider value={mockAuthContext}>
         <RecipesContext.Provider value={mockRecipesContext}>
           <Main />
         </RecipesContext.Provider>
       </AuthContext.Provider>
     );
+  };
+
+  it("main is render", () => {
+    customRender();
 
     const titlePage = screen.getByText("Recipes Collection");
 
@@ -86,13 +90,7 @@ describe("Main component", () => {
   });
 
   it("should call retrieveRecipesList on mount", async () => {
-    render(
-      <AuthContext.Provider value={mockAuthContext}>
-        <RecipesContext.Provider value={mockRecipesContext}>
-          <Main />
-        </RecipesContext.Provider>
-      </AuthContext.Provider>
-    );
+    customRender();
 
     await waitFor(() => {
       expect(mockRetrieveRecipesList).toHaveBeenCalled();
@@ -104,13 +102,7 @@ describe("Main component", () => {
       (userId, ownerId) => userId === ownerId
     );
 
-    render(
-      <AuthContext.Provider value={mockAuthContext}>
-        <RecipesContext.Provider value={mockRecipesContext}>
-          <Main />
-        </RecipesContext.Provider>
-      </AuthContext.Provider>
-    );
+    customRender();
 
     const recipeImage = screen.getByAltText("Test Recipe");
 
@@ -136,13 +128,7 @@ describe("Main component", () => {
       (userId, ownerId) => userId !== ownerId
     );
 
-    render(
-      <AuthContext.Provider value={mockAuthContext}>
-        <RecipesContext.Provider value={mockRecipesContext}>
-          <Main />
-        </RecipesContext.Provider>
-      </AuthContext.Provider>
-    );
+    customRender();
 
     const deleteButtons = screen.queryAllByRole("button", { name: /x/i });
     expect(deleteButtons).toHaveLength(0);
@@ -152,13 +138,7 @@ describe("Main component", () => {
     (checkOwnerRecipe as jest.Mock).mockReturnValue(false);
     mockRecipesContext.stateAllRecipes = [];
 
-    render(
-      <AuthContext.Provider value={mockAuthContext}>
-        <RecipesContext.Provider value={mockRecipesContext}>
-          <Main />
-        </RecipesContext.Provider>
-      </AuthContext.Provider>
-    );
+    customRender();
 
     const loadingText = screen.getByText("No recipes available");
 
