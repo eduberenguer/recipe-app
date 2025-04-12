@@ -30,7 +30,7 @@ export async function deleteRecipeApi(recipeId: string) {
 
   if (!res.ok) {
     const errorData = await res.json();
-    throw new Error(errorData.error || "Error desconocido");
+    throw new Error(errorData.error || "Error");
   }
 
   return recipeId;
@@ -41,7 +41,7 @@ export async function retrieveRecipeByIdApi(recipeId: string) {
 
   if (!res.ok) {
     const errorData = await res.json();
-    throw new Error(errorData.error || "Error desconocido");
+    throw new Error(errorData.error || "Error");
   }
 
   return res.json();
@@ -52,7 +52,7 @@ export async function retrieveRecipesByFilterNameApi(filter: string) {
 
   if (!res.ok) {
     const errorData = await res.json();
-    throw new Error(errorData.error || "Error desconocido");
+    throw new Error(errorData.error || "Error");
   }
 
   return res.json();
