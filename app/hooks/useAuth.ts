@@ -6,12 +6,12 @@ import { loginUserApi, registerUserApi } from "@/lib/api/users";
 import { User } from "@/types";
 import { customToast } from "../utils/showToast";
 
-type AuthUser = Pick<User, "id" | "created" | "name" | "email"> & {
+export type AuthUser = Pick<User, "id" | "created" | "name" | "email"> & {
   token: string;
   isAuthenticated: boolean;
 };
 
-export function useAuth() {
+export function useUser() {
   const [user, setUser] = useState<Partial<AuthUser> | null>(
     pb.authStore.model
   );
