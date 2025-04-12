@@ -11,6 +11,5 @@ export function customToast(
     position: "bottom-right",
     transition: "bounceIn",
     icon: "",
-    sound: true,
   });
 }
