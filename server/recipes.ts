@@ -11,7 +11,7 @@ export async function createRecipe(recipe: Partial<Recipe>) {
     if (error instanceof Error) {
       throw new Error(error.message);
     }
-    throw new Error("Ocurrió un error desconocido");
+    throw new Error("Error");
   }
 }
 
@@ -26,7 +26,7 @@ export async function retrieveAllRecipes(): Promise<Partial<Recipe>[]> {
     if (error instanceof Error) {
       throw new Error(error.message);
     }
-    throw new Error("Ocurrió un error desconocido");
+    throw new Error("Error");
   }
 }
 
@@ -39,7 +39,7 @@ export async function deleteRecipeById(recipeId: string): Promise<boolean> {
     if (error instanceof Error) {
       throw new Error(error.message);
     }
-    throw new Error("Ocurrió un error desconocido");
+    throw new Error("Error");
   }
 }
 
@@ -54,7 +54,7 @@ export async function retrieveRecipeById(
     if (error instanceof Error) {
       throw new Error(error.message);
     }
-    throw new Error("Ocurrió un error desconocido");
+    throw new Error("Error");
   }
 }
 
@@ -71,6 +71,6 @@ export async function retrieveRecipesByFilterName(
     if (error instanceof Error) {
       throw new Error(error.message);
     }
-    throw new Error("Ocurrió un error desconocido");
+    throw new Error("Error");
   }
 }
