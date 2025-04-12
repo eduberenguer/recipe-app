@@ -1,11 +1,8 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
-import Image from "next/image";
 import { AuthContext, RecipesContext } from "../context/context";
-import checkOwnerRecipe from "../utils/check.owner.recipe";
-import Link from "next/link";
-import photoSrc from "../utils/photoSrc";
-import Button from "@/components/Button";
+
+import RecipeCard from "@/components/RecipeCard";
 import FilterByName from "@/components/FilterByName";
 
 export default function Main() {
@@ -32,44 +29,18 @@ export default function Main() {
         </h2>
         <FilterByName />
       </header>
-
       <div className="flex flex-wrap justify-center gap-4 mt-20">
-        {" "}
         {contextRecipes.stateAllRecipes.length > 0 ? (
-          contextRecipes.stateAllRecipes.map((recipe) => (
-            <div
-              key={recipe.id}
-              className="bg-white shadow-lg rounded-lg overflow-hidden w-[420px] h-[350px] mx-auto transition-transform duration-200 hover:scale-105 flex flex-col justify-between"
-            >
-              <div className="relative w-full">
-                <Link href={`/details/${recipe.id}`}>
-                  <Image
-                    src={photoSrc(recipe.id, recipe.photo as string)}
-                    alt={recipe.title}
-                    width={420}
-                    height={250}
-                    className="w-full h-64 object-cover rounded-t-md"
-                  />
-                </Link>
-                {contextAuth.user?.id &&
-                  checkOwnerRecipe(contextAuth.user.id, recipe.owner) && (
-                    <Button
-                      onClick={() => contextRecipes?.deleteRecipe(recipe.id)}
-                      className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm"
-                      role="button"
-                    >
-                      X
-                    </Button>
-                  )}
-              </div>
-              <div className="p-4 flex flex-col justify-between flex-grow">
-                <h3 className="text-xl font-semibold text-gray-900">
-                  {recipe.title}
-                </h3>
-                <p className="text-gray-600 text-sm">{`${recipe.servings} servings`}</p>
-              </div>
-            </div>
-          ))
+          contextRecipes.stateAllRecipes.map((recipe) => {
+            return (
+              <RecipeCard
+                key={recipe.id}
+                recipe={recipe}
+                user={contextAuth.user}
+                deleteRecipe={contextRecipes.deleteRecipe}
+              />
+            );
+          })
         ) : (
           <div>No recipes available</div>
         )}
