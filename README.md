@@ -32,6 +32,8 @@ Recipe App (WIP)
 - Allergens Information
 - Weekly Menu
 - User Profile Page
+- Backoffice
+- Comments between users
 - Admin Panel (for managing recipes)
 - Recipe Comments System
 - User-generated Recipe Collections
