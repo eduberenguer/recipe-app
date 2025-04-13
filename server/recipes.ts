@@ -1,6 +1,6 @@
 "use server";
 import pb from "@/lib/pocketbase";
-import { Recipe } from "@/types";
+import { Recipe } from "@/types/recipes/index";
 
 export async function createRecipe(recipe: Partial<Recipe>) {
   try {
@@ -30,9 +30,30 @@ export async function retrieveAllRecipes(): Promise<Partial<Recipe>[]> {
   }
 }
 
+export async function deleteOrphanFavourites() {
+  try {
+    const orphanFavourites = await pb.collection("favourites").getFullList({
+      filter: `recipeId = null`,
+    });
+
+    await Promise.all(
+      orphanFavourites.map(async (fav) => {
+        await pb.collection("favourites").delete(fav.id);
+      })
+    );
+
+    console.log("Orphan favourites deleted successfully.");
+  } catch (error) {
+    console.error("Error deleting orphan favourites:", error);
+    throw new Error("Error deleting orphan favourites");
+  }
+}
+
 export async function deleteRecipeById(recipeId: string): Promise<boolean> {
   try {
     const data = await pb.collection("recipes").delete(recipeId);
+
+    if (data) deleteOrphanFavourites();
 
     return data;
   } catch (error) {
@@ -65,7 +86,7 @@ export async function retrieveRecipesByFilterName(
     const data = await pb.collection("recipes").getList(1, 50, {
       filter: `title ~ "${filter}"`,
     });
-    console.log("data", data);
+
     return data.items as unknown as Recipe[];
   } catch (error) {
     if (error instanceof Error) {
