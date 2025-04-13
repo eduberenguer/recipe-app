@@ -3,7 +3,7 @@ import { useState } from "react";
 import pb from "@/lib/pocketbase";
 import { loginUserApi, registerUserApi } from "@/lib/api/users";
 
-import { User } from "@/types";
+import { User } from "@/types/auth/index";
 import { customToast } from "../utils/showToast";
 
 export type AuthUser = Pick<User, "id" | "created" | "name" | "email"> & {

@@ -172,6 +172,33 @@ export default function RecipeForm() {
             className="w-1/3 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
+        <div className="flex items-center mt-4 justify-center gap-4">
+          <input
+            id="fileInput"
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={handleImageUpload}
+            className="flex-1 p-3 border border-gray-300 rounded-lg cursor-pointer hidden"
+          />
+          <label
+            htmlFor="fileInput"
+            className="block w-full p-3 border border-gray-300 rounded-lg text-center cursor-pointer bg-gray-100 hover:bg-gray-200"
+          >
+            {recipe.photo ? recipe.photo.name : "Select an image"}
+          </label>
+          {previewImage && (
+            <div>
+              <Image
+                src={previewImage}
+                width={100}
+                height={100}
+                alt="Preview"
+                className="w-full h-auto rounded-lg shadow-md"
+              />
+            </div>
+          )}
+        </div>
         <div className="flex gap-2">
           <input
             type="text"
@@ -212,35 +239,6 @@ export default function RecipeForm() {
             +
           </Button>
         </div>
-
-        <div className="flex items-center mt-4 justify-center gap-4">
-          <input
-            id="fileInput"
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            onChange={handleImageUpload}
-            className="flex-1 p-3 border border-gray-300 rounded-lg cursor-pointer hidden"
-          />
-          <label
-            htmlFor="fileInput"
-            className="block w-full p-3 border border-gray-300 rounded-lg text-center cursor-pointer bg-gray-100 hover:bg-gray-200"
-          >
-            {recipe.photo ? recipe.photo.name : "Select an image"}
-          </label>
-          {previewImage && (
-            <div>
-              <Image
-                src={previewImage}
-                width={100}
-                height={100}
-                alt="Preview"
-                className="w-full h-auto rounded-lg shadow-md"
-              />
-            </div>
-          )}
-        </div>
-
         <textarea
           placeholder="Description"
           value={recipe.description}
