@@ -1,47 +1,66 @@
 "use server";
+import { ToggleFavouriteRecipe } from "@/types/userInteractions/index";
 import pb from "@/lib/pocketbase";
-import { Recipe } from "@/types";
+import { Recipe } from "@/types/recipes/index";
 
-export async function retrieveFavourites(userId: string) {
+export async function retrieveFavourites(userId: string): Promise<Recipe[]> {
   try {
     if (!userId) {
       throw new Error("User ID is required");
     }
 
-    const userRecord = await pb
-      .collection("users")
-      .getFirstListItem(`id = "${userId}"`);
+    const favouritesRecords = await pb.collection("favourites").getFullList({
+      filter: `userId="${userId}"`,
+      expand: "recipeId",
+    });
 
-    if (!userRecord) {
-      throw new Error("User not found");
-    }
-
-    const favouriteRecipeIds = userRecord.favourites || [];
-
-    if (!Array.isArray(favouriteRecipeIds)) {
-      throw new Error("Invalid favourites format");
-    }
-
-    let favouriteRecipes: Recipe[] = [];
-
-    if (favouriteRecipeIds.length > 0) {
-      try {
-        const filter = favouriteRecipeIds
-          .map((id: string) => `id="${id}"`)
-          .join(" || ");
-
-        favouriteRecipes = await pb.collection("recipes").getFullList({
-          filter,
-        });
-      } catch (error) {
-        console.error("Error fetching recipes:", error);
-        throw new Error("Failed to fetch favourite recipes");
-      }
-    }
+    const favouriteRecipes: Recipe[] = favouritesRecords
+      .map((record) => record.expand?.recipeId)
+      .filter((recipe): recipe is Recipe => !!recipe);
 
     return favouriteRecipes;
   } catch (error) {
     console.error("Error fetching favourites:", error);
     throw new Error("Error fetching favourites");
+  }
+}
+
+export async function addFavouriteRecipe(
+  newAddFavouriteRecipe: ToggleFavouriteRecipe
+) {
+  try {
+    const user = await pb
+      .collection("favourites")
+      .create(newAddFavouriteRecipe);
+
+    return { success: true, user };
+  } catch (error) {
+    console.error("Error fetching favourites:", error);
+    throw new Error("Error fetching favourites");
+  }
+}
+
+export async function removeFavourite(
+  userId: string,
+  recipeId: string
+): Promise<boolean> {
+  try {
+    const favourites = await pb.collection("favourites").getFullList({
+      filter: `userId = "${userId}" && recipeId = "${recipeId}"`,
+    });
+
+    if (favourites.length === 0) {
+      console.warn("Favourite not found");
+      return false;
+    }
+
+    await Promise.all(
+      favourites.map((fav) => pb.collection("favourites").delete(fav.id))
+    );
+
+    return true;
+  } catch (error) {
+    console.error("Error removing favourite:", error);
+    throw new Error("Error removing favourite");
   }
 }

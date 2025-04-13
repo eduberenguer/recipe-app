@@ -2,12 +2,13 @@
 import { useContext, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AuthContext } from "../context/context";
+import { AuthContext, UserInteractionsContext } from "../context/context";
 import Button from "@/components/Button";
 import { customToast } from "../utils/showToast";
 
 export default function Login() {
-  const auth = useContext(AuthContext);
+  const contextAuth = useContext(AuthContext);
+  const contextUserInteraction = useContext(UserInteractionsContext);
   const router = useRouter();
   const [user, setUser] = useState({ email: "", password: "" });
 
@@ -20,7 +21,10 @@ export default function Login() {
     }
 
     try {
-      const data = await auth?.login(user);
+      const data = await contextAuth?.login(
+        user,
+        contextUserInteraction?.retrieveFavouritesList
+      );
 
       if (data?.success) {
         customToast("Login successfully", "success");
