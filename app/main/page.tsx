@@ -1,6 +1,10 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext, RecipesContext } from "../context/context";
+import {
+  AuthContext,
+  RecipesContext,
+  UserInteractionsContext,
+} from "../context/context";
 
 import RecipeCard from "@/components/RecipeCard";
 import FilterByName from "@/components/FilterByName";
@@ -8,6 +12,7 @@ import FilterByName from "@/components/FilterByName";
 export default function Main() {
   const contextAuth = useContext(AuthContext);
   const contextRecipes = useContext(RecipesContext);
+  const contextUserInteraction = useContext(UserInteractionsContext);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -16,6 +21,28 @@ export default function Main() {
       setIsLoading(false);
     }
   }, []);
+
+  async function toggleFavourite(recipeId: string) {
+    if (!contextAuth?.user?.id || !contextUserInteraction) return;
+
+    const isFav = contextUserInteraction.favouritesRecipes.some(
+      (fav) => fav.id === recipeId
+    );
+
+    if (isFav) {
+      await contextUserInteraction.removeFavouriteRecipe(
+        contextAuth.user.id,
+        recipeId
+      );
+    } else {
+      await contextUserInteraction.addFavouriteRecipe(
+        contextAuth.user.id,
+        recipeId
+      );
+    }
+
+    contextUserInteraction.retrieveFavouritesList(contextAuth.user.id);
+  }
 
   if (isLoading || !contextAuth || !contextRecipes) {
     return <div>Loading...</div>;
@@ -38,11 +65,18 @@ export default function Main() {
                 recipe={recipe}
                 user={contextAuth.user}
                 deleteRecipe={contextRecipes.deleteRecipe}
+                toggleFavourite={() => toggleFavourite(recipe.id)}
+                isFavourite={contextUserInteraction?.favouritesRecipes.some(
+                  (fav) => fav.id === recipe.id
+                )}
+                isFromMain={true}
               />
             );
           })
         ) : (
-          <div>No recipes available</div>
+          <div className="flex justify-center items-center w-full h-[calc(100vh-200px)] text-gray-600 text-lg">
+            No recipes available
+          </div>
         )}
       </div>
     </div>

@@ -23,10 +23,10 @@ Recipe App (WIP)
 - Private Routes (Authenticated users only)
 - Testing with Cypress
 - Testing with Jest and Supertest
+- Favourites System
 
 ## Upcoming Features
 
-- Favorites System
 - Recipe Rating System
 - Recipe API (for food data)
 - Allergens Information
@@ -39,5 +39,3 @@ Recipe App (WIP)
 - User-generated Recipe Collections
 - Multi-language Support
 - Dark Mode
-
-

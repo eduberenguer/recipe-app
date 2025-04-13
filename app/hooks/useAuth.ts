@@ -29,7 +29,10 @@ export function useUser() {
     }
   }
 
-  async function login(user: Partial<User>) {
+  async function login(
+    user: Partial<User>,
+    retrieveFavouritesList?: (id: string) => void
+  ) {
     try {
       const data = await loginUserApi(user);
       if (data.success) {
@@ -42,6 +45,10 @@ export function useUser() {
           token: data.token,
           isAuthenticated: data.isAuthenticated,
         });
+
+        if (retrieveFavouritesList) {
+          retrieveFavouritesList(data.user.id);
+        }
 
         return data;
       }
