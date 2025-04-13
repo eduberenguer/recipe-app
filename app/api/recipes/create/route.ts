@@ -2,14 +2,11 @@ import { NextResponse } from "next/server";
 import { createRecipe } from "@/server/recipes";
 
 export async function POST(req: Request) {
-  console.log("req", req);
   try {
     const formData = await req.formData();
-    console.log("req.formData resolved:", formData);
 
     const recipe = Object.fromEntries(formData.entries());
     recipe.ingredients = JSON.parse(recipe.ingredients as string);
-    console.log("Processed recipe:", recipe);
 
     const result = await createRecipe(recipe);
 

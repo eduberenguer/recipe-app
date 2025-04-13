@@ -6,17 +6,17 @@ export async function DELETE(
   { params }: { params: { id?: string } }
 ) {
   try {
-    if (!params || !params.id) {
+    const { id } = await params;
+
+    if (!id) {
       return NextResponse.json({ error: "ID required" }, { status: 400 });
     }
-
-    const { id } = params;
 
     await deleteRecipeById(id);
 
     return NextResponse.json({ success: true, message: "Recipe deleted" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json(
       { success: false, error: "Error deleting recipe" },
       { status: 500 }
