@@ -40,8 +40,6 @@ export default function Main() {
         recipeId
       );
     }
-
-    contextUserInteraction.retrieveFavouritesList(contextAuth.user.id);
   }
 
   if (isLoading || !contextAuth || !contextRecipes) {

@@ -49,6 +49,8 @@ export function useRecipes() {
     if (result) {
       dispatch({ type: RecipeActionTypes.RETRIEVE_RECIPE, payload: result });
     }
+
+    return result;
   }
 
   async function retrieveRecipesByFilterName(filter: string) {

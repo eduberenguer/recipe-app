@@ -19,7 +19,7 @@ export default function Favourites() {
       contextUserInteraction.retrieveFavouritesList(contextAuth.user.id);
       setIsLoading(false);
     }
-  }, []);
+  }, [contextAuth?.user?.id]);
 
   async function toggleFavourite(recipeId: string) {
     if (!contextAuth?.user?.id || !contextUserInteraction) return;
@@ -39,15 +39,11 @@ export default function Favourites() {
         recipeId
       );
     }
-
-    contextUserInteraction.retrieveFavouritesList(contextAuth.user.id);
   }
 
   if (isLoading || !contextAuth || !contextRecipes) {
     return <div>Loading...</div>;
   }
-
-  console.log("fav");
 
   return (
     <div className="p-6">

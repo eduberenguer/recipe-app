@@ -35,20 +35,22 @@ export function useUserInteractions() {
       recipeId,
     };
 
-    await addFavouriteRecipeApi(newAddFavourite);
+    const result = await addFavouriteRecipeApi(newAddFavourite);
 
-    const recipe = contextRecipes?.stateAllRecipes.find(
-      (recipe) => recipe.id === recipeId
-    );
+    let retrieveRecipe;
 
-    if (!recipe) {
-      console.error(`Recipe with ID ${recipeId} not found in stateAllRecipes`);
-      return;
+    if (result) {
+      retrieveRecipe = await contextRecipes?.retrieveRecipe(recipeId);
     }
 
+    if (!retrieveRecipe) {
+      console.log("Recipe not found");
+      return false;
+    }
+    console.log("addFavouriteRecipeApi", result);
     dispatch({
       type: UserInteractionsTypes.ADD_RECIPE_FAVOURITE,
-      payload: recipe,
+      payload: retrieveRecipe,
     });
   }
 
@@ -58,11 +60,11 @@ export function useUserInteractions() {
       recipeId,
     };
 
-    const result = await addRemoveRecipeApi(newRemoveFavourite);
+    await addRemoveRecipeApi(newRemoveFavourite);
 
     dispatch({
       type: UserInteractionsTypes.REMOVE_RECIPE_FAVOURITE,
-      payload: result,
+      payload: recipeId,
     });
   }
 
