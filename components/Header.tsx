@@ -22,7 +22,6 @@ export default function Header() {
 
   return (
     <header className="relative flex justify-between items-center text-stone-500 h-max p-4">
-      {" "}
       <h1>
         <Link href={auth?.user ? "/main" : "/"}>
           <Logo />
@@ -36,17 +35,17 @@ export default function Header() {
           <button
             className="md:hidden"
             aria-label="Toggle menu"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            onClick={() => {
+              setIsMenuOpen(!isMenuOpen);
+            }}
           >
             {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
-          {isMenuOpen && (
-            <MobileNav
-              logout={logout}
-              isMenuOpen={isMenuOpen}
-              setIsMenuOpen={setIsMenuOpen}
-            />
-          )}
+          <MobileNav
+            logout={logout}
+            isMenuOpen={isMenuOpen}
+            setIsMenuOpen={setIsMenuOpen}
+          />
         </>
       )}
     </header>

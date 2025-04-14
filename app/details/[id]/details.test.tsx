@@ -3,7 +3,7 @@ import { useParams } from "next/navigation";
 
 import Details from "./page";
 import { RecipesContext } from "@/app/context/context";
-import { Unity } from "@/types";
+import { Unity } from "@/types/recipes";
 
 jest.mock("next/navigation", () => ({
   useParams: jest.fn(),

@@ -6,7 +6,7 @@ import {
   UserInteractionsContext,
 } from "../context/context";
 import RecipeCard from "@/components/RecipeCard";
-import { Recipe } from "@/types/recipes/index";
+import { Recipe } from "@/types/recipes";
 
 export default function Favourites() {
   const contextAuth = useContext(AuthContext);

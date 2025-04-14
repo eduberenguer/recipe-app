@@ -16,11 +16,10 @@ export async function GET(request: Request) {
       status: result ? 200 : 400,
     });
   } catch (error) {
-    console.log(error);
     return NextResponse.json(
       {
         success: false,
-        error: "Database error",
+        error: error || "Database error",
       },
       { status: 500 }
     );

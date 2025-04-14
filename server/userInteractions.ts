@@ -1,7 +1,7 @@
 "use server";
-import { ToggleFavouriteRecipe } from "@/types/userInteractions/index";
 import pb from "@/lib/pocketbase";
-import { Recipe } from "@/types/recipes/index";
+import { ToggleFavouriteRecipe } from "@/types/userInteractions";
+import { Recipe } from "@/types/recipes";
 
 export async function retrieveFavourites(userId: string): Promise<Recipe[]> {
   try {
@@ -20,8 +20,7 @@ export async function retrieveFavourites(userId: string): Promise<Recipe[]> {
 
     return favouriteRecipes;
   } catch (error) {
-    console.error("Error fetching favourites:", error);
-    throw new Error("Error fetching favourites");
+    throw new Error(`Error fetching favourites: ${error}`);
   }
 }
 
@@ -47,8 +46,10 @@ export async function addFavouriteRecipe(
 
     return { success: true, result };
   } catch (error) {
-    console.error("Error fetching favourites:", error);
-    throw new Error("Error fetching favourites");
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: "Something wrong" };
   }
 }
 
@@ -82,7 +83,6 @@ export async function removeFavourite(
 
     return true;
   } catch (error) {
-    console.error("Error removing favourite:", error);
-    throw new Error("Error removing favourite");
+    throw new Error(`Error removing favourite: ${error}`);
   }
 }

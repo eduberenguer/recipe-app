@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 import Main from "./page";
 import { AuthContext, RecipesContext } from "../context/context";
-import { Unity } from "@/types";
+import { Unity } from "@/types/recipes";
 import checkOwnerRecipe from "../utils/check.owner.recipe";
 
 jest.mock("../utils/check.owner.recipe", () => jest.fn());
@@ -41,6 +41,7 @@ describe("Main component", () => {
           },
         ],
         photo: "test-photo.jpg",
+        favouritesCounter: 0,
         description: "This is a test recipe description.",
       },
       {
@@ -56,6 +57,7 @@ describe("Main component", () => {
           },
         ],
         photo: "test-photo.jpg",
+        favouritesCounter: 2,
         description: "This is a other test recipe description.",
       },
     ],

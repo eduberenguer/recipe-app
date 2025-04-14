@@ -25,11 +25,13 @@ const mockAuthValue = {
 const mockRecipesValue = {
   stateAllRecipes: [],
   stateRecipe: null,
+  stateUserRecipes: [],
   createRecipe: jest.fn(),
   retrieveRecipesList: jest.fn(),
   deleteRecipe: jest.fn(),
   retrieveRecipe: jest.fn(),
   retrieveRecipesByFilterName: jest.fn(),
+  retrieveRecipesByUserId: jest.fn(),
 };
 
 describe("RecipeForm component", () => {

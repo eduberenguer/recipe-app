@@ -3,7 +3,7 @@ import Image from "next/image";
 import checkOwnerRecipe from "@/app/utils/check.owner.recipe";
 import photoSrc from "@/app/utils/photoSrc";
 import Button from "@/components/Button";
-import { Recipe } from "@/types/recipes/index";
+import { Recipe } from "@/types/recipes";
 import { AuthUser } from "@/app/hooks/useAuth";
 
 import { TbEggCracked } from "react-icons/tb";

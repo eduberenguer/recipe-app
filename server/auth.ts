@@ -41,6 +41,6 @@ export async function loginUser(email: string, password: string) {
     if (error instanceof Error) {
       return { success: false, error: error.message };
     }
-    return { success: false, error: "Ocurrió un error desconocido" };
+    return { success: false, error: "Something wrong" };
   }
 }

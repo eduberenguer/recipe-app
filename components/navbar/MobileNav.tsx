@@ -18,13 +18,24 @@ export default function MobileNav({
 
   const handleNav = (path: string) => {
     setIsMenuOpen(false);
-    router.push(path);
+    setTimeout(() => {
+      router.push(path);
+    }, 300);
   };
 
-  if (!isMenuOpen) return null;
-
   return (
-    <div className="absolute top-16 left-0 w-full bg-white shadow-md flex flex-col items-start gap-3 p-6 z-50 md:hidden">
+    <div
+      className={`
+        transition-all duration-300 ease-in-out transform origin-top
+        ${
+          isMenuOpen
+            ? "scale-y-100 opacity-100"
+            : "scale-y-0 opacity-0 pointer-events-none"
+        }
+        bg-white shadow-md w-full absolute top-full left-0 z-50
+        flex flex-col items-start p-4 gap-2
+      `}
+    >
       {pathname !== "/main" && (
         <button
           onClick={() => handleNav("/main")}

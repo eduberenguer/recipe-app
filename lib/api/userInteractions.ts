@@ -1,4 +1,4 @@
-import { ToggleFavouriteRecipe } from "@/types/userInteractions/index";
+import { ToggleFavouriteRecipe } from "@/types/userInteractions";
 
 export async function retrieveFavouritesApi(id: string) {
   const res = await fetch(`/api/userInteractions/retrieveFavourites/${id}`);

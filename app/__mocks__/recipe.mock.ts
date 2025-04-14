@@ -1,4 +1,4 @@
-import { Recipe } from "@/types";
+import { Recipe } from "@/types/recipes";
 
 export const mockRecipe: Partial<Recipe> = {
   title: "Pasta Carbonara",
@@ -25,4 +25,5 @@ export const mockRecipeWithId: Recipe = {
   ],
   photo: "photo-url",
   description: "A classic Italian pasta dish.",
+  favouritesCounter: 2,
 };

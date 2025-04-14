@@ -57,3 +57,15 @@ export async function retrieveRecipesByFilterNameApi(filter: string) {
 
   return res.json();
 }
+
+export async function retrieveRecipesByUserIdApi(userId: string) {
+  const res = await fetch(
+    `/api/recipes/retrieveRecipesByUserId?owner=${userId}`
+  );
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.error || "Error");
+  }
+  return res.json();
+}

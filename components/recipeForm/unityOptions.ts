@@ -1,4 +1,4 @@
-import { Unity } from "@/types";
+import { Unity } from "@/types/recipes";
 
 export const unityOptions: Record<Unity, string> = {
   gr: "Grams",

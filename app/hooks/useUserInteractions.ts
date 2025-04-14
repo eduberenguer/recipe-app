@@ -1,14 +1,14 @@
 "use client";
+import { useContext, useReducer } from "react";
 import {
   addFavouriteRecipeApi,
   addRemoveRecipeApi,
   retrieveFavouritesApi,
 } from "@/lib/api/userInteractions";
-import { useContext, useReducer } from "react";
 import { userInteractionsReducer } from "../context/userInteractions/userInteractionsReducer";
 import { UserInteractionsTypes } from "../context/userInteractions/userInteractionsTypes";
-import { Recipe } from "@/types/recipes/index";
-import { ToggleFavouriteRecipe } from "@/types/userInteractions/index";
+import { Recipe } from "@/types/recipes";
+import { ToggleFavouriteRecipe } from "@/types/userInteractions";
 import { RecipesContext } from "../context/context";
 
 export function useUserInteractions() {

@@ -16,9 +16,8 @@ export async function DELETE(
 
     return NextResponse.json({ success: true, message: "Favourite deleted" });
   } catch (error) {
-    console.error(error);
     return NextResponse.json(
-      { success: false, error: "Error deleting favourite" },
+      { success: false, error: `Error deleting favourite: ${error}` },
       { status: 500 }
     );
   }

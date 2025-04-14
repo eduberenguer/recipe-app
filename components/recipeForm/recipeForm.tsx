@@ -4,7 +4,7 @@ import { useContext, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Button from "../Button";
-import { Unity } from "@/types";
+import { Unity } from "@/types/recipes";
 import { unityOptions } from "./unityOptions";
 import { customToast } from "@/app/utils/showToast";
 

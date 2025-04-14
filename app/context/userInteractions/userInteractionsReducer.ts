@@ -1,4 +1,4 @@
-import { Recipe } from "@/types/recipes/index";
+import { Recipe } from "@/types/recipes";
 import { UserInteractionsAction } from "./userInteractionsActions";
 import { UserInteractionsTypes } from "./userInteractionsTypes";
 
