@@ -33,6 +33,18 @@ export async function addFavouriteRecipe(
       .collection("favourites")
       .create(newAddFavouriteRecipe);
 
+    if (result) {
+      const recipe = await pb
+        .collection("recipes")
+        .getOne(newAddFavouriteRecipe.recipeId);
+
+      const updatedFavouritesCounter = (recipe.favouritesCounter || 0) + 1;
+
+      await pb.collection("recipes").update(newAddFavouriteRecipe.recipeId, {
+        favouritesCounter: updatedFavouritesCounter,
+      });
+    }
+
     return { success: true, result };
   } catch (error) {
     console.error("Error fetching favourites:", error);
@@ -54,9 +66,19 @@ export async function removeFavourite(
       return false;
     }
 
-    await Promise.all(
+    const result = await Promise.all(
       favourites.map((fav) => pb.collection("favourites").delete(fav.id))
     );
+
+    if (result) {
+      const recipe = await pb.collection("recipes").getOne(recipeId);
+
+      const updatedFavouritesCounter = (recipe.favouritesCounter || 0) - 1;
+
+      await pb.collection("recipes").update(recipeId, {
+        favouritesCounter: updatedFavouritesCounter,
+      });
+    }
 
     return true;
   } catch (error) {

@@ -31,7 +31,7 @@ Recipe App (WIP)
 - Recipe API (for food data)
 - Allergens Information
 - Weekly Menu
-- User Profile Page
+- Dashboard Page
 - Backoffice
 - Comments between users
 - Admin Panel (for managing recipes)

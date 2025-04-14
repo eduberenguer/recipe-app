@@ -57,12 +57,12 @@ describe("Header component", () => {
     const menuButton = screen.getByLabelText("Toggle menu");
     fireEvent.click(menuButton);
 
-    const profileButton = screen.getByRole("button", { name: "Profile" });
-    expect(profileButton).toBeInTheDocument();
+    const dashboardButton = screen.getByRole("button", { name: "Dashboard" });
+    expect(dashboardButton).toBeInTheDocument();
 
     fireEvent.click(menuButton);
     expect(
-      screen.queryByRole("button", { name: "Profile" })
+      screen.queryByRole("button", { name: "Dashboard" })
     ).not.toBeInTheDocument();
   });
 

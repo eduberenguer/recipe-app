@@ -3,7 +3,7 @@
 import { useContext } from "react";
 import { AuthContext } from "../context/context";
 
-export default function Profile() {
+export default function Dashboard() {
   const data = useContext(AuthContext);
 
   return (

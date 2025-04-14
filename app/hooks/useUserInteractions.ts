@@ -47,7 +47,7 @@ export function useUserInteractions() {
       console.log("Recipe not found");
       return false;
     }
-    console.log("addFavouriteRecipeApi", result);
+
     dispatch({
       type: UserInteractionsTypes.ADD_RECIPE_FAVOURITE,
       payload: retrieveRecipe,

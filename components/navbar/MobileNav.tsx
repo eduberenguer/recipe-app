@@ -49,12 +49,12 @@ export default function MobileNav({
           Favourites
         </button>
       )}
-      {pathname !== "/profile" && (
+      {pathname !== "/dashboard" && (
         <button
-          onClick={() => handleNav("/profile")}
+          onClick={() => handleNav("/dashboard")}
           className="text-lg font-medium"
         >
-          Profile
+          Dashboard
         </button>
       )}
       <button

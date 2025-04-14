@@ -14,7 +14,9 @@ export default function DesktopNav({ logout }: { logout: () => void }) {
       {pathname !== "/favourites" && (
         <NavLink href="/favourites">Favourites</NavLink>
       )}
-      {pathname !== "/profile" && <NavLink href="/profile">Profile</NavLink>}
+      {pathname !== "/dashboard" && (
+        <NavLink href="/dashboard">Dashboard</NavLink>
+      )}
       <Button
         onClick={() => {
           logout();

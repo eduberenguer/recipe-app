@@ -31,12 +31,12 @@ describe("MobileNav component", () => {
 
     const recipesButton = screen.getByText("Recipes");
     const createRecipeButton = screen.getByText("Create Recipe");
-    const profileButton = screen.getByText("Profile");
+    const dashboardButton = screen.getByText("Dashboard");
     const logoutButton = screen.getByText("Logout");
 
     expect(recipesButton).toBeInTheDocument();
     expect(createRecipeButton).toBeInTheDocument();
-    expect(profileButton).toBeInTheDocument();
+    expect(dashboardButton).toBeInTheDocument();
     expect(logoutButton).toBeInTheDocument();
 
     fireEvent.click(recipesButton);
@@ -47,9 +47,9 @@ describe("MobileNav component", () => {
     expect(mockSetIsMenuOpen).toHaveBeenCalledWith(false);
     expect(mockRouterPush).toHaveBeenCalledWith("/create-recipes");
 
-    fireEvent.click(profileButton);
+    fireEvent.click(dashboardButton);
     expect(mockSetIsMenuOpen).toHaveBeenCalledWith(false);
-    expect(mockRouterPush).toHaveBeenCalledWith("/profile");
+    expect(mockRouterPush).toHaveBeenCalledWith("/dashboard");
 
     fireEvent.click(logoutButton);
     expect(mockLogout).toHaveBeenCalled();
