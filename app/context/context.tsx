@@ -20,11 +20,11 @@ export function ContexProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider value={auth}>
-      <UserInteractionsContext.Provider value={userInteractions}>
-        <RecipesContext.Provider value={recipes}>
+      <RecipesContext.Provider value={recipes}>
+        <UserInteractionsContext.Provider value={userInteractions}>
           {children}
-        </RecipesContext.Provider>
-      </UserInteractionsContext.Provider>
+        </UserInteractionsContext.Provider>
+      </RecipesContext.Provider>
     </AuthContext.Provider>
   );
 }
