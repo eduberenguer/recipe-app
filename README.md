@@ -24,6 +24,7 @@ Recipe App (WIP)
 - Testing with Cypress
 - Testing with Jest and Supertest
 - Favourites System
+- Dashboard Page
 
 ## Upcoming Features
 
@@ -31,7 +32,6 @@ Recipe App (WIP)
 - Recipe API (for food data)
 - Allergens Information
 - Weekly Menu
-- Dashboard Page
 - Backoffice
 - Comments between users
 - Admin Panel (for managing recipes)

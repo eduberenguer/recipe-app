@@ -32,6 +32,7 @@ const mockRecipesValue = {
   retrieveRecipe: jest.fn(),
   retrieveRecipesByFilterName: jest.fn(),
   retrieveRecipesByUserId: jest.fn(),
+  clearStateRecipe: jest.fn(),
 };
 
 describe("RecipeForm component", () => {
