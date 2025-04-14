@@ -24,6 +24,9 @@ describe("Main component", () => {
     register: jest.fn(),
     login: jest.fn(),
     logout: jest.fn(),
+    stateUserRecipes: [],
+    retrieveRecipesByUserId: jest.fn(),
+    clearStateRecipe: jest.fn(),
   };
 
   const mockRecipesContext = {
@@ -62,11 +65,14 @@ describe("Main component", () => {
       },
     ],
     stateRecipe: {},
+    stateUserRecipes: [],
     createRecipe: jest.fn(),
     retrieveRecipesList: mockRetrieveRecipesList,
     deleteRecipe: mockDeleteRecipe,
     retrieveRecipe: jest.fn(),
     retrieveRecipesByFilterName: jest.fn(),
+    retrieveRecipesByUserId: jest.fn(),
+    clearStateRecipe: jest.fn(),
   };
 
   beforeEach(() => {

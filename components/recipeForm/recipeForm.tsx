@@ -8,6 +8,9 @@ import { Unity } from "@/types/recipes";
 import { unityOptions } from "./unityOptions";
 import { customToast } from "@/app/utils/showToast";
 
+import { initialStateForm, initialStateIngredient } from "./initialStateForm";
+import { isFormValid } from "./isFormValid";
+
 export default function RecipeForm() {
   const contextUser = useContext(AuthContext);
   const contextRecipes = useContext(RecipesContext);
@@ -22,17 +25,11 @@ export default function RecipeForm() {
     photo: File | null;
     description?: string;
   }>({
-    title: "",
-    servings: "",
-    ingredients: [],
-    photo: null as File | null,
-    description: "",
+    ...initialStateForm,
   });
 
   const [ingredients, setIngredients] = useState({
-    name: "",
-    quantity: "",
-    unity: "" as Unity,
+    ...initialStateIngredient,
   });
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,9 +73,7 @@ export default function RecipeForm() {
     }));
     setIngredients((prev) => ({
       ...prev,
-      name: "",
-      quantity: "",
-      unity: "gr",
+      ...initialStateIngredient,
     }));
   };
 
@@ -128,11 +123,7 @@ export default function RecipeForm() {
 
     if (newRecipe) customToast("Recipe created successfully", "success");
     setRecipe({
-      title: "",
-      servings: "",
-      ingredients: [],
-      photo: null as File | null,
-      description: "",
+      ...initialStateForm,
     });
 
     if (fileInputRef.current) {
@@ -273,8 +264,9 @@ export default function RecipeForm() {
           type="submit"
           onClick={(e) => handleSubmit(e)}
           backgroundColor={
-            !ingredients.quantity.length ? "bg-gray-500" : "bg-green-500"
+            isFormValid({ recipe }) ? "bg-green-500" : "bg-gray-300"
           }
+          disabled={!isFormValid({ recipe })}
         >
           Save Recipe
         </Button>

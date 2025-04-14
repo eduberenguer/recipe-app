@@ -1,8 +1,10 @@
 // components/RecipesListMobile.tsx
 "use client";
+import Link from "next/link";
 import Image from "next/image";
 import { Recipe } from "@/types/recipes";
 import photoSrc from "@/app/utils/photoSrc";
+import { FaMagnifyingGlass } from "react-icons/fa6";
 
 export default function RecipesListMobile({ recipes }: { recipes: Recipe[] }) {
   return (
@@ -20,7 +22,14 @@ export default function RecipesListMobile({ recipes }: { recipes: Recipe[] }) {
             className="w-full h-52 object-cover"
           />
           <div className="p-4">
-            <h3 className="text-lg font-semibold">{recipe.title}</h3>
+            <h3 className="text-lg font-semibold">
+              <Link
+                href={`/details/${recipe.id}`}
+                className="inline-flex items-center gap-1 hover:underline"
+              >
+                {recipe.title} <FaMagnifyingGlass className="text-base" />
+              </Link>
+            </h3>
             <p className="text-sm text-gray-600 mt-1">
               Servings: {recipe.servings}
             </p>

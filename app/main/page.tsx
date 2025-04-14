@@ -8,6 +8,7 @@ import {
 
 import RecipeCard from "@/components/RecipeCard";
 import FilterByName from "@/components/FilterByName";
+import CustomSpinner from "@/components/customSpinner";
 
 export default function Main() {
   const contextAuth = useContext(AuthContext);
@@ -43,7 +44,7 @@ export default function Main() {
   }
 
   if (isLoading || !contextAuth || !contextRecipes) {
-    return <div>Loading...</div>;
+    return <CustomSpinner />;
   }
 
   return (

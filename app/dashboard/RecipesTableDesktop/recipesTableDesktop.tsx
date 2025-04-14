@@ -1,8 +1,10 @@
 // components/RecipesTable.tsx
 "use client";
+import Link from "next/link";
 import Image from "next/image";
 import { Recipe } from "@/types/recipes";
 import photoSrc from "@/app/utils/photoSrc";
+import { FaMagnifyingGlass } from "react-icons/fa6";
 
 export default function RecipesTable({ recipes }: { recipes: Recipe[] }) {
   return (
@@ -18,7 +20,14 @@ export default function RecipesTable({ recipes }: { recipes: Recipe[] }) {
       <tbody>
         {recipes.map((recipe) => (
           <tr key={recipe.id} className="border-t">
-            <td className="px-4 py-2">{recipe.title}</td>
+            <td className="px-4 py-2">
+              <Link
+                href={`/details/${recipe.id}`}
+                className="inline-flex items-center gap-1 hover:underline"
+              >
+                {recipe.title} <FaMagnifyingGlass className="text-base" />
+              </Link>
+            </td>
             <td className="px-4 py-2">{recipe.description}</td>
             <td className="px-4 py-2">{recipe.favouritesCounter}</td>
             <td className="px-4 py-2">
