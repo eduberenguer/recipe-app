@@ -56,6 +56,10 @@ export function useRecipes() {
     return result;
   }
 
+  async function clearStateRecipe() {
+    dispatch({ type: RecipeActionTypes.CLEAR_RECIPE });
+  }
+
   async function retrieveRecipesByFilterName(filter: string) {
     const result = await retrieveRecipesByFilterNameApi(filter);
 
@@ -90,5 +94,6 @@ export function useRecipes() {
     retrieveRecipe,
     retrieveRecipesByFilterName,
     retrieveRecipesByUserId,
+    clearStateRecipe,
   };
 }

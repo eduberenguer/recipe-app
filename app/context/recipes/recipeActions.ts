@@ -10,4 +10,5 @@ export type RecipesAction =
   | {
       type: typeof RecipeActionTypes.FILTER_RECIPES_BY_NAME;
       payload: Recipe[];
-    };
+    }
+  | { type: typeof RecipeActionTypes.CLEAR_RECIPE };

@@ -40,6 +40,12 @@ export function recipesReducer(
         ...state,
         allRecipes: action.payload,
       };
+    case RecipeActionTypes.CLEAR_RECIPE:
+      return {
+        ...state,
+        selectedRecipe: null,
+      };
+
     default:
       return state;
   }

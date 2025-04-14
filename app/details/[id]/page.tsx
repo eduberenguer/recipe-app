@@ -4,6 +4,7 @@ import Image from "next/image";
 import { RecipesContext } from "../../context/context";
 import { useParams } from "next/navigation";
 import photoSrc from "@/app/utils/photoSrc";
+import CustomSpinner from "@/components/customSpinner";
 
 export default function Details() {
   const { id } = useParams();
@@ -12,6 +13,7 @@ export default function Details() {
   useEffect(() => {
     const fetchRecipe = async () => {
       if (typeof id === "string" && recipes) {
+        recipes.clearStateRecipe?.();
         await recipes.retrieveRecipe(id);
       }
     };
@@ -57,7 +59,7 @@ export default function Details() {
           </div>
         </div>
       ) : (
-        <p>Loading...</p>
+        <CustomSpinner />
       )}
     </div>
   );
