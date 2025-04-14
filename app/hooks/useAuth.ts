@@ -19,7 +19,6 @@ export function useUser() {
   async function register(userData: Partial<User>) {
     try {
       const newUser = await registerUserApi(userData);
-      setUser(newUser);
 
       return newUser;
     } catch (err: unknown) {

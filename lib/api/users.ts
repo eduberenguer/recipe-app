@@ -1,4 +1,4 @@
-import { User } from "@/types";
+import { User } from "@/types/auth/index";
 
 export async function registerUserApi(user: Partial<User>) {
   const res = await fetch("/api/auth/register", {

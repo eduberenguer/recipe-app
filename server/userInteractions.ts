@@ -29,11 +29,11 @@ export async function addFavouriteRecipe(
   newAddFavouriteRecipe: ToggleFavouriteRecipe
 ) {
   try {
-    const user = await pb
+    const result = await pb
       .collection("favourites")
       .create(newAddFavouriteRecipe);
 
-    return { success: true, user };
+    return { success: true, result };
   } catch (error) {
     console.error("Error fetching favourites:", error);
     throw new Error("Error fetching favourites");

@@ -38,7 +38,7 @@ export default function Register() {
     const data = await auth?.register(form);
 
     if (data.success) {
-      router.push("/main");
+      router.push("/login");
     }
   }
 

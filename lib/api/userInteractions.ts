@@ -23,8 +23,7 @@ export async function addFavouriteRecipeApi(
     const errorData = await res.json();
     throw new Error(errorData.error || "Error");
   }
-
-  return res.json();
+  return res;
 }
 
 export async function addRemoveRecipeApi(
