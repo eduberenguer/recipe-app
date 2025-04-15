@@ -28,9 +28,19 @@ export default function Dashboard() {
       </h2>
 
       {isMobile ? (
-        <RecipesListMobile recipes={recipes} />
+        <RecipesListMobile
+          recipes={recipes}
+          deleteRecipe={
+            contextRecipes?.deleteRecipe || (() => Promise.resolve())
+          }
+        />
       ) : (
-        <RecipesTableDesktop recipes={recipes} />
+        <RecipesTableDesktop
+          recipes={recipes}
+          deleteRecipe={
+            contextRecipes?.deleteRecipe || (() => Promise.resolve())
+          }
+        />
       )}
     </div>
   );

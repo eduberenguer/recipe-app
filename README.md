@@ -24,7 +24,7 @@ Recipe App (WIP)
 - Testing with Cypress
 - Testing with Jest and Supertest
 - Favourites System
-- Dashboard Page
+- Dashboard Page (admin Panel for managing recipes)
 
 ## Upcoming Features
 
@@ -33,8 +33,8 @@ Recipe App (WIP)
 - Allergens Information
 - Weekly Menu
 - Backoffice
+- Pagination
 - Comments between users
-- Admin Panel (for managing recipes)
 - Recipe Comments System
 - User-generated Recipe Collections
 - Multi-language Support

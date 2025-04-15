@@ -5,10 +5,17 @@ import Image from "next/image";
 import { Recipe } from "@/types/recipes";
 import photoSrc from "@/app/utils/photoSrc";
 import { FaMagnifyingGlass } from "react-icons/fa6";
+import { MdDeleteForever } from "react-icons/md";
 
-export default function RecipesListMobile({ recipes }: { recipes: Recipe[] }) {
+export default function RecipesListMobile({
+  recipes,
+  deleteRecipe,
+}: {
+  recipes: Recipe[];
+  deleteRecipe: (recipeId: string) => Promise<void>;
+}) {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col">
       {recipes.map((recipe) => (
         <div
           key={recipe.id}
@@ -21,21 +28,31 @@ export default function RecipesListMobile({ recipes }: { recipes: Recipe[] }) {
             height={300}
             className="w-full h-52 object-cover"
           />
-          <div className="p-4">
-            <h3 className="text-lg font-semibold">
-              <Link
-                href={`/details/${recipe.id}`}
-                className="inline-flex items-center gap-1 hover:underline"
+          <div className="flex flex-row space-around items-center p-4">
+            <div className="p-2 flex-1">
+              <h3 className="text-lg font-semibold">
+                <Link
+                  href={`/details/${recipe.id}`}
+                  className="inline-flex items-center gap-1 hover:underline"
+                >
+                  {recipe.title} <FaMagnifyingGlass className="text-base" />
+                </Link>
+              </h3>
+              <p className="text-sm text-gray-600 mt-1">
+                Servings: {recipe.servings}
+              </p>
+              <p className="text-sm text-gray-600">
+                Favourites: {recipe.favouritesCounter}
+              </p>
+            </div>
+            <div>
+              <button
+                onClick={() => deleteRecipe(recipe.id)}
+                className="p-2 text-red-600 hover:text-red-800 rounded cursor-pointer"
               >
-                {recipe.title} <FaMagnifyingGlass className="text-base" />
-              </Link>
-            </h3>
-            <p className="text-sm text-gray-600 mt-1">
-              Servings: {recipe.servings}
-            </p>
-            <p className="text-sm text-gray-600">
-              Favourites: {recipe.favouritesCounter}
-            </p>
+                <MdDeleteForever className="text-3xl" />
+              </button>
+            </div>
           </div>
         </div>
       ))}
