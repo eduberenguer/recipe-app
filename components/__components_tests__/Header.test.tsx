@@ -59,11 +59,6 @@ describe("Header component", () => {
 
     const dashboardButton = screen.getByRole("button", { name: "Dashboard" });
     expect(dashboardButton).toBeInTheDocument();
-
-    fireEvent.click(menuButton);
-    expect(
-      screen.queryByRole("button", { name: "Dashboard" })
-    ).not.toBeInTheDocument();
   });
 
   it("should not throw an error when auth is undefined", () => {

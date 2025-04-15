@@ -64,15 +64,6 @@ export default function RecipeForm() {
   };
 
   const addIngredient = () => {
-    if (
-      ingredients.name === "" ||
-      ingredients.quantity === "" ||
-      !ingredients.unity
-    ) {
-      customToast("Please fill in all ingredient fields", "warning");
-      return;
-    }
-
     setRecipe((prev) => ({
       ...prev,
       ingredients: [...prev.ingredients, ingredients],
@@ -98,21 +89,6 @@ export default function RecipeForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (recipe.title === "") {
-      customToast("Please enter a title", "warning");
-      return;
-    }
-
-    if (recipe.servings === "" || recipe.servings === 0) {
-      customToast("Please enter a number of servings", "warning");
-      return;
-    }
-
-    if (recipe.ingredients.length === 0) {
-      customToast("Please enter at least one ingredient", "warning");
-      return;
-    }
 
     setLoading(true);
 

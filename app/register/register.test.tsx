@@ -124,7 +124,7 @@ describe("Register component", () => {
     });
   });
 
-  it("should register and redirect to main", async () => {
+  it("should register and redirect to login", async () => {
     renderRegister({
       user: null,
       login: jest.fn(),
@@ -156,7 +156,7 @@ describe("Register component", () => {
         repeatPassword: "123123",
       });
 
-      expect(mockPush).toHaveBeenCalledWith("/main");
+      expect(mockPush).toHaveBeenCalledWith("/login");
     });
   });
 });

@@ -20,7 +20,7 @@ describe("MobileNav component", () => {
     });
   });
 
-  it("should render all buttons and handle navigation correctly", () => {
+  it("should render all buttons and handle navigation correctly", async () => {
     render(
       <MobileNav
         isMenuOpen={true}
@@ -56,7 +56,7 @@ describe("MobileNav component", () => {
     expect(mockSetIsMenuOpen).toHaveBeenCalledWith(false);
   });
 
-  it("should no render nav when isMenuOpen is false", () => {
+  it("should not render nav when isMenuOpen is false", () => {
     render(
       <MobileNav
         isMenuOpen={false}
@@ -64,8 +64,9 @@ describe("MobileNav component", () => {
         logout={mockLogout}
       />
     );
-    const recipesButton = screen.queryByText("Recipes");
-
-    expect(recipesButton).not.toBeInTheDocument();
+    const nav = screen.getByTestId("mobile-nav");
+    expect(nav).toHaveClass("opacity-0");
+    expect(nav).toHaveClass("scale-y-0");
+    expect(nav).toHaveAttribute("aria-hidden", "true");
   });
 });

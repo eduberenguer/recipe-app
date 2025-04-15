@@ -35,11 +35,14 @@ describe("Details component", () => {
       photo: "test-photo.jpg",
       description: "This is a test recipe description.",
     },
+    stateUserRecipes: [],
     createRecipe: jest.fn(),
     retrieveRecipesList: jest.fn(),
     deleteRecipe: jest.fn(),
     retrieveRecipe: jest.fn(),
     retrieveRecipesByFilterName: jest.fn(),
+    retrieveRecipesByUserId: jest.fn(),
+    clearStateRecipe: jest.fn(),
   };
 
   beforeEach(() => {
@@ -79,6 +82,6 @@ describe("Details component", () => {
       </RecipesContext.Provider>
     );
 
-    expect(screen.getByText("Loading...")).toBeInTheDocument();
+    expect(screen.getByText("Loading recipe details...")).toBeInTheDocument();
   });
 });

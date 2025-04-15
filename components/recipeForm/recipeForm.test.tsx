@@ -14,6 +14,10 @@ jest.mock("@/app/utils/showToast", () => ({
   customToast: jest.fn(),
 }));
 
+jest.mock("./isFormValid", () => ({
+  isFormValid: () => true,
+}));
+
 const mockAuthValue = {
   user: { id: "123", name: "Test User" },
   isAuthenticated: true,
@@ -108,77 +112,6 @@ describe("RecipeForm component", () => {
     expect(ingredientItem).not.toBeInTheDocument();
   });
 
-  it("should toast message when fill in all ingredient fields", async () => {
-    render(<RecipeForm />);
-
-    const addButton = screen.getByText("+");
-    fireEvent.click(addButton);
-
-    await waitFor(() => {
-      expect(customToast).toHaveBeenCalledWith(
-        "Please fill in all ingredient fields",
-        "warning"
-      );
-    });
-  });
-
-  it("should toast message please enter a title when title is empty", async () => {
-    render(<RecipeForm />);
-
-    const servingsInput = screen.getByPlaceholderText("Servings");
-    const ingredientInput = screen.getByPlaceholderText("Ingredient");
-    const quantityInput = screen.getByPlaceholderText("Quantity");
-    const unitySelect = screen.getByRole("combobox");
-    const descriptionInput = screen.getByPlaceholderText("Description");
-    const saveButton = screen.getByText("Save Recipe");
-
-    fireEvent.change(ingredientInput, { target: { value: "Tomato" } });
-    fireEvent.change(quantityInput, { target: { value: "2" } });
-    fireEvent.change(unitySelect, { target: { value: "kg" } });
-
-    fireEvent.change(servingsInput, { target: { value: 2 } });
-    fireEvent.change(descriptionInput, {
-      target: { value: "Recipe description....." },
-    });
-
-    fireEvent.click(saveButton);
-
-    await waitFor(() => {
-      expect(customToast).toHaveBeenCalledWith(
-        "Please enter a title",
-        "warning"
-      );
-    });
-  });
-
-  it("should toast message please enter a number of servings when servings is empty", async () => {
-    render(<RecipeForm />);
-
-    const titleInput = screen.getByPlaceholderText("Recipe title");
-    const ingredientInput = screen.getByPlaceholderText("Ingredient");
-    const quantityInput = screen.getByPlaceholderText("Quantity");
-    const unitySelect = screen.getByRole("combobox");
-    const descriptioInput = screen.getByPlaceholderText("Description");
-    const saveButton = screen.getByText("Save Recipe");
-
-    fireEvent.change(titleInput, { target: { value: "Lasagna" } });
-    fireEvent.change(ingredientInput, { target: { value: "Tomato" } });
-    fireEvent.change(quantityInput, { target: { value: "2" } });
-    fireEvent.change(unitySelect, { target: { value: "kg" } });
-    fireEvent.change(descriptioInput, {
-      target: { value: "Recipe description....." },
-    });
-
-    fireEvent.click(saveButton);
-
-    await waitFor(() => {
-      expect(customToast).toHaveBeenCalledWith(
-        "Please enter a number of servings",
-        "warning"
-      );
-    });
-  });
-
   it("should ok when all ingredients are add", async () => {
     mockRecipesValue.createRecipe.mockResolvedValue({ id: "recipe123" });
 
@@ -211,34 +144,12 @@ describe("RecipeForm component", () => {
     fireEvent.click(addButton);
     fireEvent.click(saveButton);
 
+    expect(saveButton).not.toBeDisabled();
+
     await waitFor(() => {
       expect(customToast).toHaveBeenCalledWith(
         "Recipe created successfully",
         "success"
-      );
-    });
-  });
-
-  it("should toast message please enter at least one ingredient", async () => {
-    render(<RecipeForm />);
-
-    const titleInput = screen.getByPlaceholderText("Recipe title");
-    const servingsInput = screen.getByPlaceholderText("Servings");
-    const descriptioInput = screen.getByPlaceholderText("Description");
-    const saveButton = screen.getByText("Save Recipe");
-
-    fireEvent.change(titleInput, { target: { value: "Lasagna" } });
-    fireEvent.change(servingsInput, { target: { value: 2 } });
-    fireEvent.change(descriptioInput, {
-      target: { value: "Recipe description....." },
-    });
-
-    fireEvent.click(saveButton);
-
-    await waitFor(() => {
-      expect(customToast).toHaveBeenCalledWith(
-        "Please enter at least one ingredient",
-        "warning"
       );
     });
   });

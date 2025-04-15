@@ -15,11 +15,12 @@ export async function GET(request: Request) {
     return NextResponse.json(result, {
       status: result ? 200 : 400,
     });
-  } catch (error) {
+  } catch (error: unknown) {
+    console.error(error);
     return NextResponse.json(
       {
         success: false,
-        error: error || "Database error",
+        error: "Database error",
       },
       { status: 500 }
     );

@@ -77,7 +77,8 @@ describe("Login component", () => {
     fireEvent.change(passwordInput, { target: { value: "123123" } });
     fireEvent.click(submitButton);
 
-    expect(mockLogin).toHaveBeenCalledWith({
+    const [[loginArgs]] = mockLogin.mock.calls;
+    expect(loginArgs).toEqual({
       email: "test@mail.com",
       password: "123123",
     });
@@ -106,7 +107,8 @@ describe("Login component", () => {
     fireEvent.change(passwordInput, { target: { value: "123123" } });
     fireEvent.click(submitButton);
 
-    expect(mockLogin).toHaveBeenCalledWith({
+    const [[loginArgs]] = mockLogin.mock.calls;
+    expect(loginArgs).toEqual({
       email: "test@mail.com",
       password: "123123",
     });

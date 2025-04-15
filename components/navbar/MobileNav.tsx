@@ -18,13 +18,13 @@ export default function MobileNav({
 
   const handleNav = (path: string) => {
     setIsMenuOpen(false);
-    setTimeout(() => {
-      router.push(path);
-    }, 300);
+    router.push(path);
   };
 
   return (
     <div
+      aria-hidden={!isMenuOpen}
+      data-testid="mobile-nav"
       className={`
         transition-all duration-300 ease-in-out transform origin-top
         ${
