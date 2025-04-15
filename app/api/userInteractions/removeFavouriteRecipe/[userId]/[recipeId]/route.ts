@@ -14,10 +14,10 @@ export async function DELETE(
 
     await removeFavourite(userId, recipeId);
 
-    return NextResponse.json({ success: true, message: "Favourite deleted" });
+    return NextResponse.json({ success: true, message: "Favourite removed" });
   } catch (error) {
     return NextResponse.json(
-      { success: false, error: `Error deleting favourite: ${error}` },
+      { success: false, error: `Error removing favourite: ${error}` },
       { status: 500 }
     );
   }
