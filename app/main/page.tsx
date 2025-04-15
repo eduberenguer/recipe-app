@@ -44,7 +44,7 @@ export default function Main() {
   }
 
   if (isLoading || !contextAuth || !contextRecipes) {
-    return <CustomSpinner />;
+    return <CustomSpinner message={"Loading recipes..."} />;
   }
 
   return (

@@ -10,6 +10,7 @@ import { customToast } from "@/app/utils/showToast";
 
 import { initialStateForm, initialStateIngredient } from "./initialStateForm";
 import { isFormValid } from "./isFormValid";
+import CustomSpinner from "../customSpinner";
 
 export default function RecipeForm() {
   const contextUser = useContext(AuthContext);
@@ -17,6 +18,7 @@ export default function RecipeForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const [recipe, setRecipe] = useState<{
     title: string;
@@ -32,15 +34,19 @@ export default function RecipeForm() {
     ...initialStateIngredient,
   });
 
+  const MAX_SIZE_MB = 1;
+
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
-    updateRecipes("photo", file);
 
-    if (file) {
-      setPreviewImage(URL.createObjectURL(file));
-    } else {
-      setPreviewImage(null);
+    if (file && file.size > MAX_SIZE_MB * 1024 * 1024) {
+      customToast("File size exceeds 1MB", "warning");
+      e.target.value = "";
+      return;
     }
+
+    updateRecipes("photo", file);
+    setPreviewImage(file ? URL.createObjectURL(file) : null);
   };
 
   const updateRecipes = (field: string, value: unknown) => {
@@ -108,6 +114,8 @@ export default function RecipeForm() {
       return;
     }
 
+    setLoading(true);
+
     const formData = new FormData();
     formData.append("title", recipe.title);
     formData.append("servings", recipe.servings.toString());
@@ -121,16 +129,20 @@ export default function RecipeForm() {
 
     const newRecipe = await contextRecipes?.createRecipe(formData);
 
-    if (newRecipe) customToast("Recipe created successfully", "success");
-    setRecipe({
-      ...initialStateForm,
-    });
+    setLoading(false);
 
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+    if (newRecipe) {
+      customToast("Recipe created successfully", "success");
+      setRecipe({
+        ...initialStateForm,
+      });
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
+      router.push("/main");
     }
-
-    router.push("/main");
   };
 
   return (
@@ -138,6 +150,11 @@ export default function RecipeForm() {
       <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
         Recipe Form
       </h2>
+      {loading && (
+        <div className="fixed inset-0 bg-opacity-30 z-50 flex items-center justify-center">
+          <CustomSpinner message={"Creating recipe..."} />
+        </div>
+      )}
       <form className="space-y-4 text-center">
         <div className="flex gap-2">
           <input

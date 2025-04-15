@@ -43,7 +43,7 @@ export default function Favourites() {
   }
 
   if (isLoading || !contextAuth || !contextRecipes) {
-    return <CustomSpinner />;
+    return <CustomSpinner message={"Loading favourites..."} />;
   }
 
   return (

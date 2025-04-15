@@ -59,7 +59,7 @@ export default function Details() {
           </div>
         </div>
       ) : (
-        <CustomSpinner />
+        <CustomSpinner message={"Loading recipe details..."} />
       )}
     </div>
   );
