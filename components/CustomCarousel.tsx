@@ -31,6 +31,8 @@ export default function CustomCarousel() {
       autoPlay={true}
       autoPlaySpeed={3000}
       arrows={false}
+      customTransition="all 1s ease-in-out"
+      transitionDuration={1000}
     >
       <div className="w-full h-[300px] overflow-hidden">
         <Image

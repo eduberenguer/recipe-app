@@ -8,7 +8,7 @@ import {
 
 import RecipeCard from "@/components/RecipeCard";
 import FilterByName from "@/components/FilterByName";
-import CustomSpinner from "@/components/customSpinner";
+import CustomSpinner from "@/components/CustomSpinner";
 
 export default function Main() {
   const contextAuth = useContext(AuthContext);
@@ -49,12 +49,17 @@ export default function Main() {
 
   return (
     <div className="p-6">
-      <header className="flex items-center justify-between mb-6">
-        <h2 className="text-3xl font-bold text-gray-800 flex-grow text-center">
-          Recipes Collection
+      <header className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 px-4 py-3 bg-white shadow-md rounded-xl border border-gray-200">
+        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+          🍽️ Recipes Collection
         </h2>
-        <FilterByName />
+        <div className="right-0">
+          <div className="px-4 py-2 flex items-center gap-2 transition-all duration-300 hover:shadow-lg">
+            <FilterByName />
+          </div>
+        </div>
       </header>
+
       <div className="flex flex-wrap justify-center gap-4 mt-20">
         {contextRecipes.stateAllRecipes.length > 0 ? (
           contextRecipes.stateAllRecipes.map((recipe) => {
