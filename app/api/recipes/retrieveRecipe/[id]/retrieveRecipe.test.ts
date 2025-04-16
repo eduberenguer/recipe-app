@@ -3,7 +3,7 @@ import { createServer } from "http";
 
 import { GET } from "./route";
 import { retrieveRecipeById } from "@/server/recipes";
-import { mockRecipeWithId } from "@/app/__mocks__/recipe.mock";
+import { mockRecipeWithIdv1 } from "@/app/__mocks__/recipe.mock";
 
 jest.mock("@/server/recipes", () => ({
   retrieveRecipeById: jest.fn(),
@@ -57,7 +57,7 @@ describe("GET /api/recipes/retrieveRecipe", () => {
   });
 
   it("should return 200 and the recipe is found", async () => {
-    (retrieveRecipeById as jest.Mock).mockResolvedValue(mockRecipeWithId);
+    (retrieveRecipeById as jest.Mock).mockResolvedValue(mockRecipeWithIdv1);
 
     const response = await request(server).get(
       "/api/recipes/retrieveRecipe/recipe123"
@@ -65,7 +65,7 @@ describe("GET /api/recipes/retrieveRecipe", () => {
 
     expect(retrieveRecipeById).toHaveBeenCalledWith("recipe123");
     expect(response.status).toBe(200);
-    expect(response.body).toEqual(mockRecipeWithId);
+    expect(response.body).toEqual(mockRecipeWithIdv1);
   });
 
   it("should return 400 when isn´t recipe ID", async () => {

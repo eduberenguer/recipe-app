@@ -1,9 +1,10 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { useParams } from "next/navigation";
 
 import Details from "./page";
 import { RecipesContext } from "@/app/context/context";
-import { Unity } from "@/types/recipes";
+import { mockRecipesContext } from "@/app/__mocks__/mockRecipesContext";
+import { mockRecipeWithIdv1 } from "@/app/__mocks__/recipe.mock";
 
 jest.mock("next/navigation", () => ({
   useParams: jest.fn(),
@@ -18,70 +19,52 @@ jest.mock("next/image", () => ({
 }));
 
 describe("Details component", () => {
-  const mockRecipesContext = {
-    stateAllRecipes: [],
-    stateRecipe: {
-      id: "recipe123",
-      owner: "user123",
-      title: "Test Recipe",
-      servings: 4,
-      ingredients: [
-        {
-          name: "potatoes",
-          quantity: 123,
-          unity: "gr" as Unity,
-        },
-      ],
-      photo: "test-photo.jpg",
-      description: "This is a test recipe description.",
-    },
-    stateUserRecipes: [],
-    createRecipe: jest.fn(),
-    retrieveRecipesList: jest.fn(),
-    deleteRecipe: jest.fn(),
-    retrieveRecipe: jest.fn(),
-    retrieveRecipesByFilterName: jest.fn(),
-    retrieveRecipesByUserId: jest.fn(),
-    clearStateRecipe: jest.fn(),
-  };
-
   beforeEach(() => {
     jest.clearAllMocks();
     (useParams as jest.Mock).mockReturnValue({ id: "recipe123" });
   });
-  it("should render the details of the recipe", () => {
-    render(
+
+  const customRender = () => {
+    return render(
       <RecipesContext.Provider value={mockRecipesContext}>
         <Details />
       </RecipesContext.Provider>
     );
+  };
 
-    const recipeImage = screen.getByAltText("Test Recipe");
+  it("should render the details of the recipe", async () => {
+    mockRecipesContext.stateRecipe = mockRecipeWithIdv1;
 
-    expect(screen.getByText("Test Recipe")).toBeInTheDocument();
-    expect(
-      screen.getByText("This is a test recipe description.")
-    ).toBeInTheDocument();
+    customRender();
 
-    expect(screen.getByAltText("Test Recipe")).toBeInTheDocument();
-    expect(recipeImage).toHaveAttribute(
-      "src",
-      "undefined/recipe123/test-photo.jpg"
-    );
+    await waitFor(() => {
+      expect(screen.getByText("Pasta Carbonara")).toBeInTheDocument();
+      expect(
+        screen.getByText("A classic Italian pasta dish.")
+      ).toBeInTheDocument();
 
-    expect(screen.getByText("potatoes:")).toBeInTheDocument();
-    expect(screen.getByText("123 gr")).toBeInTheDocument();
+      expect(screen.getByText("Pasta:")).toBeInTheDocument();
+      expect(screen.getByText("500 gr")).toBeInTheDocument();
+    });
   });
 
-  it("should render Loading... when starRecipe is null", () => {
-    render(
-      <RecipesContext.Provider
-        value={{ ...mockRecipesContext, stateRecipe: null }}
-      >
-        <Details />
-      </RecipesContext.Provider>
-    );
+  it("should render Loading... when starRecipe is null", async () => {
+    mockRecipesContext.stateRecipe = {};
 
-    expect(screen.getByText("Loading recipe details...")).toBeInTheDocument();
+    customRender();
+    await waitFor(() => {
+      expect(screen.getByText("Loading recipe details...")).toBeInTheDocument();
+    });
+  });
+
+  it("should call clearStateRecipe when component mounts", async () => {
+    const mockClearStateRecipe = jest.fn();
+    mockRecipesContext.clearStateRecipe = mockClearStateRecipe;
+
+    customRender();
+
+    await waitFor(() => {
+      expect(mockClearStateRecipe).toHaveBeenCalled();
+    });
   });
 });

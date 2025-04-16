@@ -5,7 +5,9 @@ import {
   UserInteractionsContext,
 } from "../context/context";
 import Favourites from "./page";
-import { mockRecipeWithId } from "../__mocks__/recipe.mock";
+import { mockRecipeWithIdv1 } from "../__mocks__/recipe.mock";
+import { mockRecipesContext } from "../__mocks__/mockRecipesContext";
+import { mockUserInteractionContext } from "../__mocks__/mockUseInteractionContext";
 
 jest.mock("next/image", () => ({
   __esModule: true,
@@ -16,32 +18,6 @@ jest.mock("next/image", () => ({
 }));
 
 describe("Favourites component", () => {
-  const mockRetrieveFavouritesList = {
-    favouritesRecipesId: [],
-    favouritesRecipes: [mockRecipeWithId],
-    retrieveFavouritesList: jest.fn(),
-    addFavouriteRecipe: jest.fn(),
-    removeFavouriteRecipe: jest.fn(),
-    dispatch: jest.fn(),
-  };
-
-  const mockRecipesContext = {
-    stateAllRecipes: [],
-    stateRecipe: null,
-    stateUserRecipes: [],
-    createRecipe: jest.fn(),
-    updateRecipe: jest.fn(),
-    deleteRecipe: jest.fn(),
-    fetchAllRecipes: jest.fn(),
-    fetchUserRecipes: jest.fn(),
-    fetchRecipeById: jest.fn(),
-    clearStateRecipe: jest.fn(),
-    retrieveRecipesList: jest.fn(),
-    retrieveRecipe: jest.fn(),
-    retrieveRecipesByFilterName: jest.fn(),
-    retrieveRecipesByUserId: jest.fn(),
-  };
-
   const customRender = (user = { id: "user123", name: "Test User" }) => {
     const mockAuthContext = {
       user,
@@ -53,7 +29,7 @@ describe("Favourites component", () => {
     return render(
       <RecipesContext.Provider value={mockRecipesContext}>
         <AuthContext.Provider value={mockAuthContext}>
-          <UserInteractionsContext.Provider value={mockRetrieveFavouritesList}>
+          <UserInteractionsContext.Provider value={mockUserInteractionContext}>
             <Favourites />
           </UserInteractionsContext.Provider>
         </AuthContext.Provider>
@@ -66,7 +42,7 @@ describe("Favourites component", () => {
 
     await waitFor(() => {
       expect(
-        mockRetrieveFavouritesList.retrieveFavouritesList
+        mockUserInteractionContext.retrieveFavouritesList
       ).toHaveBeenCalled();
     });
   });
@@ -80,21 +56,21 @@ describe("Favourites component", () => {
 
     expect(title).toBeInTheDocument();
     expect(
-      mockRetrieveFavouritesList.retrieveFavouritesList
+      mockUserInteractionContext.retrieveFavouritesList
     ).toHaveBeenCalled();
   });
 
   it("should call toggleFavourite", async () => {
     const mockToggleFavourite = jest.fn();
-    mockRetrieveFavouritesList.favouritesRecipes = [mockRecipeWithId];
-    mockRetrieveFavouritesList.addFavouriteRecipe = mockToggleFavourite;
-    mockRetrieveFavouritesList.removeFavouriteRecipe = mockToggleFavourite;
+    mockUserInteractionContext.favouritesRecipes = [mockRecipeWithIdv1];
+    mockUserInteractionContext.addFavouriteRecipe = mockToggleFavourite;
+    mockUserInteractionContext.removeFavouriteRecipe = mockToggleFavourite;
 
     customRender();
 
     await screen.findByText("My favourites recipes");
 
-    const favouriteButton = screen.getByRole("paragraph", {
+    const favouriteButton = screen.getByRole("button", {
       name: "Toggle favourite",
     });
 

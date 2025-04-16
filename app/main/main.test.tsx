@@ -1,9 +1,16 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 import Main from "./page";
-import { AuthContext, RecipesContext } from "../context/context";
-import { Unity } from "@/types/recipes";
+import {
+  AuthContext,
+  RecipesContext,
+  UserInteractionsContext,
+} from "../context/context";
 import checkOwnerRecipe from "../utils/checkOwnerRecipe";
+import { mockUserInteractionContext } from "../__mocks__/mockUseInteractionContext";
+import { mockRecipesContext } from "../__mocks__/mockRecipesContext";
+import { mockAuthContext } from "../__mocks__/mockAuthContext";
+import { mockRecipeWithIdv2 } from "../__mocks__/recipe.mock";
 
 jest.mock("../utils/checkOwnerRecipe", () => jest.fn());
 
@@ -16,74 +23,19 @@ jest.mock("next/image", () => ({
 }));
 
 describe("Main component", () => {
-  const mockDeleteRecipe = jest.fn();
-  const mockRetrieveRecipesList = jest.fn();
-
-  const mockAuthContext = {
-    user: { id: "user123" },
-    register: jest.fn(),
-    login: jest.fn(),
-    logout: jest.fn(),
-    stateUserRecipes: [],
-    retrieveRecipesByUserId: jest.fn(),
-    clearStateRecipe: jest.fn(),
-  };
-
-  const mockRecipesContext = {
-    stateAllRecipes: [
-      {
-        id: "recipe123",
-        owner: "user123",
-        title: "Test Recipe",
-        servings: 4,
-        ingredients: [
-          {
-            name: "potatoes",
-            quantity: 123,
-            unity: "gr" as Unity,
-          },
-        ],
-        photo: "test-photo.jpg",
-        favouritesCounter: 0,
-        description: "This is a test recipe description.",
-      },
-      {
-        id: "recipe456",
-        owner: "user123",
-        title: "Test Recipe 2",
-        servings: 2,
-        ingredients: [
-          {
-            name: "tomates",
-            quantity: 12,
-            unity: "gr" as Unity,
-          },
-        ],
-        photo: "test-photo.jpg",
-        favouritesCounter: 2,
-        description: "This is a other test recipe description.",
-      },
-    ],
-    stateRecipe: {},
-    stateUserRecipes: [],
-    createRecipe: jest.fn(),
-    retrieveRecipesList: mockRetrieveRecipesList,
-    deleteRecipe: mockDeleteRecipe,
-    retrieveRecipe: jest.fn(),
-    retrieveRecipesByFilterName: jest.fn(),
-    retrieveRecipesByUserId: jest.fn(),
-    clearStateRecipe: jest.fn(),
-  };
-
   beforeEach(() => {
     jest.clearAllMocks();
+
+    mockRecipesContext.stateAllRecipes = mockRecipeWithIdv2;
   });
 
   const customRender = () => {
     return render(
       <AuthContext.Provider value={mockAuthContext}>
         <RecipesContext.Provider value={mockRecipesContext}>
-          <Main />
+          <UserInteractionsContext.Provider value={mockUserInteractionContext}>
+            <Main />
+          </UserInteractionsContext.Provider>
         </RecipesContext.Provider>
       </AuthContext.Provider>
     );
@@ -98,6 +50,9 @@ describe("Main component", () => {
   });
 
   it("should call retrieveRecipesList on mount", async () => {
+    const mockRetrieveRecipesList = jest.fn();
+    mockRecipesContext.retrieveRecipesList = mockRetrieveRecipesList;
+
     customRender();
 
     await waitFor(() => {
@@ -106,9 +61,9 @@ describe("Main component", () => {
   });
 
   it("should render all recipes from the map", () => {
-    (checkOwnerRecipe as jest.Mock).mockImplementation(
-      (userId, ownerId) => userId === ownerId
-    );
+    (checkOwnerRecipe as jest.Mock).mockReturnValue(true);
+    const mockDeleteRecipe = jest.fn();
+    mockRecipesContext.deleteRecipe = mockDeleteRecipe;
 
     customRender();
 
@@ -132,9 +87,7 @@ describe("Main component", () => {
   });
 
   it("should not render delete button when user is not the owner", () => {
-    (checkOwnerRecipe as jest.Mock).mockImplementation(
-      (userId, ownerId) => userId !== ownerId
-    );
+    (checkOwnerRecipe as jest.Mock).mockReturnValue(false);
 
     customRender();
 
@@ -151,5 +104,25 @@ describe("Main component", () => {
     const loadingText = screen.getByText("No recipes available");
 
     expect(loadingText).toBeInTheDocument();
+  });
+
+  it("shoud work toggleFavourite", async () => {
+    const mockToggleFavourite = jest.fn();
+    mockUserInteractionContext.addFavouriteRecipe = mockToggleFavourite;
+    mockUserInteractionContext.removeFavouriteRecipe = mockToggleFavourite;
+
+    (checkOwnerRecipe as jest.Mock).mockReturnValue(true);
+
+    customRender();
+
+    const buttonToggleFavourite = await screen.getAllByRole("button", {
+      name: "Toggle favourite",
+    });
+
+    fireEvent.click(buttonToggleFavourite[0]);
+
+    await waitFor(() => {
+      expect(mockToggleFavourite).toHaveBeenCalled();
+    });
   });
 });

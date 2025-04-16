@@ -55,7 +55,7 @@ export default function RecipeCard({
             {recipe.title}
           </h3>
           {user?.id && (
-            <p
+            <button
               aria-label="Toggle favourite"
               className={`cursor-pointer ${
                 isFavourite ? "text-red-500" : "text-gray-500"
@@ -73,7 +73,7 @@ export default function RecipeCard({
                   className="transition-all duration-300 hover:scale-125"
                 />
               )}
-            </p>
+            </button>
           )}
         </div>
         <p className="text-gray-600 text-sm">{`${recipe.servings} servings`}</p>
