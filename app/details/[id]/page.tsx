@@ -4,7 +4,7 @@ import Image from "next/image";
 import { RecipesContext } from "../../context/context";
 import { useParams } from "next/navigation";
 import photoSrc from "@/app/utils/photoSrc";
-import CustomSpinner from "@/components/customSpinner";
+import CustomSpinner from "@/components/CustomSpinner";
 
 export default function Details() {
   const { id } = useParams();

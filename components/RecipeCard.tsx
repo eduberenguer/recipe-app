@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import checkOwnerRecipe from "@/app/utils/check.owner.recipe";
+import checkOwnerRecipe from "@/app/utils/checkOwnerRecipe";
 import photoSrc from "@/app/utils/photoSrc";
 import Button from "@/components/Button";
 import { Recipe } from "@/types/recipes";
@@ -27,7 +27,7 @@ export default function RecipeCard({
   return (
     <div
       key={recipe.id}
-      className="bg-white shadow-lg rounded-lg overflow-hidden w-[420px] h-[350px] mx-auto transition-transform duration-200 hover:scale-105 flex flex-col justify-between"
+      className="bg-white shadow-lg rounded-2xl overflow-hidden w-[420px] h-[350px] mx-auto transition-all duration-300 hover:shadow-2xl flex flex-col justify-between"
     >
       <div className="relative w-full">
         <Link href={`/details/${recipe.id}`}>
@@ -56,15 +56,22 @@ export default function RecipeCard({
           </h3>
           {user?.id && (
             <p
+              aria-label="Toggle favourite"
               className={`cursor-pointer ${
                 isFavourite ? "text-red-500" : "text-gray-500"
               }`}
               onClick={() => user?.id && toggleFavourite(user.id, recipe.id)}
             >
               {isFavourite ? (
-                <BsEggFried size={38} />
+                <BsEggFried
+                  size={38}
+                  className="transition-all duration-300 hover:scale-125"
+                />
               ) : (
-                <TbEggCracked size={38} />
+                <TbEggCracked
+                  size={38}
+                  className="transition-all duration-300 hover:scale-125"
+                />
               )}
             </p>
           )}

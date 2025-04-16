@@ -7,7 +7,7 @@ import {
 } from "../context/context";
 import RecipeCard from "@/components/RecipeCard";
 import { Recipe } from "@/types/recipes";
-import CustomSpinner from "@/components/customSpinner";
+import CustomSpinner from "@/components/CustomSpinner";
 
 export default function Favourites() {
   const contextAuth = useContext(AuthContext);
@@ -16,10 +16,16 @@ export default function Favourites() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (contextAuth?.user?.id && contextUserInteraction) {
-      contextUserInteraction.retrieveFavouritesList(contextAuth.user.id);
-      setIsLoading(false);
+    async function fetchFavourites() {
+      if (contextAuth?.user?.id && contextUserInteraction) {
+        await contextUserInteraction.retrieveFavouritesList(
+          contextAuth.user.id
+        );
+        setIsLoading(false);
+      }
     }
+
+    fetchFavourites();
   }, [contextAuth?.user?.id]);
 
   async function toggleFavourite(recipeId: string) {
@@ -31,11 +37,6 @@ export default function Favourites() {
 
     if (isFav) {
       await contextUserInteraction.removeFavouriteRecipe(
-        contextAuth.user.id,
-        recipeId
-      );
-    } else {
-      await contextUserInteraction.addFavouriteRecipe(
         contextAuth.user.id,
         recipeId
       );
@@ -53,28 +54,29 @@ export default function Favourites() {
           My favourites recipes
         </h2>
       </header>
-      <div className="flex flex-wrap justify-center gap-4 mt-20"></div>
-      {(contextUserInteraction?.favouritesRecipes ?? []).length > 0 ? (
-        contextUserInteraction?.favouritesRecipes.map((recipe: Recipe) => {
-          return (
-            <RecipeCard
-              key={recipe.id}
-              recipe={recipe}
-              user={contextAuth?.user}
-              deleteRecipe={contextRecipes?.deleteRecipe ?? (() => {})}
-              toggleFavourite={() => toggleFavourite(recipe.id)}
-              isFavourite={contextUserInteraction?.favouritesRecipes.some(
-                (fav) => fav.id === recipe.id
-              )}
-              isFromMain={false}
-            />
-          );
-        })
-      ) : (
-        <div className="flex justify-center items-center w-full h-[calc(100vh-200px)] text-gray-600 text-lg">
-          No recipes available
-        </div>
-      )}
+      <div className="flex flex-wrap justify-center gap-4 mt-20">
+        {(contextUserInteraction?.favouritesRecipes ?? []).length > 0 ? (
+          contextUserInteraction?.favouritesRecipes.map((recipe: Recipe) => {
+            return (
+              <RecipeCard
+                key={recipe.id}
+                recipe={recipe}
+                user={contextAuth?.user}
+                deleteRecipe={contextRecipes?.deleteRecipe ?? (() => {})}
+                toggleFavourite={() => toggleFavourite(recipe.id)}
+                isFavourite={contextUserInteraction?.favouritesRecipes.some(
+                  (fav) => fav.id === recipe.id
+                )}
+                isFromMain={false}
+              />
+            );
+          })
+        ) : (
+          <div className="flex justify-center items-center w-full h-[calc(100vh-200px)] text-gray-600 text-lg">
+            No recipes available
+          </div>
+        )}
+      </div>
     </div>
   );
 }

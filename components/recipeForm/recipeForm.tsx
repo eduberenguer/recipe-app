@@ -10,7 +10,7 @@ import { customToast } from "@/app/utils/showToast";
 
 import { initialStateForm, initialStateIngredient } from "./initialStateForm";
 import { isFormValid } from "./isFormValid";
-import CustomSpinner from "../customSpinner";
+import CustomSpinner from "../CustomSpinner";
 
 export default function RecipeForm() {
   const contextUser = useContext(AuthContext);
