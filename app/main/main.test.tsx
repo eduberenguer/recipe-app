@@ -3,9 +3,9 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import Main from "./page";
 import { AuthContext, RecipesContext } from "../context/context";
 import { Unity } from "@/types/recipes";
-import checkOwnerRecipe from "../utils/check.owner.recipe";
+import checkOwnerRecipe from "../utils/checkOwnerRecipe";
 
-jest.mock("../utils/check.owner.recipe", () => jest.fn());
+jest.mock("../utils/checkOwnerRecipe", () => jest.fn());
 
 jest.mock("next/image", () => ({
   __esModule: true,
@@ -92,7 +92,7 @@ describe("Main component", () => {
   it("main is render", () => {
     customRender();
 
-    const titlePage = screen.getByText("Recipes Collection");
+    const titlePage = screen.getByText("🍽️ Recipes Collection");
 
     expect(titlePage).toBeInTheDocument();
   });
