@@ -30,8 +30,7 @@ export default function Login() {
         customToast("Login successfully", "success");
         router.push("/main");
       }
-    } catch (error) {
-      console.log("Login error:", error);
+    } catch {
       customToast("An error occurred. Please try again.", "error");
     }
   };
@@ -60,7 +59,7 @@ export default function Login() {
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
-        <Button type="submit" backgroundColor="bg-blue-500">
+        <Button type="submit" backgroundColor="bg-green-500">
           Login
         </Button>
       </form>

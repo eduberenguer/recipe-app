@@ -35,10 +35,14 @@ export default function Register() {
       return;
     }
 
-    const data = await auth?.register(form);
+    try {
+      const data = await auth?.register(form);
 
-    if (data.success) {
-      router.push("/login");
+      if (data.success) {
+        router.push("/login");
+      }
+    } catch {
+      customToast("An error occurred. Please try again.", "error");
     }
   }
 
