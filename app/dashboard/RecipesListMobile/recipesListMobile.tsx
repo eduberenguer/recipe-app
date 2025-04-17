@@ -15,7 +15,7 @@ export default function RecipesListMobile({
   deleteRecipe: (recipeId: string) => Promise<void>;
 }) {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col" data-testid="recipes-list-mobile">
       {recipes.map((recipe) => (
         <div
           key={recipe.id}

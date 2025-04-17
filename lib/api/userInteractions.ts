@@ -26,9 +26,7 @@ export async function addFavouriteRecipeApi(
   return res;
 }
 
-export async function addRemoveRecipeApi(
-  newAddFavourite: ToggleFavouriteRecipe
-) {
+export async function removeRecipeApi(newAddFavourite: ToggleFavouriteRecipe) {
   const res = await fetch(
     `/api/userInteractions/removeFavouriteRecipe/${newAddFavourite.userId}/${newAddFavourite.recipeId}`,
     {

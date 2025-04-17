@@ -15,7 +15,10 @@ export default function RecipesTable({
   deleteRecipe: (recipeId: string) => Promise<void>;
 }) {
   return (
-    <table className="w-full text-left border-collapse">
+    <table
+      className="w-full text-left border-collapse"
+      data-testid="recipes-table-desktop"
+    >
       <thead>
         <tr className="bg-gray-100">
           <th className="px-4 py-2">Title</th>

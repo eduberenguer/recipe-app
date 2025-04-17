@@ -1,5 +1,5 @@
 export const mockAuthContext = {
-  user: { id: "user123" },
+  user: { id: "user123", name: "John" },
   register: jest.fn(),
   login: jest.fn(),
   logout: jest.fn(),

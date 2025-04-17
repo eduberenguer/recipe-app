@@ -2,7 +2,7 @@
 import { useContext, useReducer } from "react";
 import {
   addFavouriteRecipeApi,
-  addRemoveRecipeApi,
+  removeRecipeApi,
   retrieveFavouritesApi,
 } from "@/lib/api/userInteractions";
 import { userInteractionsReducer } from "../context/userInteractions/userInteractionsReducer";
@@ -60,7 +60,7 @@ export function useUserInteractions() {
       recipeId,
     };
 
-    await addRemoveRecipeApi(newRemoveFavourite);
+    await removeRecipeApi(newRemoveFavourite);
 
     dispatch({
       type: UserInteractionsTypes.REMOVE_RECIPE_FAVOURITE,

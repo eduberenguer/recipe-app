@@ -11,7 +11,7 @@ export type AuthUser = Pick<User, "id" | "created" | "name" | "email"> & {
   isAuthenticated: boolean;
 };
 
-export function useUser() {
+export function useAuth() {
   const [user, setUser] = useState<Partial<AuthUser> | null>(
     pb.authStore.model
   );
@@ -36,7 +36,6 @@ export function useUser() {
       const data = await loginUserApi(user);
       if (data.success) {
         setUser({
-          ...user,
           id: data.user.id,
           created: data.user.created,
           name: data.user.name,
