@@ -1,4 +1,7 @@
-import { ToggleFavouriteRecipe } from "@/types/userInteractions";
+import {
+  AddRecipeRating,
+  ToggleFavouriteRecipe,
+} from "@/types/userInteractions";
 
 export async function retrieveFavouritesApi(id: string) {
   const res = await fetch(`/api/userInteractions/retrieveFavourites/${id}`);
@@ -40,4 +43,48 @@ export async function removeRecipeApi(newAddFavourite: ToggleFavouriteRecipe) {
   }
 
   return res.json();
+}
+
+export async function retrieveRecipeRatingsApi(recipeId: string) {
+  const res = await fetch(
+    `/api/userInteractions/retrieveRecipeRatings/${recipeId}`,
+    {
+      method: "GET",
+    }
+  );
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.error || "Error");
+  }
+
+  return await res.json();
+}
+
+export async function addRecipeRatingApi(addRecipeRating: AddRecipeRating) {
+  const res = await fetch(`/api/userInteractions/addRecipeRating/`, {
+    method: "POST",
+    body: JSON.stringify(addRecipeRating),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.error || "Error");
+  }
+
+  return await res.json();
+}
+
+export async function checkUserHasRatedApi(userId: string, recipeId: string) {
+  const res = await fetch(
+    `/api/userInteractions/hasUserRatedRecipe?userId=${userId}&recipeId=${recipeId}`
+  );
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.error || "Error checking rating status");
+  }
+  return await res.json();
 }

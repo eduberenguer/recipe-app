@@ -43,7 +43,7 @@ export default function Main() {
     }
   }
 
-  if (isLoading || !contextAuth || !contextRecipes) {
+  if (isLoading || !contextAuth || !contextRecipes || !contextUserInteraction) {
     return <CustomSpinner message={"Loading recipes..."} />;
   }
 
@@ -73,6 +73,10 @@ export default function Main() {
                 isFavourite={contextUserInteraction?.favouritesRecipes.some(
                   (fav) => fav.id === recipe.id
                 )}
+                retrieveRecipeRating={
+                  contextUserInteraction?.retrieveRecipeRatings ||
+                  (async () => {})
+                }
                 isFromMain={true}
               />
             );

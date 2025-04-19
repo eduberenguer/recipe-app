@@ -3,16 +3,16 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id?: string } }
+  { params }: { params: { recipeId?: string } }
 ) {
   try {
-    const { id } = await params;
+    const { recipeId } = await params;
 
-    if (!id) {
+    if (!recipeId) {
       return NextResponse.json({ error: "ID required" }, { status: 400 });
     }
 
-    const result = await retrieveRecipeById(id);
+    const result = await retrieveRecipeById(recipeId);
 
     if (!result) {
       return NextResponse.json(

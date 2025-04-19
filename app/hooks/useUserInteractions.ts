@@ -2,13 +2,19 @@
 import { useContext, useReducer } from "react";
 import {
   addFavouriteRecipeApi,
+  addRecipeRatingApi,
+  checkUserHasRatedApi,
   removeRecipeApi,
   retrieveFavouritesApi,
+  retrieveRecipeRatingsApi,
 } from "@/lib/api/userInteractions";
 import { userInteractionsReducer } from "../context/userInteractions/userInteractionsReducer";
 import { UserInteractionsTypes } from "../context/userInteractions/userInteractionsTypes";
 import { Recipe } from "@/types/recipes";
-import { ToggleFavouriteRecipe } from "@/types/userInteractions";
+import {
+  AddRecipeRating,
+  ToggleFavouriteRecipe,
+} from "@/types/userInteractions";
 import { RecipesContext } from "../context/context";
 
 export function useUserInteractions() {
@@ -68,6 +74,27 @@ export function useUserInteractions() {
     });
   }
 
+  async function retrieveRecipeRatings(recipeId: string) {
+    const data = await retrieveRecipeRatingsApi(recipeId);
+
+    return {
+      average: data.average,
+      count: data.count,
+    };
+  }
+
+  async function addRecipeRating(addRecipeRating: AddRecipeRating) {
+    await addRecipeRatingApi(addRecipeRating);
+
+    return true;
+  }
+
+  async function checkUserHasRated(userId: string, recipeId: string) {
+    const response = await checkUserHasRatedApi(userId, recipeId);
+
+    return response.alreadyRated;
+  }
+
   return {
     favouritesRecipesId: state.favouritesRecipesId,
     favouritesRecipes: state.favouritesRecipes,
@@ -75,5 +102,8 @@ export function useUserInteractions() {
     addFavouriteRecipe,
     removeFavouriteRecipe,
     dispatch,
+    retrieveRecipeRatings,
+    addRecipeRating,
+    checkUserHasRated,
   };
 }

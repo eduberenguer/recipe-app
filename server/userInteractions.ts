@@ -1,6 +1,9 @@
 "use server";
 import pb from "@/lib/pocketbase";
-import { ToggleFavouriteRecipe } from "@/types/userInteractions";
+import {
+  ToggleFavouriteRecipe,
+  AddRecipeRating,
+} from "@/types/userInteractions";
 import { Recipe } from "@/types/recipes";
 
 export async function retrieveFavourites(userId: string): Promise<Recipe[]> {
@@ -84,5 +87,76 @@ export async function removeFavourite(
     return true;
   } catch (error) {
     throw new Error(`Error removing favourite: ${error}`);
+  }
+}
+
+export async function retrieveRecipeRatings(
+  recipeId: string
+): Promise<{ average: number; count: number }> {
+  console.log("retrieveRecipeRatings", recipeId);
+  try {
+    const result = await pb.collection("ratings").getFullList({
+      filter: `recipeId="${recipeId}"`,
+    });
+
+    if (!result || result.length === 0) {
+      return { average: 0, count: 0 };
+    }
+
+    const sum = result.reduce((acc, curr) => acc + curr.rating, 0);
+    const average = sum / result.length;
+
+    return {
+      average: parseFloat(average.toFixed(1)),
+      count: result.length,
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    throw new Error("Error");
+  }
+}
+
+export async function addRecipeRating(newRecipeRating: AddRecipeRating) {
+  try {
+    const userExists = await pb
+      .collection("users")
+      .getOne(newRecipeRating.userId);
+    const recipeExists = await pb
+      .collection("recipes")
+      .getOne(newRecipeRating.recipeId);
+
+    if (!userExists) {
+      throw new Error("User not found");
+    }
+    if (!recipeExists) {
+      throw new Error("Recipe not found");
+    }
+
+    const result = await pb.collection("ratings").create(newRecipeRating);
+
+    return { success: true, result };
+  } catch (error) {
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: "Something wrong" };
+  }
+}
+
+export async function hasUserRatedRecipe(userId: string, recipeId: string) {
+  console.log(userId, recipeId);
+  try {
+    const records = await pb.collection("ratings").getFullList({
+      filter: `userId = "${userId.trim()}" && recipeId = "${recipeId.trim()}"`,
+    });
+
+    return { success: true, alreadyRated: records.length > 0 };
+  } catch (error) {
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: "Something went wrong" };
   }
 }

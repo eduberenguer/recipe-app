@@ -67,6 +67,10 @@ export default function Favourites() {
                 isFavourite={contextUserInteraction?.favouritesRecipes.some(
                   (fav) => fav.id === recipe.id
                 )}
+                retrieveRecipeRating={
+                  contextUserInteraction?.retrieveRecipeRatings ||
+                  (async () => {})
+                }
                 isFromMain={false}
               />
             );
