@@ -10,7 +10,7 @@ import {
 } from "@/lib/api/userInteractions";
 import { userInteractionsReducer } from "../context/userInteractions/userInteractionsReducer";
 import { UserInteractionsTypes } from "../context/userInteractions/userInteractionsTypes";
-import { Recipe } from "@/types/recipes";
+import { RecipeWithRating } from "@/types/recipes";
 import {
   AddRecipeRating,
   ToggleFavouriteRecipe,
@@ -21,11 +21,11 @@ export function useUserInteractions() {
   const contextRecipes = useContext(RecipesContext);
   const [state, dispatch] = useReducer(userInteractionsReducer, {
     favouritesRecipesId: <string[]>[],
-    favouritesRecipes: <Recipe[]>[],
+    favouritesRecipes: <RecipeWithRating[]>[],
   });
 
   async function retrieveFavouritesList(userId: string) {
-    const data: Recipe[] = await retrieveFavouritesApi(userId);
+    const data: RecipeWithRating[] = await retrieveFavouritesApi(userId);
 
     dispatch({
       type: UserInteractionsTypes.RETRIEVE_FAVOURITES,

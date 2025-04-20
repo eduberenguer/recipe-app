@@ -2,7 +2,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { Recipe } from "@/types/recipes";
+import { RecipeWithRating } from "@/types/recipes";
 import photoSrc from "@/app/utils/photoSrc";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { MdDeleteForever } from "react-icons/md";
@@ -11,7 +11,7 @@ export default function RecipesListMobile({
   recipes,
   deleteRecipe,
 }: {
-  recipes: Recipe[];
+  recipes: RecipeWithRating[];
   deleteRecipe: (recipeId: string) => Promise<void>;
 }) {
   return (
@@ -46,6 +46,9 @@ export default function RecipesListMobile({
               </p>
             </div>
             <div>
+              <p className="text-sm text-gray-600">
+                {recipe.rating.average} ({recipe.rating.count} ratings)
+              </p>
               <button
                 onClick={() => deleteRecipe(recipe.id)}
                 className="p-2 text-red-600 hover:text-red-800 rounded cursor-pointer"

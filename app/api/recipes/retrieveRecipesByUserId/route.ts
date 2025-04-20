@@ -1,4 +1,5 @@
 import { retrieveRecipesByUserId } from "@/server/recipes";
+import { retrieveRecipeRatings } from "@/server/userInteractions";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -15,7 +16,17 @@ export async function GET(request: Request) {
 
     const result = await retrieveRecipesByUserId(userId);
 
-    return NextResponse.json(result, {
+    const recipesWithRatings = await Promise.all(
+      result.map(async (recipe) => {
+        const rating = await retrieveRecipeRatings(recipe.id);
+        return {
+          ...recipe,
+          rating,
+        };
+      })
+    );
+
+    return NextResponse.json(recipesWithRatings, {
       status: result ? 200 : 400,
     });
   } catch (error) {

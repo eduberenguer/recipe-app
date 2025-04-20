@@ -1,10 +1,10 @@
-import { Recipe } from "@/types/recipes";
+import { RecipeWithRating } from "@/types/recipes";
 import { UserInteractionsAction } from "./userInteractionsActions";
 import { UserInteractionsTypes } from "./userInteractionsTypes";
 
 type userInteractionsState = {
   favouritesRecipesId: string[];
-  favouritesRecipes: Recipe[];
+  favouritesRecipes: RecipeWithRating[];
 };
 
 export function userInteractionsReducer(
@@ -20,7 +20,10 @@ export function userInteractionsReducer(
     case UserInteractionsTypes.ADD_RECIPE_FAVOURITE:
       return {
         ...state,
-        favouritesRecipes: [...state.favouritesRecipes, action.payload],
+        favouritesRecipes: [
+          ...state.favouritesRecipes,
+          action.payload as RecipeWithRating,
+        ],
         favouritesRecipesId: [...state.favouritesRecipesId, action.payload.id],
       };
     case UserInteractionsTypes.REMOVE_RECIPE_FAVOURITE:

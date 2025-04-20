@@ -1,10 +1,10 @@
-import { Recipe } from "@/types/recipes";
+import { Recipe, RecipeWithRating } from "@/types/recipes";
 import { UserInteractionsTypes } from "./userInteractionsTypes";
 
 export type UserInteractionsAction =
   | {
       type: typeof UserInteractionsTypes.RETRIEVE_FAVOURITES;
-      payload: Recipe[];
+      payload: RecipeWithRating[];
     }
   | {
       type: typeof UserInteractionsTypes.ADD_RECIPE_FAVOURITE;

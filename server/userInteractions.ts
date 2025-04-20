@@ -21,7 +21,17 @@ export async function retrieveFavourites(userId: string): Promise<Recipe[]> {
       .map((record) => record.expand?.recipeId)
       .filter((recipe): recipe is Recipe => !!recipe);
 
-    return favouriteRecipes;
+    const recipesWithRatings = await Promise.all(
+      favouriteRecipes.map(async (recipe) => {
+        const rating = await retrieveRecipeRatings(recipe.id);
+        return {
+          ...recipe,
+          rating,
+        };
+      })
+    );
+
+    return recipesWithRatings;
   } catch (error) {
     throw new Error(`Error fetching favourites: ${error}`);
   }
@@ -93,10 +103,10 @@ export async function removeFavourite(
 export async function retrieveRecipeRatings(
   recipeId: string
 ): Promise<{ average: number; count: number }> {
-  console.log("retrieveRecipeRatings", recipeId);
   try {
     const result = await pb.collection("ratings").getFullList({
       filter: `recipeId="${recipeId}"`,
+      $autoCancel: false,
     });
 
     if (!result || result.length === 0) {
@@ -146,7 +156,10 @@ export async function addRecipeRating(newRecipeRating: AddRecipeRating) {
 }
 
 export async function hasUserRatedRecipe(userId: string, recipeId: string) {
-  console.log(userId, recipeId);
+  if (!userId) {
+    return { success: false, error: "User not authenticated" };
+  }
+
   try {
     const records = await pb.collection("ratings").getFullList({
       filter: `userId = "${userId.trim()}" && recipeId = "${recipeId.trim()}"`,

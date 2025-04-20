@@ -1,6 +1,7 @@
 "use server";
 import pb from "@/lib/pocketbase";
 import { Recipe } from "@/types/recipes";
+import { retrieveRecipeRatings } from "./userInteractions";
 
 export async function createRecipe(recipe: Partial<Recipe>) {
   try {
@@ -15,13 +16,26 @@ export async function createRecipe(recipe: Partial<Recipe>) {
   }
 }
 
-export async function retrieveAllRecipes(): Promise<Partial<Recipe>[]> {
+export async function retrieveAllRecipes(): Promise<
+  (Partial<Recipe> & { rating: { average: number; count: number } })[]
+> {
   try {
     const data = await pb.collection("recipes").getFullList({
       sort: "title",
+      $autoCancel: false,
     });
 
-    return data;
+    const recipesWithRatings = await Promise.all(
+      data.map(async (recipe) => {
+        const rating = await retrieveRecipeRatings(recipe.id);
+        return {
+          ...recipe,
+          rating,
+        };
+      })
+    );
+
+    return recipesWithRatings;
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(error.message);

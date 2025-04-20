@@ -5,6 +5,7 @@ import { AuthContext, RecipesContext } from "../context/context";
 import RecipesListMobile from "./RecipesListMobile/recipesListMobile";
 import RecipesTableDesktop from "./RecipesTableDesktop/recipesTableDesktop";
 import { useIsMobile } from "../hooks/useIsMobile";
+import { RecipeWithRating } from "@/types/recipes";
 
 export default function Dashboard() {
   const contextAuth = useContext(AuthContext);
@@ -36,7 +37,7 @@ export default function Dashboard() {
         />
       ) : (
         <RecipesTableDesktop
-          recipes={recipes}
+          recipes={recipes as RecipeWithRating[]}
           deleteRecipe={
             contextRecipes?.deleteRecipe || (() => Promise.resolve())
           }

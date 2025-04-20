@@ -10,3 +10,10 @@ export interface Recipe {
   favouritesCounter: number;
   description: string;
 }
+
+export interface RecipeWithRating extends Recipe {
+  rating: {
+    average: number;
+    count: number;
+  };
+}

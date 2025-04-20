@@ -2,7 +2,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { Recipe } from "@/types/recipes";
+import { RecipeWithRating } from "@/types/recipes";
 import photoSrc from "@/app/utils/photoSrc";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { MdDeleteForever } from "react-icons/md";
@@ -11,7 +11,7 @@ export default function RecipesTable({
   recipes,
   deleteRecipe,
 }: {
-  recipes: Recipe[];
+  recipes: RecipeWithRating[];
   deleteRecipe: (recipeId: string) => Promise<void>;
 }) {
   return (
@@ -24,6 +24,7 @@ export default function RecipesTable({
           <th className="px-4 py-2">Title</th>
           <th className="px-4 py-2">Servings</th>
           <th className="px-4 py-2">Favourites</th>
+          <th className="px-4 py-2">Rating</th>
           <th className="px-4 py-2">Photo</th>
           <th className="px-4 py-2">Delete</th>
         </tr>
@@ -41,6 +42,13 @@ export default function RecipesTable({
             </td>
             <td className="px-4 py-2">{recipe.servings}</td>
             <td className="px-4 py-2">{recipe.favouritesCounter}</td>
+            <td className="px-4 py-2">
+              {recipe.rating && (
+                <span>
+                  {recipe.rating.average} ({recipe.rating.count} ratings)
+                </span>
+              )}
+            </td>
             <td className="px-4 py-2">
               <Image
                 src={photoSrc(recipe.id ?? "", recipe.photo as string)}

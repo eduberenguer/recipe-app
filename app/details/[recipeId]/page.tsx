@@ -103,6 +103,15 @@ export default function Details() {
               height={200}
               className="rounded-lg"
             />
+            {rating ? (
+              <div className="mb-4 text-gray-700">
+                <p className="font-semibold">
+                  {rating.average.toFixed(1)} ({rating.count} ratings)
+                </p>
+              </div>
+            ) : (
+              <p className="mb-4 text-gray-400 italic">No ratings yet</p>
+            )}
             <p className="mt-4 text-gray-600">
               {contextRecipes.stateRecipe.description}
             </p>
@@ -111,15 +120,6 @@ export default function Details() {
             <h2 className="text-2xl font-semibold mb-2">
               {contextRecipes.stateRecipe.title}
             </h2>
-            {rating ? (
-              <div className="mb-4 text-gray-700">
-                <p className="font-semibold">
-                  Rating: {rating.average.toFixed(1)} ({rating.count} ratings)
-                </p>
-              </div>
-            ) : (
-              <p className="mb-4 text-gray-400 italic">No ratings yet</p>
-            )}
             <div>
               <h3 className="font-semibold text-lg mb-2">Ingredients</h3>
               <ul className="list-disc pl-6 space-y-2">

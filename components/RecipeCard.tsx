@@ -3,12 +3,11 @@ import Image from "next/image";
 import checkOwnerRecipe from "@/app/utils/checkOwnerRecipe";
 import photoSrc from "@/app/utils/photoSrc";
 import Button from "@/components/Button";
-import { Recipe } from "@/types/recipes";
+import { RecipeWithRating } from "@/types/recipes";
 import { AuthUser } from "@/app/hooks/useAuth";
 
 import { TbEggCracked } from "react-icons/tb";
 import { BsEggFried } from "react-icons/bs";
-import { useState, useEffect } from "react";
 
 export default function RecipeCard({
   recipe,
@@ -17,9 +16,8 @@ export default function RecipeCard({
   toggleFavourite,
   isFavourite,
   isFromMain,
-  retrieveRecipeRating,
 }: {
-  recipe: Recipe;
+  recipe: RecipeWithRating;
   user: Partial<AuthUser> | null | undefined;
   deleteRecipe: (recipeId: string) => void;
   toggleFavourite: (userId: string, recipeId: string) => Promise<void>;
@@ -30,25 +28,6 @@ export default function RecipeCard({
     count: number;
   }>;
 }) {
-  const [rating, setRating] = useState<{
-    average: number;
-    count: number;
-  } | null>(null);
-
-  useEffect(() => {
-    const fetchRating = async () => {
-      try {
-        const data = await retrieveRecipeRating(recipe.id);
-        setRating(data);
-      } catch (error) {
-        console.error("Error retrieving rating:", error);
-        setRating(null);
-      }
-    };
-
-    fetchRating();
-  }, [recipe.id]);
-
   return (
     <div
       key={recipe.id}
@@ -80,9 +59,10 @@ export default function RecipeCard({
             <h3 className="text-xl font-semibold text-gray-900">
               {recipe.title}
             </h3>
-            {rating && rating.count > 0 ? (
+            {recipe.rating && recipe.rating.count > 0 ? (
               <p className="text-sm text-gray-700">
-                {rating.average.toFixed(1)} ({rating.count} ratings)
+                {recipe.rating.average.toFixed(1)} ({recipe.rating.count}{" "}
+                ratings)
               </p>
             ) : (
               <p className="text-sm text-gray-400 italic">No ratings</p>
