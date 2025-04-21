@@ -4,9 +4,14 @@ import { createServer } from "http";
 import { GET } from "./route";
 import { retrieveRecipesByUserId } from "@/server/recipes";
 import { mockRecipe } from "@/app/__mocks__/recipe.mock";
+import { retrieveRecipeRatings } from "@/server/userInteractions";
 
 jest.mock("@/server/recipes", () => ({
   retrieveRecipesByUserId: jest.fn(),
+}));
+
+jest.mock("@/server/userInteractions", () => ({
+  retrieveRecipeRatings: jest.fn(),
 }));
 
 jest.mock("next/server", () => ({
@@ -57,6 +62,10 @@ describe("GET /api/recipes/retrieveRecipesByUserId", () => {
 
   it("should return 200 and the all users recipes", async () => {
     (retrieveRecipesByUserId as jest.Mock).mockResolvedValue([mockRecipe]);
+    (retrieveRecipeRatings as jest.Mock).mockResolvedValue({
+      average: 4.5,
+      count: 10,
+    });
 
     const response = await request(server).get(
       "/api/recipes/retrieveRecipeByName?owner=user123"

@@ -1,6 +1,6 @@
-import { Recipe, Unity } from "@/types/recipes";
+import { RecipeWithRating, Unity } from "@/types/recipes";
 
-export const mockRecipe: Partial<Recipe> = {
+export const mockRecipe: Partial<RecipeWithRating> = {
   title: "Pasta Carbonara",
   owner: "user123",
   servings: 4,
@@ -11,9 +11,13 @@ export const mockRecipe: Partial<Recipe> = {
   ],
   photo: "photo-url",
   description: "A classic Italian pasta dish.",
+  rating: {
+    average: 4.5,
+    count: 10,
+  },
 };
 
-export const mockRecipeWithIdv1: Recipe = {
+export const mockRecipeWithIdv1: RecipeWithRating = {
   id: "recipe123",
   title: "Pasta Carbonara",
   owner: "user123",
@@ -26,6 +30,10 @@ export const mockRecipeWithIdv1: Recipe = {
   photo: "photo-url",
   description: "A classic Italian pasta dish.",
   favouritesCounter: 2,
+  rating: {
+    average: 3,
+    count: 1,
+  },
 };
 
 export const mockRecipeWithIdv2 = [

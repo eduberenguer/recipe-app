@@ -26,10 +26,10 @@ Recipe App (WIP)
 - Testing with Jest and Supertest
 - Favourites System
 - Dashboard Page (admin Panel for managing recipes)
+- Recipe Rating System
 
 ## Upcoming Features
 
-- Recipe Rating System
 - Recipe API (for food data)
 - Allergens Information
 - Weekly Menu

@@ -31,14 +31,14 @@ describe("GET /api/recipes/retrieveRecipe", () => {
   beforeAll(() => {
     server = createServer(async (req, res) => {
       const url = new URL(req.url || "", "http://localhost");
-      const id = url.pathname.split("/").pop();
+      const recipeId = url.pathname.split("/").pop();
 
       const request = new Request(url.toString(), {
         method: req.method,
         headers: req.headers as HeadersInit,
       });
 
-      const result = await GET(request, { params: { id } });
+      const result = await GET(request, { params: { recipeId } });
 
       if (!result || typeof result.status !== "number") {
         res.statusCode = 500;

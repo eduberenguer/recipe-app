@@ -16,6 +16,10 @@ export async function GET(request: Request) {
 
     const result = await retrieveRecipesByUserId(userId);
 
+    if (!result || !Array.isArray(result)) {
+      return NextResponse.json(null, { status: 400 });
+    }
+
     const recipesWithRatings = await Promise.all(
       result.map(async (recipe) => {
         const rating = await retrieveRecipeRatings(recipe.id);
@@ -30,6 +34,7 @@ export async function GET(request: Request) {
       status: result ? 200 : 400,
     });
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       {
         success: false,

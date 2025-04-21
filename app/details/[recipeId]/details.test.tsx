@@ -7,7 +7,7 @@ import { mockRecipesContext } from "@/app/__mocks__/mockRecipesContext";
 import { mockRecipeWithIdv1 } from "@/app/__mocks__/recipe.mock";
 
 jest.mock("next/navigation", () => ({
-  useParams: jest.fn(),
+  useParams: jest.fn(() => ({ recipeId: "abc123" })),
 }));
 
 jest.mock("next/image", () => ({
@@ -21,7 +21,7 @@ jest.mock("next/image", () => ({
 describe("Details component", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    (useParams as jest.Mock).mockReturnValue({ id: "recipe123" });
+    (useParams as jest.Mock).mockReturnValue({ recipeId: "recipe123" });
   });
 
   const customRender = () => {
