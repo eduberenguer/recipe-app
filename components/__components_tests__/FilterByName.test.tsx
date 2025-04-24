@@ -33,6 +33,7 @@ describe("Filter by name component", () => {
           retrieveRecipesByFilterName: mockRetrieveRecipesByFilterName,
           stateUserRecipes: [],
           retrieveRecipesByUserId: jest.fn(),
+          clearStateRecipe: jest.fn(),
         }}
       >
         <FilterByName />

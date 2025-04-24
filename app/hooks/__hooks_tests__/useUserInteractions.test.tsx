@@ -9,12 +9,25 @@ import {
   addFavouriteRecipeApi,
   retrieveFavouritesApi,
   removeRecipeApi,
+  retrieveRecipeRatingsApi,
+  addRecipeRatingApi,
+  checkUserHasRatedApi,
 } from "@/lib/api/userInteractions";
+import { mockAddRecipeRating } from "@/app/__mocks__/mockAddRecipeRating";
 
 jest.mock("@/lib/api/userInteractions", () => ({
   addFavouriteRecipeApi: jest.fn().mockResolvedValue(true),
   retrieveFavouritesApi: jest.fn(),
   removeRecipeApi: jest.fn().mockResolvedValue(undefined),
+  retrieveRecipeRatingsApi: jest.fn().mockResolvedValue({
+    average: 4.5,
+    count: 10,
+  }),
+  addRecipeRatingApi: jest.fn().mockResolvedValue({
+    average: 4.5,
+    count: 10,
+  }),
+  checkUserHasRatedApi: jest.fn().mockResolvedValue({ alreadyRated: true }),
 }));
 
 describe("UseUserInteractions test", () => {
@@ -88,7 +101,7 @@ describe("UseUserInteractions test", () => {
     });
   });
 
-  it("removeRecipe work is render", async () => {
+  it("removeRecipe is call", async () => {
     mockUserInteractionContext.favouritesRecipes = [mockRecipeWithIdv1];
     mockUserInteractionContext.favouritesRecipesId = [mockRecipeWithIdv1.id];
 
@@ -104,5 +117,56 @@ describe("UseUserInteractions test", () => {
       recipeId: "recipe456",
       userId: "user123",
     });
+  });
+
+  it("retrieve recipe rating is call", async () => {
+    mockUserInteractionContext.retrieveRecipeRatings = jest
+      .fn()
+      .mockResolvedValue({
+        average: 4.5,
+        count: 10,
+      });
+
+    const { result } = renderHook(() => useUserInteractions(), {
+      wrapper,
+    });
+
+    await act(async () => {
+      await result.current.retrieveRecipeRatings("recipe456");
+    });
+
+    expect(retrieveRecipeRatingsApi).toHaveBeenCalledWith("recipe456");
+  });
+
+  it("add recipe rating is call and return true", async () => {
+    mockUserInteractionContext.addRecipeRating = jest
+      .fn()
+      .mockResolvedValue(true);
+
+    const { result } = renderHook(() => useUserInteractions(), {
+      wrapper,
+    });
+
+    await act(async () => {
+      await result.current.addRecipeRating(mockAddRecipeRating);
+    });
+
+    expect(addRecipeRatingApi).toHaveBeenCalledWith(mockAddRecipeRating);
+  });
+
+  it("check user rated is call", async () => {
+    mockUserInteractionContext.checkUserHasRated = jest
+      .fn()
+      .mockResolvedValue(true);
+
+    const { result } = renderHook(() => useUserInteractions(), {
+      wrapper,
+    });
+
+    await act(async () => {
+      await result.current.checkUserHasRated("user123", "recipe123");
+    });
+
+    expect(checkUserHasRatedApi).toHaveBeenCalledWith("user123", "recipe123");
   });
 });

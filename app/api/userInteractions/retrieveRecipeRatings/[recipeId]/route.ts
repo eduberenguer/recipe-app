@@ -9,7 +9,10 @@ export async function GET(
     const { recipeId } = await params;
 
     if (!recipeId) {
-      return NextResponse.json({ error: "ID is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "RecipeID is required" },
+        { status: 400 }
+      );
     }
 
     const result = await retrieveRecipeRatings(recipeId);

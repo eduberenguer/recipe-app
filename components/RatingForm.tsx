@@ -16,10 +16,6 @@ export default function RatingForm({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const numericRating = Number(rating);
-    if (numericRating < 1 || numericRating > 5) {
-      alert("Please select a rating between 1 and 5.");
-      return;
-    }
 
     handleAddRating(recipeId, numericRating);
     setRating("");
