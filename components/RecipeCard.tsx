@@ -17,7 +17,7 @@ export default function RecipeCard({
   isFavourite,
   isFromMain,
 }: {
-  recipe: RecipeWithRating;
+  recipe: Partial<RecipeWithRating>;
   user: Partial<AuthUser> | null | undefined;
   deleteRecipe: (recipeId: string) => void;
   toggleFavourite: (userId: string, recipeId: string) => Promise<void>;
@@ -36,22 +36,24 @@ export default function RecipeCard({
       <div className="relative w-full">
         <Link href={`/details/${recipe.id}`}>
           <Image
-            src={photoSrc(recipe.id, recipe.photo as string)}
-            alt={recipe.title}
+            src={photoSrc(recipe.id ?? "", (recipe.photo as string) ?? "")}
+            alt={recipe.title ?? "Recipe image"}
             width={420}
             height={250}
             className="w-full h-64 object-cover rounded-t-md"
           />
         </Link>
-        {user?.id && checkOwnerRecipe(user.id, recipe.owner) && isFromMain && (
-          <Button
-            onClick={() => deleteRecipe(recipe.id)}
-            className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm"
-            role="button"
-          >
-            X
-          </Button>
-        )}
+        {user?.id &&
+          checkOwnerRecipe(user.id ?? "", recipe.owner ?? "") &&
+          isFromMain && (
+            <Button
+              onClick={() => recipe.id && deleteRecipe(recipe.id)}
+              className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm"
+              role="button"
+            >
+              X
+            </Button>
+          )}
       </div>
       <div className="p-4 flex flex-col justify-between flex-grow">
         <div className="flex justify-between items-center">
@@ -74,7 +76,11 @@ export default function RecipeCard({
               className={`cursor-pointer ${
                 isFavourite ? "text-red-500" : "text-gray-500"
               }`}
-              onClick={() => user?.id && toggleFavourite(user.id, recipe.id)}
+              onClick={() =>
+                user?.id &&
+                recipe.id &&
+                toggleFavourite(user.id, recipe.id ?? "")
+              }
             >
               {isFavourite ? (
                 <BsEggFried

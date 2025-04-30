@@ -7,6 +7,7 @@ import {
   removeRecipeApi,
   retrieveFavouritesApi,
   retrieveRecipeRatingsApi,
+  sendMessageApi,
 } from "@/lib/api/userInteractions";
 import { userInteractionsReducer } from "../context/userInteractions/userInteractionsReducer";
 import { UserInteractionsTypes } from "../context/userInteractions/userInteractionsTypes";
@@ -95,6 +96,16 @@ export function useUserInteractions() {
     return response.alreadyRated;
   }
 
+  async function sendMessage(
+    fromUserId: string,
+    toUserId: string,
+    content: string
+  ) {
+    const sendMessage = await sendMessageApi(fromUserId, toUserId, content);
+
+    return sendMessage;
+  }
+
   return {
     favouritesRecipesId: state.favouritesRecipesId,
     favouritesRecipes: state.favouritesRecipes,
@@ -105,5 +116,6 @@ export function useUserInteractions() {
     retrieveRecipeRatings,
     addRecipeRating,
     checkUserHasRated,
+    sendMessage,
   };
 }

@@ -88,3 +88,23 @@ export async function checkUserHasRatedApi(userId: string, recipeId: string) {
   }
   return await res.json();
 }
+
+export async function sendMessageApi(
+  fromUserId: string,
+  toUserId: string,
+  content: string
+) {
+  const response = await fetch("/api/userInteractions/sendMessage", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ fromUserId, toUserId, content }),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) throw new Error(result.error || "Failed to send message");
+
+  return result.message;
+}

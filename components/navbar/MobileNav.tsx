@@ -60,6 +60,14 @@ export default function MobileNav({
           Favourites
         </button>
       )}
+      {pathname !== "/chat" && (
+        <button
+          onClick={() => handleNav("/chat")}
+          className="text-lg font-medium"
+        >
+          Chat
+        </button>
+      )}
       {pathname !== "/dashboard" && (
         <button
           onClick={() => handleNav("/dashboard")}

@@ -5,6 +5,7 @@ import {
   AddRecipeRating,
 } from "@/types/userInteractions";
 import { Recipe } from "@/types/recipes";
+import { User } from "@/types/auth";
 
 export async function retrieveFavourites(userId: string): Promise<Recipe[]> {
   try {
@@ -172,4 +173,69 @@ export async function hasUserRatedRecipe(userId: string, recipeId: string) {
     }
     return { success: false, error: "Something went wrong" };
   }
+}
+
+export async function sendMessage(
+  fromUserId: string,
+  toUserId: string,
+  content: string
+) {
+  const message = await pb.collection("messages").create({
+    from: fromUserId,
+    to: toUserId,
+    content,
+  });
+
+  return message;
+}
+
+export async function searchUsersByUsername(query: string) {
+  const results = await pb.collection("users").getList(1, 10, {
+    filter: `name ~ "${query}"`,
+  });
+
+  return results.items.map((user) => ({
+    id: user.id,
+    name: user.name,
+  }));
+}
+
+export async function getMessagesBetweenUsers(
+  userAId: string,
+  userBId: string
+) {
+  const result = await pb.collection("messages").getFullList({
+    filter: `(
+      (from="${userAId}" && to="${userBId}") ||
+      (from="${userBId}" && to="${userAId}")
+    )`,
+    sort: "created",
+  });
+
+  return result;
+}
+
+export async function getConversationsForUser(userId: string): Promise<User[]> {
+  const result = await pb.collection("messages").getFullList({
+    filter: `from = "${userId}" || to = "${userId}"`,
+    expand: "from,to",
+  });
+
+  const userMap = new Map<string, User>();
+
+  for (const msg of result) {
+    const other =
+      msg.expand && (msg.from === userId ? msg.expand.to : msg.expand.from);
+    if (other && !userMap.has(other.id)) {
+      userMap.set(other.id, {
+        id: other.id,
+        name: other.name,
+        email: other.email,
+        created: other.created,
+        updated: other.updated,
+      });
+    }
+  }
+
+  return Array.from(userMap.values());
 }

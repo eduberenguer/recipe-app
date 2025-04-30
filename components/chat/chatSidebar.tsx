@@ -1,0 +1,142 @@
+"use client";
+
+import { useEffect, useState, useContext } from "react";
+import {
+  getConversationsForUser,
+  searchUsersByUsername,
+} from "@/server/userInteractions";
+import { User, UserWithName } from "@/types/auth";
+import { AuthContext } from "@/app/context/context";
+import ChatInput from "./chatInput";
+
+interface ChatSidebarProps {
+  onSelectUser: (userId: string) => void;
+  handlerShowChatInput: (show: boolean) => void;
+}
+
+export default function ChatSidebar({
+  onSelectUser,
+  handlerShowChatInput,
+}: ChatSidebarProps) {
+  const contextAuth = useContext(AuthContext);
+  const [conversations, setConversations] = useState<User[]>([]);
+  const [showNewConversation, setShowNewConversation] = useState(false);
+  const [selectedNewUser, setSelectedNewUser] = useState<UserWithName | null>(
+    null
+  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<UserWithName[]>([]);
+
+  useEffect(() => {
+    const fetchConversations = async () => {
+      if (!contextAuth?.user?.id) return;
+      try {
+        const users = await getConversationsForUser(contextAuth?.user?.id);
+        setConversations(users);
+      } catch (error) {
+        console.error("Error loading conversations", error);
+      }
+    };
+
+    fetchConversations();
+  }, [contextAuth?.user?.id]);
+
+  const handleNewConversation = () => {
+    setShowNewConversation(!showNewConversation);
+    setSearchQuery("");
+    setSelectedNewUser(null);
+    setSearchResults([]);
+    handlerShowChatInput(true);
+  };
+
+  const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    if (query.trim() === "") {
+      setSearchResults([]);
+      return;
+    }
+
+    const results = await searchUsersByUsername(query);
+    setSearchResults(results);
+  };
+
+  const handleSelectSearchResult = (user: UserWithName) => {
+    setSelectedNewUser(user);
+    setSearchQuery(user.name);
+    setSearchResults([]);
+    handlerShowChatInput(false);
+  };
+
+  return (
+    <div className="bg-white p-4 shadow-lg rounded-md overflow-y-auto">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-semibold">Chats</h2>
+        <button
+          onClick={handleNewConversation}
+          className="text-sm text-blue-600 hover:underline"
+        >
+          {showNewConversation ? "X" : "New chat"}
+        </button>
+      </div>
+
+      {showNewConversation && (
+        <div>
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Search user by name"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          {searchResults.length > 0 && (
+            <ul className="space-y-2">
+              {searchResults.map((user) => (
+                <li
+                  key={user.id}
+                  onClick={() => handleSelectSearchResult(user)}
+                  className="cursor-pointer hover:bg-blue-100 p-2 rounded-md"
+                >
+                  {user.name}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+
+      <ul className="space-y-2">
+        {!showNewConversation &&
+          conversations.map((u) => (
+            <li
+              key={u.id}
+              onClick={() => onSelectUser(u.id)}
+              className="cursor-pointer hover:bg-blue-100 p-2 rounded-md"
+            >
+              {u.name}
+            </li>
+          ))}
+      </ul>
+
+      {selectedNewUser && contextAuth?.user?.id && (
+        <div className="mt-4">
+          <p className="text-sm text-gray-700 mb-2">
+            Sending message to: <strong>{selectedNewUser.name}</strong>
+          </p>
+          <ChatInput
+            toUserId={selectedNewUser.id}
+            fromUserId={contextAuth?.user?.id}
+            onMessageSent={() => {
+              setShowNewConversation(false);
+              setSelectedNewUser(null);
+            }}
+          />
+        </div>
+      )}
+    </div>
+  );
+}

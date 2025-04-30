@@ -8,3 +8,9 @@ export type AddRecipeRating = {
   recipeId: string;
   rating: number;
 };
+
+export type Message = {
+  id: string;
+  content: string;
+  from: string;
+};
