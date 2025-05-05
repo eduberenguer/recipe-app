@@ -8,6 +8,7 @@ import { AuthContext } from "@/app/context/context";
 export default function Chat() {
   const [selectedUserId, setSelectedUserId] = useState<string>("");
   const [showChatInput, setChatInput] = useState<boolean>(true);
+  const [refreshChatsTrigger, setRefreshChatsTrigger] = useState(0);
   const contextAuth = useContext(AuthContext);
 
   const handleSelectUser = (userId: string) => {
@@ -24,6 +25,8 @@ export default function Chat() {
         <ChatSidebar
           onSelectUser={handleSelectUser}
           handlerShowChatInput={handlerShowChatInput}
+          refreshChatsTrigger={refreshChatsTrigger}
+          setRefreshChatsTrigger={setRefreshChatsTrigger}
         />
       </div>
       {selectedUserId && contextAuth?.user?.id && (
@@ -36,6 +39,7 @@ export default function Chat() {
               <ChatInput
                 fromUserId={contextAuth.user.id}
                 toUserId={selectedUserId}
+                setRefreshChatsTrigger={setRefreshChatsTrigger}
               />
             )}
           </div>

@@ -6,6 +6,7 @@ interface ChatInputProps {
   toUserId: string;
   fromUserId: string;
   onMessageSent?: () => void;
+  setRefreshChatsTrigger: (value: number) => void;
 }
 
 import { UserInteractionsContext } from "@/app/context/context";
@@ -15,6 +16,7 @@ export default function ChatInput({
   toUserId,
   fromUserId,
   onMessageSent,
+  setRefreshChatsTrigger,
 }: ChatInputProps) {
   const contextUseInteractions = useContext(UserInteractionsContext);
   const [message, setMessage] = useState("");
@@ -29,6 +31,10 @@ export default function ChatInput({
       setStatus("Message sent!");
       setMessage("");
       onMessageSent?.();
+
+      if (setRefreshChatsTrigger) {
+        setRefreshChatsTrigger(Date.now());
+      }
     } catch (error: unknown) {
       setStatus((error as Error).message || "Error sending message");
     }

@@ -12,11 +12,15 @@ import ChatInput from "./chatInput";
 interface ChatSidebarProps {
   onSelectUser: (userId: string) => void;
   handlerShowChatInput: (show: boolean) => void;
+  refreshChatsTrigger: number;
+  setRefreshChatsTrigger: (value: number) => void;
 }
 
 export default function ChatSidebar({
   onSelectUser,
   handlerShowChatInput,
+  refreshChatsTrigger,
+  setRefreshChatsTrigger,
 }: ChatSidebarProps) {
   const contextAuth = useContext(AuthContext);
   const [conversations, setConversations] = useState<User[]>([]);
@@ -39,7 +43,7 @@ export default function ChatSidebar({
     };
 
     fetchConversations();
-  }, [contextAuth?.user?.id]);
+  }, [contextAuth?.user?.id, refreshChatsTrigger]);
 
   const handleNewConversation = () => {
     setShowNewConversation(!showNewConversation);
@@ -133,7 +137,11 @@ export default function ChatSidebar({
             onMessageSent={() => {
               setShowNewConversation(false);
               setSelectedNewUser(null);
+              setRefreshChatsTrigger(Date.now());
+              onSelectUser(selectedNewUser.id);
+              handlerShowChatInput(true);
             }}
+            setRefreshChatsTrigger={setRefreshChatsTrigger}
           />
         </div>
       )}

@@ -27,6 +27,7 @@ Recipe App (WIP)
 - Favourites System
 - Dashboard Page (admin Panel for managing recipes)
 - Recipe Rating System
+- Chat between users (websockets in pocketbase)
 
 ## Upcoming Features
 
@@ -34,7 +35,6 @@ Recipe App (WIP)
 - Allergens Information
 - Weekly Menu
 - Pagination
-- Comments between users
 - Recipe Comments System
 - User-generated Recipe Collections
 - Multi-language Support

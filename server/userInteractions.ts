@@ -201,13 +201,13 @@ export async function searchUsersByUsername(query: string) {
 }
 
 export async function getMessagesBetweenUsers(
-  userAId: string,
-  userBId: string
+  fromUserId: string,
+  toUserId: string
 ) {
   const result = await pb.collection("messages").getFullList({
     filter: `(
-      (from="${userAId}" && to="${userBId}") ||
-      (from="${userBId}" && to="${userAId}")
+      (from="${fromUserId}" && to="${toUserId}") ||
+      (from="${toUserId}" && to="${fromUserId}")
     )`,
     sort: "created",
   });
