@@ -24,6 +24,7 @@ export default function Chat() {
       <div className="w-1/3 bg-white p-4 overflow-y-auto rounded-l-lg">
         <ChatSidebar
           onSelectUser={handleSelectUser}
+          selectedUserId={selectedUserId}
           handlerShowChatInput={handlerShowChatInput}
           refreshChatsTrigger={refreshChatsTrigger}
           setRefreshChatsTrigger={setRefreshChatsTrigger}

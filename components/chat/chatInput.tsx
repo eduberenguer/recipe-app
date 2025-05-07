@@ -53,7 +53,7 @@ export default function ChatInput({
       />
       <button
         type="submit"
-        className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200"
+        className="bg-blue-600 w-50 m-auto text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200 hover:cursor-pointer"
       >
         Send
       </button>

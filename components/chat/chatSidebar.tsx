@@ -11,6 +11,7 @@ import ChatInput from "./chatInput";
 
 interface ChatSidebarProps {
   onSelectUser: (userId: string) => void;
+  selectedUserId: string | null;
   handlerShowChatInput: (show: boolean) => void;
   refreshChatsTrigger: number;
   setRefreshChatsTrigger: (value: number) => void;
@@ -18,6 +19,7 @@ interface ChatSidebarProps {
 
 export default function ChatSidebar({
   onSelectUser,
+  selectedUserId,
   handlerShowChatInput,
   refreshChatsTrigger,
   setRefreshChatsTrigger,
@@ -79,7 +81,7 @@ export default function ChatSidebar({
         <h2 className="text-xl font-semibold">Chats</h2>
         <button
           onClick={handleNewConversation}
-          className="text-sm text-blue-600 hover:underline"
+          className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-800 hover:cursor-pointer"
         >
           {showNewConversation ? "X" : "New chat"}
         </button>
@@ -112,18 +114,22 @@ export default function ChatSidebar({
           )}
         </div>
       )}
-
       <ul className="space-y-2">
         {!showNewConversation &&
-          conversations.map((u) => (
-            <li
-              key={u.id}
-              onClick={() => onSelectUser(u.id)}
-              className="cursor-pointer hover:bg-blue-100 p-2 rounded-md"
-            >
-              {u.name}
-            </li>
-          ))}
+          conversations.map((user) => {
+            const isActive = user.id === selectedUserId;
+            return (
+              <li
+                key={user.id}
+                onClick={() => onSelectUser(user.id)}
+                className={`cursor-pointer p-2 rounded-md ${
+                  isActive ? "bg-blue-200 font-semibold" : "hover:bg-blue-100"
+                }`}
+              >
+                {user.name}
+              </li>
+            );
+          })}
       </ul>
 
       {selectedNewUser && contextAuth?.user?.id && (

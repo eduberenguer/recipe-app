@@ -12,5 +12,19 @@ export type AddRecipeRating = {
 export type Message = {
   id: string;
   content: string;
+  fromUserId: string;
+  fromUserName?: string;
+  created: Date;
+};
+
+export type MessageRecord = {
+  id: string;
+  content: string;
   from: string;
+  to: string;
+  read: boolean;
+  created: Date;
+  expand?: {
+    from?: { name: string };
+  };
 };

@@ -3,6 +3,7 @@ import pb from "@/lib/pocketbase";
 import {
   ToggleFavouriteRecipe,
   AddRecipeRating,
+  MessageRecord,
 } from "@/types/userInteractions";
 import { Recipe } from "@/types/recipes";
 import { User } from "@/types/auth";
@@ -203,12 +204,13 @@ export async function searchUsersByUsername(query: string) {
 export async function getMessagesBetweenUsers(
   fromUserId: string,
   toUserId: string
-) {
-  const result = await pb.collection("messages").getFullList({
+): Promise<MessageRecord[]> {
+  const result = await pb.collection("messages").getFullList<MessageRecord>({
     filter: `(
       (from="${fromUserId}" && to="${toUserId}") ||
       (from="${toUserId}" && to="${fromUserId}")
     )`,
+    expand: "from",
     sort: "created",
   });
 

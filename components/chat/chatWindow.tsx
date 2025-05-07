@@ -27,16 +27,18 @@ export default function ChatWindow({ selectedUserId }: ChatWindowProps) {
         );
 
         const mappedMessages = records.map((record) => ({
-          content: record.content,
-          from: record.from,
           id: record.id,
+          content: record.content,
+          fromUserId: record.from,
+          fromUserName: record.expand?.from?.name ?? record.from,
+          created: record.created,
         }));
 
         if (!unsubscribed) setMessages(mappedMessages);
 
         const unsubscribe = await pb
           .collection("messages")
-          .subscribe("*", (e) => {
+          .subscribe("*", async (e) => {
             if (e.action === "create") {
               const msgData = e.record;
               const isRelevant =
@@ -46,18 +48,31 @@ export default function ChatWindow({ selectedUserId }: ChatWindowProps) {
                   msgData.to === contextAuth.user?.id);
 
               if (isRelevant) {
-                setMessages((prev) => {
-                  const exists = prev.some((msg) => msg.id === msgData.id);
-                  if (exists) return prev;
-                  return [
-                    ...prev,
-                    {
-                      id: msgData.id,
-                      content: msgData.content,
-                      from: msgData.from,
-                    },
-                  ];
-                });
+                try {
+                  const fullMsg = await pb
+                    .collection("messages")
+                    .getOne(msgData.id, {
+                      expand: "from",
+                    });
+
+                  setMessages((prev) => {
+                    const exists = prev.some((msg) => msg.id === fullMsg.id);
+                    if (exists) return prev;
+                    return [
+                      ...prev,
+                      {
+                        id: fullMsg.id,
+                        content: fullMsg.content,
+                        fromUserId: fullMsg.from,
+                        fromUserName:
+                          fullMsg.expand?.from?.name ?? fullMsg.from,
+                        created: fullMsg.created,
+                      },
+                    ];
+                  });
+                } catch (err) {
+                  console.error("Error loading full message with expand", err);
+                }
               }
             }
           });
@@ -91,7 +106,10 @@ export default function ChatWindow({ selectedUserId }: ChatWindowProps) {
             className="p-3 rounded-lg border-2 border-gray-200 shadow-sm"
           >
             <div className="font-semibold text-sm text-gray-700">
-              {message.from}
+              {message.fromUserName}
+              <span className="ml-2 italic text-xs text-gray-500">
+                {new Date(message.created).toLocaleString()}
+              </span>
             </div>
             <div className="mt-1">{message.content}</div>
           </div>
