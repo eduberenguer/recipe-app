@@ -16,6 +16,7 @@ Recipe App (WIP)
 ## Features
 
 - User Authentication (Login/Register)
+- Chat between users (websockets in pocketbase)
 - Create and Edit Recipes
 - Recipe List View
 - Recipe Search
@@ -25,9 +26,9 @@ Recipe App (WIP)
 - Testing with Cypress
 - Testing with Jest and Supertest
 - Favourites System
+- Session Persistence with cookies
 - Dashboard Page (admin Panel for managing recipes)
 - Recipe Rating System
-- Chat between users (websockets in pocketbase)
 
 ## Upcoming Features
 
