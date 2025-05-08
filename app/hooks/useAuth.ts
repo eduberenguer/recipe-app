@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Cookies from "js-cookie";
 
 import pb from "@/lib/pocketbase";
 import { loginUserApi, registerUserApi } from "@/lib/api/users";
@@ -12,9 +13,10 @@ export type AuthUser = Pick<User, "id" | "created" | "name" | "email"> & {
 };
 
 export function useAuth() {
-  const [user, setUser] = useState<Partial<AuthUser> | null>(
-    pb.authStore.model
-  );
+  const [user, setUser] = useState<Partial<AuthUser> | null>(() => {
+    const storedUser = Cookies.get("authUser");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
   async function register(userData: Partial<User>) {
     try {
@@ -35,14 +37,18 @@ export function useAuth() {
     try {
       const data = await loginUserApi(user);
       if (data.success) {
-        setUser({
+        const authUser = {
           id: data.user.id,
           created: data.user.created,
           name: data.user.name,
           email: data.user.email,
           token: data.token,
           isAuthenticated: data.isAuthenticated,
-        });
+        };
+
+        setUser(authUser);
+
+        Cookies.set("authUser", JSON.stringify(authUser), { expires: 7 });
 
         if (retrieveFavouritesList) {
           retrieveFavouritesList(data.user.id);
@@ -62,6 +68,7 @@ export function useAuth() {
   async function logout() {
     pb.authStore.clear();
     setUser(null);
+    Cookies.remove("authUser");
   }
 
   return {
