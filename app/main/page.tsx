@@ -6,9 +6,9 @@ import {
   UserInteractionsContext,
 } from "../context/context";
 
-import RecipeCard from "@/components/RecipeCard";
 import FilterByName from "@/components/FilterByName";
 import CustomSpinner from "@/components/CustomSpinner";
+import RecipeCard from "@/components/RecipeCard";
 
 export default function Main() {
   const contextAuth = useContext(AuthContext);
@@ -60,7 +60,7 @@ export default function Main() {
         </div>
       </header>
 
-      <div className="flex flex-wrap justify-center gap-4 mt-20">
+      <div className="flex flex-wrap justify-center gap-4 mt-20 flex-col items-center">
         {contextRecipes.stateAllRecipes.length > 0 ? (
           contextRecipes.stateAllRecipes.map((recipe) => {
             return (

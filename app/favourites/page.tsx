@@ -5,9 +5,10 @@ import {
   RecipesContext,
   UserInteractionsContext,
 } from "../context/context";
-import RecipeCard from "@/components/RecipeCard";
+
 import { RecipeWithRating } from "@/types/recipes";
 import CustomSpinner from "@/components/CustomSpinner";
+import RecipeCardExpanded from "@/components/RecipeCardExpanded";
 
 export default function Favourites() {
   const contextAuth = useContext(AuthContext);
@@ -59,7 +60,7 @@ export default function Favourites() {
           contextUserInteraction?.favouritesRecipes.map(
             (recipe: RecipeWithRating) => {
               return (
-                <RecipeCard
+                <RecipeCardExpanded
                   key={recipe.id}
                   recipe={recipe}
                   user={contextAuth?.user}
