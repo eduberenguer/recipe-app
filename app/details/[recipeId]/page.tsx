@@ -86,6 +86,25 @@ export default function Details() {
     }
   };
 
+  function renderRatingSection() {
+    if (contextRecipes?.stateRecipe?.owner === contextUser?.user?.id) {
+      return null;
+    }
+
+    if (alreadyRated) {
+      return (
+        <p className="italic text-green-700">You already rated this recipe.</p>
+      );
+    }
+
+    return (
+      <RatingForm
+        recipeId={recipeId as string}
+        handleAddRating={handleAddRating}
+      />
+    );
+  }
+
   return (
     <div className="p-4 max-w-4xl mx-auto">
       <h1 className="text-xl font-semibold mb-6">Recipe Details</h1>
@@ -133,16 +152,7 @@ export default function Details() {
                 )}
               </ul>
             </div>
-            {alreadyRated ? (
-              <p className="italic text-green-700">
-                You already rated this recipe.
-              </p>
-            ) : (
-              <RatingForm
-                recipeId={recipeId as string}
-                handleAddRating={handleAddRating}
-              />
-            )}
+            {renderRatingSection()}
           </div>
         </div>
       ) : (
