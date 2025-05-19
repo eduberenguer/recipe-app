@@ -9,6 +9,7 @@ export interface Recipe {
   photo: File | string;
   favouritesCounter: number;
   description: string;
+  views: number;
 }
 
 export interface RecipeWithRating extends Recipe {
