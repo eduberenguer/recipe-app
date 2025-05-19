@@ -80,6 +80,17 @@ export async function deleteRecipeById(recipeId: string): Promise<boolean> {
   }
 }
 
+export async function incrementRecipeViews(recipeId: string) {
+  try {
+    const recipe = await pb.collection("recipes").getOne(recipeId);
+    await pb.collection("recipes").update(recipeId, {
+      views: (recipe.views ?? 0) + 1,
+    });
+  } catch (error) {
+    console.error("Error incrementing views:", error);
+  }
+}
+
 export async function retrieveRecipeById(
   recipe: string
 ): Promise<Partial<Recipe>> {

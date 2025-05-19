@@ -69,6 +69,7 @@ export function useAuth() {
     pb.authStore.clear();
     setUser(null);
     Cookies.remove("authUser");
+    sessionStorage.clear();
   }
 
   return {
