@@ -12,6 +12,7 @@ import CustomSpinner from "@/components/CustomSpinner";
 
 import RatingForm from "@/components/RatingForm";
 import ForkRating from "@/components/ForkRating";
+import { incrementRecipeViews } from "@/server/recipes";
 
 export default function Details() {
   const { recipeId } = useParams();
@@ -47,6 +48,17 @@ export default function Details() {
     };
 
     fetchRecipe();
+  }, [recipeId]);
+
+  useEffect(() => {
+    if (typeof recipeId !== "string") return;
+
+    const viewedKey = `viewed_${recipeId}`;
+
+    if (sessionStorage.getItem(viewedKey)) return;
+
+    incrementRecipeViews(recipeId);
+    sessionStorage.setItem(viewedKey, "true");
   }, [recipeId]);
 
   useEffect(() => {
