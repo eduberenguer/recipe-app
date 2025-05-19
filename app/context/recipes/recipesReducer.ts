@@ -1,10 +1,10 @@
-import { Recipe } from "@/types/recipes";
+import { Recipe, RecipeWithRating } from "@/types/recipes";
 import { RecipesAction } from "./recipeActions";
 import { RecipeActionTypes } from "./recipeActionTypes";
 
 type RecipesState = {
   allRecipes: Recipe[];
-  selectedRecipe: Partial<Recipe> | null;
+  selectedRecipe: Partial<Recipe | RecipeWithRating> | null;
   userRecipes: Recipe[];
 };
 

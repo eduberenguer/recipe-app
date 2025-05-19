@@ -11,6 +11,7 @@ import photoSrc from "@/app/utils/photoSrc";
 import CustomSpinner from "@/components/CustomSpinner";
 
 import RatingForm from "@/components/RatingForm";
+import ForkRating from "@/components/ForkRating";
 
 export default function Details() {
   const { recipeId } = useParams();
@@ -122,15 +123,18 @@ export default function Details() {
               height={200}
               className="rounded-lg"
             />
-            {rating ? (
-              <div className="mb-4 text-gray-700">
-                <p className="font-semibold">
-                  {rating.average.toFixed(1)} ({rating.count} ratings)
-                </p>
-              </div>
-            ) : (
-              <p className="mb-4 text-gray-400 italic">No ratings yet</p>
-            )}
+            <div className="flex flex-row gap-2 items-center mt-2">
+              {rating && rating.count > 0 ? (
+                <>
+                  <ForkRating rating={rating.average} />
+                  <p className="text-sm text-gray-700">
+                    ({rating.count} ratings)
+                  </p>
+                </>
+              ) : (
+                <p className="text-sm text-gray-400 italic">No ratings</p>
+              )}
+            </div>
             <p className="mt-4 text-gray-600">
               {contextRecipes.stateRecipe.description}
             </p>
