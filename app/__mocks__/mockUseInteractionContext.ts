@@ -1,13 +1,13 @@
-import { RecipeWithRating } from "@/types/recipes";
-
 export const mockUserInteractionContext = {
-  favouritesRecipesId: [] as string[],
-  favouritesRecipes: [] as RecipeWithRating[],
+  favouritesRecipesId: [],
+  favouritesRecipes: [],
   retrieveFavouritesList: jest.fn(),
   addFavouriteRecipe: jest.fn(),
   removeFavouriteRecipe: jest.fn(),
+  isRecipeFavourite: jest.fn(),
+  dispatch: jest.fn(),
+  sendMessage: jest.fn(),
   retrieveRecipeRatings: jest.fn(),
   addRecipeRating: jest.fn(),
   checkUserHasRated: jest.fn(),
-  dispatch: jest.fn(),
 };

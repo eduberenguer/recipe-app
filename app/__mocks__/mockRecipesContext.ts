@@ -10,6 +10,7 @@ export const mockRecipesContext = {
     photo: string;
     favouritesCounter: number;
     description: string;
+    views: number;
   }>,
   stateRecipe: {},
   stateUserRecipes: [],
