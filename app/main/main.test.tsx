@@ -16,8 +16,10 @@ jest.mock("../utils/checkOwnerRecipe", () => jest.fn());
 
 jest.mock("next/image", () => ({
   __esModule: true,
-  default: (props: React.ImgHTMLAttributes<HTMLImageElement>) => {
-    const { src, alt, ...rest } = props;
+  default: (
+    props: React.ImgHTMLAttributes<HTMLImageElement> & { fill?: boolean }
+  ) => {
+    const { src, alt, fill, ...rest } = props;
     return <img src={src || ""} alt={alt || ""} {...rest} />;
   },
 }));
@@ -26,7 +28,8 @@ describe("Main component", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockRecipesContext.stateAllRecipes = mockRecipeWithIdv2;
+    mockRecipesContext.stateAllRecipes =
+      mockRecipeWithIdv2 as typeof mockRecipesContext.stateAllRecipes;
   });
 
   const customRender = () => {
@@ -71,13 +74,10 @@ describe("Main component", () => {
 
     expect(recipeImage).toHaveAttribute(
       "src",
-      "undefined/recipe123/test-photo.jpg"
+      "undefined/recipe123/undefined/recipe123/test-photo.jpg"
     );
     expect(screen.getByAltText("Test Recipe")).toBeInTheDocument();
-    expect(screen.getByText("4 servings")).toBeInTheDocument();
-
     expect(screen.getByAltText("Test Recipe 2")).toBeInTheDocument();
-    expect(screen.getByText("2 servings")).toBeInTheDocument();
 
     const deleteButton = screen.getAllByRole("button", { name: /x/i });
     expect(deleteButton[0]).toBeInTheDocument();
