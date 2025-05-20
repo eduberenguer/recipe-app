@@ -13,7 +13,7 @@ export type Message = {
   id: string;
   content: string;
   fromUserId: string;
-  fromUserName?: string;
+  toUserId?: string;
   created: Date;
 };
 

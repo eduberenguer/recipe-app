@@ -11,10 +11,15 @@ export interface Recipe {
   description: string;
   views: number;
 }
-
 export interface RecipeWithRating extends Recipe {
   rating: {
     average: number;
     count: number;
   };
+}
+
+export interface AddRating {
+  userId: string;
+  recipeId: string;
+  rating: number;
 }
