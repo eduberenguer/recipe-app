@@ -19,6 +19,20 @@ export function recipesReducer(
       return { ...state, userRecipes: action.payload };
     case RecipeActionTypes.ADD_RECIPE:
       return { ...state, allRecipes: [...state.allRecipes, action.payload] };
+    case RecipeActionTypes.UPDATE_RECIPE:
+      return {
+        ...state,
+        allRecipes: state.allRecipes.map((recipe) =>
+          recipe.id === action.payload.id
+            ? { ...recipe, ...action.payload.updates }
+            : recipe
+        ),
+        userRecipes: state.userRecipes.map((recipe) =>
+          recipe.id === action.payload.id
+            ? { ...recipe, ...action.payload.updates }
+            : recipe
+        ),
+      };
     case RecipeActionTypes.DELETE_RECIPE:
       return {
         ...state,
