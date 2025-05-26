@@ -5,9 +5,10 @@ import { retrieveRecipeRatings } from "./userInteractions";
 
 export async function createRecipe(recipe: Partial<Recipe>) {
   try {
-    const user = await pb.collection("recipes").create(recipe);
+    recipe.isVisible = true;
+    const recipeData = await pb.collection("recipes").create(recipe);
 
-    return { success: true, user };
+    return { success: true, recipeData };
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(error.message);
@@ -23,6 +24,7 @@ export async function retrieveAllRecipes(): Promise<
     const data = await pb.collection("recipes").getFullList({
       sort: "title",
       $autoCancel: false,
+      filter: `isVisible = true`,
     });
 
     const recipesWithRatings = await Promise.all(
@@ -62,6 +64,15 @@ export async function deleteOrphanFavourites() {
       return { success: false, error: error.message };
     }
     return { success: false, error: "Something wrong" };
+  }
+}
+
+export async function updateRecipe(id: string, data: Partial<Recipe>) {
+  try {
+    const updated = await pb.collection("recipes").update(id, data);
+    return updated;
+  } catch (error) {
+    throw new Error(`Error updating recipe: ${(error as Error).message}`);
   }
 }
 

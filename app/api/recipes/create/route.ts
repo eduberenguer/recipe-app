@@ -6,6 +6,7 @@ export async function POST(req: Request) {
     const formData = await req.formData();
 
     const recipe = Object.fromEntries(formData.entries());
+
     recipe.ingredients = JSON.parse(recipe.ingredients as string);
 
     const result = await createRecipe(recipe);

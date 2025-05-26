@@ -10,6 +10,7 @@ export interface Recipe {
   favouritesCounter: number;
   description: string;
   views: number;
+  isVisible: boolean;
 }
 export interface RecipeWithRating extends Recipe {
   rating: {
