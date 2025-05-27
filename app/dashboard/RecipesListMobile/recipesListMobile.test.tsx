@@ -15,11 +15,15 @@ describe("RecipesListMobile component", () => {
     jest.clearAllMocks();
   });
 
-  const customRender = (mockDeleteRecipe: jest.Mock) => {
+  const customRender = (
+    mockDeleteRecipe: jest.Mock,
+    mockToggleVisibleRecipe: jest.Mock = jest.fn()
+  ) => {
     return render(
       <RecipesListMobile
         recipes={[mockRecipeWithIdv1]}
         deleteRecipe={mockDeleteRecipe}
+        toggleVisibleRecipe={mockToggleVisibleRecipe}
       />
     );
   };
@@ -36,8 +40,8 @@ describe("RecipesListMobile component", () => {
     const mockDeleteRecipe = jest.fn();
     customRender(mockDeleteRecipe);
 
-    const deleteRecipeButton = screen.getByRole("button");
-    fireEvent.click(deleteRecipeButton);
+    const deleteRecipeButton = screen.getAllByRole("button");
+    fireEvent.click(deleteRecipeButton[1]);
 
     expect(mockDeleteRecipe).toHaveBeenCalledWith(mockRecipeWithIdv1.id);
     expect(mockDeleteRecipe).toHaveBeenCalledTimes(1);
