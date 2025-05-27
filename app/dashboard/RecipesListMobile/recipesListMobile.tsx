@@ -6,16 +6,22 @@ import { RecipeWithRating } from "@/types/recipes";
 import photoSrc from "@/app/utils/photoSrc";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { MdDeleteForever } from "react-icons/md";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function RecipesListMobile({
   recipes,
+  toggleVisibleRecipe,
   deleteRecipe,
 }: {
   recipes: RecipeWithRating[];
+  toggleVisibleRecipe: (
+    recipeId: string,
+    newIsVisible: boolean
+  ) => Promise<void>;
   deleteRecipe: (recipeId: string) => Promise<void>;
 }) {
   return (
-    <div className="flex flex-col" data-testid="recipes-list-mobile">
+    <div className="flex flex-col gap-3" data-testid="recipes-list-mobile">
       {recipes.map((recipe) => (
         <div
           key={recipe.id}
@@ -49,6 +55,18 @@ export default function RecipesListMobile({
               <p className="text-sm text-gray-600">
                 {recipe.rating.average} ({recipe.rating.count} ratings)
               </p>
+              <button
+                onClick={() =>
+                  toggleVisibleRecipe(recipe.id, !recipe.isVisible)
+                }
+                className="p-2 text-black-600 hover:text-black-800 rounded cursor-pointer"
+              >
+                {recipe.isVisible ? (
+                  <Eye className="text-3xl" />
+                ) : (
+                  <EyeOff className="text-3xl" />
+                )}
+              </button>
               <button
                 onClick={() => deleteRecipe(recipe.id)}
                 className="p-2 text-red-600 hover:text-red-800 rounded cursor-pointer"

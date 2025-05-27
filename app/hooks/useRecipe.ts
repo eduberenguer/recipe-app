@@ -5,6 +5,7 @@ import {
   retrieveRecipeByIdApi,
   retrieveRecipesByFilterNameApi,
   retrieveRecipesByUserIdApi,
+  toggleVisibleRecipeApi,
 } from "@/lib/api/recipes";
 import { useReducer } from "react";
 import { recipesReducer } from "../context/recipes/recipesReducer";
@@ -36,6 +37,17 @@ export function useRecipes() {
     }
 
     return data;
+  }
+
+  async function toggleVisibleRecipe(recipeId: string, newIsVisible: boolean) {
+    const result = await toggleVisibleRecipeApi(recipeId, newIsVisible);
+
+    if (result) {
+      dispatch({
+        type: RecipeActionTypes.UPDATE_RECIPE,
+        payload: { id: recipeId, updates: { isVisible: newIsVisible } },
+      });
+    }
   }
 
   async function deleteRecipe(recipeId: string) {
@@ -90,6 +102,7 @@ export function useRecipes() {
     stateUserRecipes: state.userRecipes,
     createRecipe,
     retrieveRecipesList,
+    toggleVisibleRecipe,
     deleteRecipe,
     retrieveRecipe,
     retrieveRecipesByFilterName,

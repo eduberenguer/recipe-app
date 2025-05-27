@@ -6,12 +6,18 @@ import { RecipeWithRating } from "@/types/recipes";
 import photoSrc from "@/app/utils/photoSrc";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { MdDeleteForever } from "react-icons/md";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function RecipesTable({
   recipes,
+  toggleVisibleRecipe,
   deleteRecipe,
 }: {
   recipes: RecipeWithRating[];
+  toggleVisibleRecipe: (
+    recipeId: string,
+    newIsVisible: boolean
+  ) => Promise<void>;
   deleteRecipe: (recipeId: string) => Promise<void>;
 }) {
   return (
@@ -26,12 +32,13 @@ export default function RecipesTable({
           <th className="px-4 py-2">Favourites</th>
           <th className="px-4 py-2">Rating</th>
           <th className="px-4 py-2">Photo</th>
+          <th className="px-4 py-2">Is visible</th>
           <th className="px-4 py-2">Delete</th>
         </tr>
       </thead>
       <tbody>
         {recipes.map((recipe) => (
-          <tr key={recipe.id} className="border-t">
+          <tr key={recipe.id} className="border-t text-left">
             <td className="px-4 py-2">
               <Link
                 href={`/details/${recipe.id}`}
@@ -57,6 +64,20 @@ export default function RecipesTable({
                 width={64}
                 height={64}
               />
+            </td>
+            <td className="px-4 py-2 text-center">
+              <button
+                onClick={() =>
+                  toggleVisibleRecipe(recipe.id, !recipe.isVisible)
+                }
+                className="p-2 text-black-600 hover:text-black-800 rounded cursor-pointer"
+              >
+                {recipe.isVisible ? (
+                  <Eye className="text-3xl" />
+                ) : (
+                  <EyeOff className="text-3xl" />
+                )}
+              </button>
             </td>
             <td className="px-4 py-2">
               <button

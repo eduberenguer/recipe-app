@@ -30,7 +30,10 @@ export default function Dashboard() {
 
       {isMobile ? (
         <RecipesListMobile
-          recipes={recipes}
+          recipes={recipes as RecipeWithRating[]}
+          toggleVisibleRecipe={
+            contextRecipes?.toggleVisibleRecipe || (() => Promise.resolve())
+          }
           deleteRecipe={
             contextRecipes?.deleteRecipe || (() => Promise.resolve())
           }
@@ -38,6 +41,9 @@ export default function Dashboard() {
       ) : (
         <RecipesTableDesktop
           recipes={recipes as RecipeWithRating[]}
+          toggleVisibleRecipe={
+            contextRecipes?.toggleVisibleRecipe || (() => Promise.resolve())
+          }
           deleteRecipe={
             contextRecipes?.deleteRecipe || (() => Promise.resolve())
           }

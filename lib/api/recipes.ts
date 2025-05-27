@@ -23,6 +23,26 @@ export async function retrieveAllRecipesApi() {
   return res.json();
 }
 
+export async function toggleVisibleRecipeApi(
+  recipeId: string,
+  newIsVisible: boolean
+) {
+  const res = await fetch(`/api/recipes/toggleVisibleRecipe/${recipeId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ isVisible: newIsVisible }),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.error || "Error");
+  }
+
+  return recipeId;
+}
+
 export async function deleteRecipeApi(recipeId: string) {
   const res = await fetch(`/api/recipes/deletedRecipes/${recipeId}`, {
     method: "DELETE",
