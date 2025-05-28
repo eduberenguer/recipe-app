@@ -24,3 +24,15 @@ export interface AddRating {
   recipeId: string;
   rating: number;
 }
+
+export interface RecipeChefAI {
+  title: string;
+  servings: number;
+  description: string;
+  photo: string;
+  ingredients: {
+    name: string;
+    quantity: number;
+    unity: string;
+  }[];
+}

@@ -9,12 +9,16 @@ export type AddRecipeRating = {
   rating: number;
 };
 
-export type Message = {
+export type BaseMessage = {
   id: string;
   content: string;
   fromUserId: string;
   toUserId?: string;
   created: Date;
+};
+
+export type MessageWithSenderName = BaseMessage & {
+  fromUserName: string;
 };
 
 export type MessageRecord = {
