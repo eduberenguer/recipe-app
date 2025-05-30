@@ -22,7 +22,7 @@ export async function retrieveAllRecipes(): Promise<
 > {
   try {
     const data = await pb.collection("recipes").getFullList({
-      sort: "title",
+      sort: "-created",
       $autoCancel: false,
       filter: `isVisible = true`,
     });
