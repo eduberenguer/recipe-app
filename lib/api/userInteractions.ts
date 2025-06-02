@@ -108,3 +108,19 @@ export async function sendMessageApi(
 
   return result.message;
 }
+
+export async function sendMessageAiApi(content: string) {
+  const response = await fetch("/api/userInteractions/aiChat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ content }),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) throw new Error(result.error || "Failed to send message");
+
+  return result.message;
+}

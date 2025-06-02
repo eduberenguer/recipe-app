@@ -44,6 +44,14 @@ export default function MobileNav({
           Recipes
         </button>
       )}
+      {pathname !== "/personal.chef" && (
+        <button
+          onClick={() => handleNav("/personal-chef")}
+          className="text-lg font-medium"
+        >
+          Personal chef
+        </button>
+      )}
       {pathname !== "/create.recipes" && (
         <button
           onClick={() => handleNav("/create-recipes")}

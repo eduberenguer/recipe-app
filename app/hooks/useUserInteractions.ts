@@ -1,5 +1,5 @@
 "use client";
-import { useContext, useReducer } from "react";
+import { useContext, useReducer, useState } from "react";
 import {
   addFavouriteRecipeApi,
   addRecipeRatingApi,
@@ -7,16 +7,18 @@ import {
   removeRecipeApi,
   retrieveFavouritesApi,
   retrieveRecipeRatingsApi,
+  sendMessageAiApi,
   sendMessageApi,
 } from "@/lib/api/userInteractions";
 import { userInteractionsReducer } from "../context/userInteractions/userInteractionsReducer";
 import { UserInteractionsTypes } from "../context/userInteractions/userInteractionsTypes";
-import { RecipeWithRating } from "@/types/recipes";
+import { RecipeChefAI, RecipeWithRating } from "@/types/recipes";
 import {
   AddRecipeRating,
   ToggleFavouriteRecipe,
 } from "@/types/userInteractions";
 import { RecipesContext } from "../context/context";
+import { fetchPexelsImageUrl } from "../utils/pexelsImageUrl";
 
 export function useUserInteractions() {
   const contextRecipes = useContext(RecipesContext);
@@ -24,6 +26,7 @@ export function useUserInteractions() {
     favouritesRecipesId: <string[]>[],
     favouritesRecipes: <RecipeWithRating[]>[],
   });
+  const [aiRecipe, setAiRecipe] = useState<RecipeChefAI | null>(null);
 
   async function retrieveFavouritesList(userId: string) {
     const data: RecipeWithRating[] = await retrieveFavouritesApi(userId);
@@ -106,6 +109,27 @@ export function useUserInteractions() {
     return sendMessage;
   }
 
+  async function sendMessageAi(content: string) {
+    const sendMessage = await sendMessageAiApi(content);
+    const aiRecipe =
+      typeof sendMessage === "string" ? JSON.parse(sendMessage) : sendMessage;
+
+    let photoUrl = aiRecipe.photo;
+    if (
+      !photoUrl ||
+      typeof photoUrl !== "string" ||
+      !photoUrl.startsWith("http")
+    ) {
+      const firstIngredient = aiRecipe.ingredients?.[0]?.name || "food";
+      photoUrl = await fetchPexelsImageUrl(firstIngredient);
+    }
+
+    aiRecipe.photo =
+      photoUrl || "https://via.placeholder.com/320x240?text=No+Image";
+
+    setAiRecipe(aiRecipe);
+  }
+
   return {
     favouritesRecipesId: state.favouritesRecipesId,
     favouritesRecipes: state.favouritesRecipes,
@@ -117,5 +141,7 @@ export function useUserInteractions() {
     addRecipeRating,
     checkUserHasRated,
     sendMessage,
+    sendMessageAi,
+    aiRecipe,
   };
 }

@@ -17,6 +17,7 @@ Recipe App (WIP)
 
 - User Authentication (Login/Register)
 - Chat between users (websockets in pocketbase)
+- Chat with ChefGPT
 - Create and Edit Recipes
 - Recipe List View
 - Recipe Search

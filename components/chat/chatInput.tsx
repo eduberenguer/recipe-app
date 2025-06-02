@@ -6,7 +6,7 @@ interface ChatInputProps {
   toUserId: string;
   fromUserId: string;
   onMessageSent?: () => void;
-  setRefreshChatsTrigger: (value: number) => void;
+  isAi: boolean;
 }
 
 import { UserInteractionsContext } from "@/app/context/context";
@@ -16,7 +16,7 @@ export default function ChatInput({
   toUserId,
   fromUserId,
   onMessageSent,
-  setRefreshChatsTrigger,
+  isAi = false,
 }: ChatInputProps) {
   const contextUseInteractions = useContext(UserInteractionsContext);
   const [message, setMessage] = useState("");
@@ -27,14 +27,18 @@ export default function ChatInput({
     if (!toUserId || !fromUserId || !message.trim()) return;
 
     try {
-      await contextUseInteractions?.sendMessage(fromUserId, toUserId, message);
-      setStatus("Message sent!");
       setMessage("");
       onMessageSent?.();
 
-      if (setRefreshChatsTrigger) {
-        setRefreshChatsTrigger(Date.now());
+      if (isAi) {
+        setStatus("Generating recipe!");
+        const recipeAi = await contextUseInteractions?.sendMessageAi(message);
+        setStatus("");
+        return recipeAi;
       }
+      setStatus("Message sent!");
+      await contextUseInteractions?.sendMessage(fromUserId, toUserId, message);
+      setStatus("");
     } catch (error: unknown) {
       setStatus((error as Error).message || "Error sending message");
     }

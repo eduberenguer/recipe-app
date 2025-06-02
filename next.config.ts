@@ -8,10 +8,15 @@ const nextConfig: NextConfig = {
         destination: "/create.recipes",
         permanent: true,
       },
+      {
+        source: "/personal-chef",
+        destination: "/personal.chef",
+        permanent: true,
+      },
     ];
   },
   images: {
-    domains: ["images.unsplash.com"],
+    domains: ["images.unsplash.com", "images.pexels.com"],
     remotePatterns: [
       {
         protocol: "http",

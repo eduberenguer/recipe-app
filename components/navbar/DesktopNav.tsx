@@ -8,6 +8,9 @@ export default function DesktopNav({ logout }: { logout: () => void }) {
   return (
     <>
       {pathname !== "/main" && <NavLink href="/main">Recipes</NavLink>}
+      {pathname !== "/personal.chef" && (
+        <NavLink href="/personal-chef">Personal chef</NavLink>
+      )}
       {pathname !== "/create.recipes" && (
         <NavLink href="/create-recipes">Create recipe</NavLink>
       )}
