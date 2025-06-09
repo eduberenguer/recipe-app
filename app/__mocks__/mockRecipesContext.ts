@@ -21,4 +21,5 @@ export const mockRecipesContext = {
   retrieveRecipesByFilterName: jest.fn(),
   retrieveRecipesByUserId: jest.fn(),
   clearStateRecipe: jest.fn(),
+  toggleVisibleRecipe: jest.fn(),
 };

@@ -81,7 +81,7 @@ export default function MobileNav({
           onClick={() => handleNav("/dashboard")}
           className="text-lg font-medium"
         >
-          Dashboard
+          My space
         </button>
       )}
       <button
