@@ -33,14 +33,18 @@ export default function Chat() {
       {selectedUserId && contextAuth?.user?.id && (
         <div className="flex flex-col flex-1 bg-gray-50">
           <div className="flex-1 overflow-y-auto p-4 bg-white">
-            <ChatWindow selectedUserId={selectedUserId} />
+            <ChatWindow
+              selectedUserId={selectedUserId}
+              isAi={false}
+              isLoading={false}
+            />
           </div>
           <div className="p-4 bg-white border-t flex-shrink-0">
             {showChatInput && (
               <ChatInput
                 fromUserId={contextAuth.user.id}
                 toUserId={selectedUserId}
-                setRefreshChatsTrigger={setRefreshChatsTrigger}
+                isAi={false}
               />
             )}
           </div>

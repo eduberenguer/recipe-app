@@ -15,6 +15,7 @@ Generate a JSON response matching this structure (do you have a recipe with user
   "description": "string"
 }
 
+For the title, generate one with a maximum of two words and related to the recipe you have generated.
 Generate a recipe description with max. 300 words. In this field add steps for prepare. Add steps numbers.   
 Do NOT include any actual image URLs. Leave the photo field as an empty string.
 Respond with ONLY the JSON object. No explanation or formatting.`;

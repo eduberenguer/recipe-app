@@ -1,22 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { UserInteractionsContext } from "@/app/context/context";
+import { Loader2 } from "lucide-react";
 
 interface ChatInputProps {
   toUserId: string;
   fromUserId: string;
   onMessageSent?: () => void;
   isAi: boolean;
+  isLoading?: boolean;
+  setIsLoading?: (loading: boolean) => void;
 }
-
-import { UserInteractionsContext } from "@/app/context/context";
-import { useContext } from "react";
 
 export default function ChatInput({
   toUserId,
   fromUserId,
   onMessageSent,
   isAi = false,
+  isLoading = false,
+  setIsLoading = () => {},
 }: ChatInputProps) {
   const contextUseInteractions = useContext(UserInteractionsContext);
   const [message, setMessage] = useState("");
@@ -31,14 +34,13 @@ export default function ChatInput({
       onMessageSent?.();
 
       if (isAi) {
-        setStatus("Generating recipe!");
-        const recipeAi = await contextUseInteractions?.sendMessageAi(message);
-        setStatus("");
-        return recipeAi;
+        setIsLoading(true);
+        await contextUseInteractions?.sendMessageAi(message);
+        setIsLoading(false);
+        return;
       }
-      setStatus("Message sent!");
+
       await contextUseInteractions?.sendMessage(fromUserId, toUserId, message);
-      setStatus("");
     } catch (error: unknown) {
       setStatus((error as Error).message || "Error sending message");
     }
@@ -47,21 +49,37 @@ export default function ChatInput({
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-4 bg-gray-100 rounded-md shadow-md p-4 flex-shrink-0"
+      className="fixed bottom-0 left-1/2 transform -translate-x-1/2 z-10 w-full max-w-3xl mx-auto p-4 bg-white/90 backdrop-blur-md shadow-md flex flex-col gap-3"
     >
       <textarea
-        placeholder="Type your message..."
+        placeholder="Escribe tu mensaje..."
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        className="border p-3 rounded-lg resize-none h-24 focus:outline-none focus:ring-2 focus:ring-blue-600"
+        className="w-full bg-white border border-gray-300 rounded-md p-4 resize-none h-28 text-base focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-400"
+        disabled={isLoading}
       />
+
       <button
         type="submit"
-        className="bg-blue-600 w-50 m-auto text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200 hover:cursor-pointer"
+        disabled={isLoading}
+        className={`self-center flex items-center justify-center gap-2 bg-blue-600 text-white text-base font-semibold py-2 px-6 rounded-full transition duration-200 ${
+          isLoading
+            ? "opacity-50 cursor-not-allowed"
+            : "hover:bg-blue-700 cursor-pointer"
+        }`}
       >
-        Send
+        {isLoading ? (
+          <>
+            <Loader2 className="animate-spin w-5 h-5" /> Enviando...
+          </>
+        ) : (
+          "Enviar"
+        )}
       </button>
-      {status && <p className="text-sm mt-2 text-gray-600">{status}</p>}
+
+      {status && (
+        <p className="text-sm text-red-500 italic text-center">{status}</p>
+      )}
     </form>
   );
 }
