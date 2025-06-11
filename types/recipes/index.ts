@@ -36,3 +36,8 @@ export interface RecipeChefAI {
     unity: string;
   }[];
 }
+
+export interface RecipeRating {
+  average: number;
+  count: number;
+}

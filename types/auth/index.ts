@@ -15,3 +15,10 @@ export interface UserWithName {
   id: string;
   name: string;
 }
+
+export interface ApiResponseLogin {
+  success: boolean;
+  user: User;
+  token: string;
+  isAuthenticated: boolean;
+}
