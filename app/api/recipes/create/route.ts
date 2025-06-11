@@ -4,10 +4,21 @@ import { createRecipe } from "@/server/recipes";
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
+    const photo = formData.get("photo");
 
-    const recipe = Object.fromEntries(formData.entries());
+    const entries = Array.from(formData.entries()).filter(
+      ([key]) => key !== "photo"
+    );
 
-    recipe.ingredients = JSON.parse(recipe.ingredients as string);
+    const recipe = Object.fromEntries(entries);
+
+    if (typeof recipe.ingredients === "string") {
+      recipe.ingredients = JSON.parse(recipe.ingredients);
+    }
+
+    if (photo) {
+      recipe.photo = photo;
+    }
 
     const result = await createRecipe(recipe);
 

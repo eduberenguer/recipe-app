@@ -125,16 +125,17 @@ export default function Details() {
       Object.keys(contextRecipes?.stateRecipe).length > 0 ? (
         <div className="bg-white p-6 rounded-lg shadow-md flex gap-8">
           <div className="flex-shrink-0 w-2/3">
-            <Image
-              src={photoSrc(
-                contextRecipes.stateRecipe.id ?? "",
-                contextRecipes.stateRecipe.photo as string
-              )}
-              alt={contextRecipes.stateRecipe.title || "Recipe image"}
-              width={250}
-              height={200}
-              className="rounded-lg"
-            />
+            <div className="relative w-full aspect-video rounded-lg overflow-hidden">
+              <Image
+                src={photoSrc(
+                  contextRecipes.stateRecipe.id ?? "",
+                  contextRecipes.stateRecipe.photo as string
+                )}
+                alt={contextRecipes.stateRecipe.title || "Recipe image"}
+                fill
+                className="object-cover"
+              />
+            </div>
             <div className="flex flex-row gap-2 items-center mt-2">
               {rating && rating.count > 0 ? (
                 <>

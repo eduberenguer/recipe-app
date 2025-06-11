@@ -60,7 +60,7 @@ export default function Main() {
         </div>
       </header>
 
-      <div className="flex flex-wrap justify-center gap-4 mt-20 flex-col items-center">
+      <div className="flex flex-wrap justify-center gap-10 mt-20 items-center">
         {contextRecipes.stateAllRecipes.length > 0 ? (
           contextRecipes.stateAllRecipes.map((recipe) => {
             return (
@@ -73,10 +73,6 @@ export default function Main() {
                 isFavourite={contextUserInteraction?.favouritesRecipes.some(
                   (fav) => fav.id === recipe.id
                 )}
-                retrieveRecipeRating={
-                  contextUserInteraction?.retrieveRecipeRatings ||
-                  (async () => {})
-                }
                 isFromMain={true}
               />
             );
