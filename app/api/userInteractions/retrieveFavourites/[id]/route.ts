@@ -4,7 +4,7 @@ import { retrieveFavourites } from "@/server/userInteractions";
 export async function GET(
   request: Request,
   { params }: { params: { id?: string } }
-) {
+): Promise<Response> {
   try {
     const { id } = await params;
 

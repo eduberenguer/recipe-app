@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { addFavouriteRecipe } from "@/server/userInteractions";
 
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<Response> {
   try {
     const newAddFavourite = await req.json();
     const result = await addFavouriteRecipe(newAddFavourite);

@@ -1,7 +1,7 @@
 import { sendMessage } from "@/server/userInteractions";
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<Response> {
   try {
     const body = await req.json();
     const { fromUserId, toUserId, content } = body;

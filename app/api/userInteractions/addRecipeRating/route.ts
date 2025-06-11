@@ -1,7 +1,7 @@
 import { addRecipeRating } from "@/server/userInteractions";
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<Response> {
   try {
     const newRecipeRating = await req.json();
 

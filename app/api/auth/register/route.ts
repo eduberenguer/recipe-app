@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { registerUser } from "@/server/auth";
 
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<Response> {
   try {
     const { name, email, password } = await req.json();
     const result = await registerUser(name, email, password);

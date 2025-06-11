@@ -4,7 +4,7 @@ import { updateRecipe } from "@/server/recipes";
 export async function PATCH(
   req: NextRequest,
   { params }: { params: { id: string } }
-) {
+): Promise<Response> {
   try {
     const { id } = await params;
     const { isVisible } = await req.json();

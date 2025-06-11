@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createRecipe } from "@/server/recipes";
 
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<Response> {
   try {
     const formData = await req.formData();
     const photo = formData.get("photo");

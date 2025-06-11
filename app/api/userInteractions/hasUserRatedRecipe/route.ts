@@ -1,7 +1,7 @@
 import { hasUserRatedRecipe } from "@/server/userInteractions";
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request) {
+export async function GET(req: Request): Promise<Response> {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
   const recipeId = searchParams.get("recipeId");

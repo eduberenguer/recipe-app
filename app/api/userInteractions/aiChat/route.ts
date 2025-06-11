@@ -7,7 +7,7 @@ const openai = new OpenAI({
   apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
 });
 
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<Response> {
   const { content } = await req.json();
 
   try {

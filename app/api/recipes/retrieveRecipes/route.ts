@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { retrieveAllRecipes } from "@/server/recipes";
 
-export async function GET() {
+export async function GET(): Promise<Response> {
   try {
     const result = await retrieveAllRecipes();
 

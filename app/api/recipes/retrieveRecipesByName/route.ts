@@ -1,7 +1,7 @@
 import { retrieveRecipesByFilterName } from "@/server/recipes";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request) {
+export async function GET(request: Request): Promise<Response> {
   try {
     const url = new URL(request.url);
     const title = url.searchParams.get("title");

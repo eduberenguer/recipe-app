@@ -1,7 +1,7 @@
 import { loginUser } from "@/server/auth";
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<Response> {
   try {
     const { email, password } = await req.json();
     const result = await loginUser(email, password);
