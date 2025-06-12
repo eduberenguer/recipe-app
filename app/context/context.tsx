@@ -4,9 +4,11 @@ import { useAuth } from "../hooks/useAuth";
 import { useRecipes } from "../hooks/useRecipe";
 import { useUserInteractions } from "../hooks/useUserInteractions";
 
-type AuthContextType = ReturnType<typeof useAuth>;
-type RecipesContextType = ReturnType<typeof useRecipes>;
-type UserInteractionsContextType = ReturnType<typeof useUserInteractions>;
+export type AuthContextType = ReturnType<typeof useAuth>;
+export type RecipesContextType = ReturnType<typeof useRecipes>;
+export type UserInteractionsContextType = ReturnType<
+  typeof useUserInteractions
+>;
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 export const RecipesContext = createContext<RecipesContextType | null>(null);

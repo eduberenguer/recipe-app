@@ -10,25 +10,39 @@ import {
   sendMessageAiApi,
   sendMessageApi,
 } from "@/lib/api/userInteractions";
-import { userInteractionsReducer } from "../context/userInteractions/userInteractionsReducer";
+import {
+  userInteractionsReducer,
+  userInteractionsState,
+} from "../context/userInteractions/userInteractionsReducer";
 import { UserInteractionsTypes } from "../context/userInteractions/userInteractionsTypes";
-import { RecipeChefAI, RecipeWithRating } from "@/types/recipes";
+import {
+  Recipe,
+  RecipeChefAI,
+  RecipeRating,
+  RecipeWithRating,
+} from "@/types/recipes";
 import {
   AddRecipeRating,
+  BaseMessage,
   ToggleFavouriteRecipe,
 } from "@/types/userInteractions";
-import { RecipesContext } from "../context/context";
+import { RecipesContext, RecipesContextType } from "../context/context";
 import { fetchPexelsImageUrl } from "../utils/pexelsImageUrl";
 
 export function useUserInteractions() {
-  const contextRecipes = useContext(RecipesContext);
-  const [state, dispatch] = useReducer(userInteractionsReducer, {
-    favouritesRecipesId: <string[]>[],
-    favouritesRecipes: <RecipeWithRating[]>[],
-  });
+  const initialUserInteractionsState: userInteractionsState = {
+    favouritesRecipesId: [],
+    favouritesRecipes: [],
+  };
+
+  const contextRecipes = useContext<RecipesContextType | null>(RecipesContext);
+  const [state, dispatch] = useReducer(
+    userInteractionsReducer,
+    initialUserInteractionsState
+  );
   const [aiRecipe, setAiRecipe] = useState<RecipeChefAI | null>(null);
 
-  async function retrieveFavouritesList(userId: string) {
+  async function retrieveFavouritesList(userId: string): Promise<Recipe[]> {
     const data: RecipeWithRating[] = await retrieveFavouritesApi(userId);
 
     dispatch({
@@ -39,7 +53,10 @@ export function useUserInteractions() {
     return data;
   }
 
-  async function addFavouriteRecipe(userId: string, recipeId: string) {
+  async function addFavouriteRecipe(
+    userId: string,
+    recipeId: string
+  ): Promise<Recipe | false> {
     const newAddFavourite: ToggleFavouriteRecipe = {
       userId,
       recipeId,
@@ -62,9 +79,14 @@ export function useUserInteractions() {
       type: UserInteractionsTypes.ADD_RECIPE_FAVOURITE,
       payload: retrieveRecipe,
     });
+
+    return retrieveRecipe;
   }
 
-  async function removeFavouriteRecipe(userId: string, recipeId: string) {
+  async function removeFavouriteRecipe(
+    userId: string,
+    recipeId: string
+  ): Promise<ToggleFavouriteRecipe> {
     const newRemoveFavourite: ToggleFavouriteRecipe = {
       userId,
       recipeId,
@@ -76,9 +98,13 @@ export function useUserInteractions() {
       type: UserInteractionsTypes.REMOVE_RECIPE_FAVOURITE,
       payload: recipeId,
     });
+
+    return newRemoveFavourite;
   }
 
-  async function retrieveRecipeRatings(recipeId: string) {
+  async function retrieveRecipeRatings(
+    recipeId: string
+  ): Promise<RecipeRating> {
     const data = await retrieveRecipeRatingsApi(recipeId);
 
     return {
@@ -87,13 +113,18 @@ export function useUserInteractions() {
     };
   }
 
-  async function addRecipeRating(addRecipeRating: AddRecipeRating) {
+  async function addRecipeRating(
+    addRecipeRating: AddRecipeRating
+  ): Promise<boolean> {
     await addRecipeRatingApi(addRecipeRating);
 
     return true;
   }
 
-  async function checkUserHasRated(userId: string, recipeId: string) {
+  async function checkUserHasRated(
+    userId: string,
+    recipeId: string
+  ): Promise<boolean> {
     const response = await checkUserHasRatedApi(userId, recipeId);
 
     return response.alreadyRated;
@@ -103,13 +134,13 @@ export function useUserInteractions() {
     fromUserId: string,
     toUserId: string,
     content: string
-  ) {
+  ): Promise<BaseMessage> {
     const sendMessage = await sendMessageApi(fromUserId, toUserId, content);
 
     return sendMessage;
   }
 
-  async function sendMessageAi(content: string) {
+  async function sendMessageAi(content: string): Promise<void> {
     const sendMessage = await sendMessageAiApi(content);
     const aiRecipe =
       typeof sendMessage === "string" ? JSON.parse(sendMessage) : sendMessage;

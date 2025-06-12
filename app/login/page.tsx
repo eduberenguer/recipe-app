@@ -12,7 +12,9 @@ export default function Login() {
   const router = useRouter();
   const [user, setUser] = useState({ email: "", password: "" });
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     event.preventDefault();
 
     if (!user.email || !user.password) {

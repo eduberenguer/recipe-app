@@ -8,18 +8,23 @@ import {
   toggleVisibleRecipeApi,
 } from "@/lib/api/recipes";
 import { useReducer } from "react";
-import { recipesReducer } from "../context/recipes/recipesReducer";
+import {
+  recipesReducer,
+  RecipesState,
+} from "../context/recipes/recipesReducer";
 import { RecipeActionTypes } from "../context/recipes/recipeActionTypes";
 import { Recipe } from "@/types/recipes";
 
 export function useRecipes() {
-  const [state, dispatch] = useReducer(recipesReducer, {
+  const initialRecipesState: RecipesState = {
     allRecipes: [],
+    selectedRecipe: null,
     userRecipes: [],
-    selectedRecipe: {},
-  });
+  };
 
-  async function createRecipe(recipe: FormData) {
+  const [state, dispatch] = useReducer(recipesReducer, initialRecipesState);
+
+  async function createRecipe(recipe: FormData): Promise<Recipe> {
     const data = await createNewRecipesApi(recipe);
 
     if (data) {
@@ -29,7 +34,7 @@ export function useRecipes() {
     return data;
   }
 
-  async function retrieveRecipesList() {
+  async function retrieveRecipesList(): Promise<Recipe[]> {
     const data = await retrieveAllRecipesApi();
 
     if (data) {
@@ -39,7 +44,10 @@ export function useRecipes() {
     return data;
   }
 
-  async function toggleVisibleRecipe(recipeId: string, newIsVisible: boolean) {
+  async function toggleVisibleRecipe(
+    recipeId: string,
+    newIsVisible: boolean
+  ): Promise<void> {
     const result = await toggleVisibleRecipeApi(recipeId, newIsVisible);
 
     if (result) {
@@ -50,7 +58,7 @@ export function useRecipes() {
     }
   }
 
-  async function deleteRecipe(recipeId: string) {
+  async function deleteRecipe(recipeId: string): Promise<void> {
     const result = await deleteRecipeApi(recipeId);
 
     if (result) {
@@ -58,7 +66,7 @@ export function useRecipes() {
     }
   }
 
-  async function retrieveRecipe(recipeId: string) {
+  async function retrieveRecipe(recipeId: string): Promise<Recipe> {
     const result = await retrieveRecipeByIdApi(recipeId);
 
     if (result) {
@@ -68,11 +76,11 @@ export function useRecipes() {
     return result;
   }
 
-  async function clearStateRecipe() {
+  async function clearStateRecipe(): Promise<void> {
     dispatch({ type: RecipeActionTypes.CLEAR_RECIPE });
   }
 
-  async function retrieveRecipesByFilterName(filter: string) {
+  async function retrieveRecipesByFilterName(filter: string): Promise<void> {
     const result = await retrieveRecipesByFilterNameApi(filter);
 
     if (result) {
@@ -83,7 +91,7 @@ export function useRecipes() {
     }
   }
 
-  async function retrieveRecipesByUserId(filter: string) {
+  async function retrieveRecipesByUserId(filter: string): Promise<Recipe[]> {
     const result = await retrieveRecipesByUserIdApi(filter);
 
     if (result) {
@@ -93,7 +101,7 @@ export function useRecipes() {
       });
     }
 
-    return result as Recipe[];
+    return result;
   }
 
   return {

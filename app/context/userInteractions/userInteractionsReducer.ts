@@ -2,7 +2,7 @@ import { RecipeWithRating } from "@/types/recipes";
 import { UserInteractionsAction } from "./userInteractionsActions";
 import { UserInteractionsTypes } from "./userInteractionsTypes";
 
-type userInteractionsState = {
+export type userInteractionsState = {
   favouritesRecipesId: string[];
   favouritesRecipes: RecipeWithRating[];
 };

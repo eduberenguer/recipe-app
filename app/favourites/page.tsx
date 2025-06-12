@@ -29,7 +29,7 @@ export default function Favourites() {
     fetchFavourites();
   }, [contextAuth?.user?.id]);
 
-  async function toggleFavourite(recipeId: string) {
+  async function toggleFavourite(recipeId: string): Promise<void> {
     if (!contextAuth?.user?.id || !contextUserInteraction) return;
 
     const isFav = contextUserInteraction.favouritesRecipes.some(

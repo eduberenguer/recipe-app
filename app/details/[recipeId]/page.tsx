@@ -82,7 +82,10 @@ export default function Details() {
     checkIfRated();
   }, [recipeId, rating]);
 
-  const handleAddRating = async (recipeId: string, newRating: number) => {
+  const handleAddRating = async (
+    recipeId: string,
+    newRating: number
+  ): Promise<void> => {
     try {
       await contextUserInteraction?.addRecipeRating({
         userId: contextUser?.user?.id ?? "",
@@ -99,7 +102,7 @@ export default function Details() {
     }
   };
 
-  function renderRatingSection() {
+  function renderRatingSection(): React.ReactNode {
     if (contextRecipes?.stateRecipe?.owner === contextUser?.user?.id) {
       return null;
     }

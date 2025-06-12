@@ -3,19 +3,19 @@ import { useState, useContext } from "react";
 import ChatInput from "@/components/chat/chatInput";
 import ChatSidebar from "@/components/chat/chatSidebar";
 import ChatWindow from "@/components/chat/chatWindow";
-import { AuthContext } from "@/app/context/context";
+import { AuthContext, AuthContextType } from "@/app/context/context";
 
 export default function Chat() {
   const [selectedUserId, setSelectedUserId] = useState<string>("");
   const [showChatInput, setChatInput] = useState<boolean>(true);
-  const [refreshChatsTrigger, setRefreshChatsTrigger] = useState(0);
-  const contextAuth = useContext(AuthContext);
+  const [refreshChatsTrigger, setRefreshChatsTrigger] = useState<number>(0);
+  const contextAuth = useContext<AuthContextType | null>(AuthContext);
 
-  const handleSelectUser = (userId: string) => {
+  const handleSelectUser = (userId: string): void => {
     setSelectedUserId(userId);
   };
 
-  const handlerShowChatInput = (show: boolean) => {
+  const handlerShowChatInput = (show: boolean): void => {
     setChatInput(show);
   };
 

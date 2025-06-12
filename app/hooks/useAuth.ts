@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import pb from "@/lib/pocketbase";
 import { loginUserApi, registerUserApi } from "@/lib/api/users";
 
-import { User } from "@/types/auth";
+import { ApiResponseLogin, User } from "@/types/auth";
 import { customToast } from "../utils/showToast";
 
 export type AuthUser = Pick<User, "id" | "created" | "name" | "email"> & {
@@ -18,7 +18,7 @@ export function useAuth() {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  async function register(userData: Partial<User>) {
+  async function register(userData: Partial<User>): Promise<User | undefined> {
     try {
       const newUser = await registerUserApi(userData);
 
@@ -27,13 +27,14 @@ export function useAuth() {
       const errorMessage =
         err instanceof Error ? err.message : "An unknown error occurred.";
       customToast(errorMessage, "error");
+      return undefined;
     }
   }
 
   async function login(
     user: Partial<User>,
     retrieveFavouritesList?: (id: string) => void
-  ) {
+  ): Promise<ApiResponseLogin | undefined> {
     try {
       const data = await loginUserApi(user);
       if (data.success) {
@@ -62,10 +63,11 @@ export function useAuth() {
           ? "Invalid email or password."
           : "An unknown error occurred.";
       customToast(errorMessage, "error");
+      return undefined;
     }
   }
 
-  async function logout() {
+  async function logout(): Promise<void> {
     pb.authStore.clear();
     setUser(null);
     Cookies.remove("authUser");
