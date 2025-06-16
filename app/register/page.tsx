@@ -2,22 +2,23 @@
 
 import { useContext, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AuthContext } from "../context/context";
+import { AuthContext, AuthContextType } from "../context/context";
 import Button from "@/components/Button";
 import Link from "next/link";
 import { customToast } from "../utils/showToast";
+import { UserRegisterCredentials } from "@/types/auth";
 
 export default function Register() {
   const router = useRouter();
-  const auth = useContext(AuthContext);
-  const [form, setForm] = useState({
+  const auth = useContext<AuthContextType | null>(AuthContext);
+  const [form, setForm] = useState<UserRegisterCredentials>({
     name: "",
     email: "",
     password: "",
     repeatPassword: "",
   });
 
-  async function handleRegister(e: React.FormEvent) {
+  async function handleRegister(e: React.FormEvent): Promise<void> {
     e.preventDefault();
 
     if (!form.name || !form.email || !form.password) {
@@ -38,7 +39,7 @@ export default function Register() {
     try {
       const data = await auth?.register(form);
 
-      if (data.success) {
+      if (data?.success) {
         router.push("/login");
       }
     } catch {

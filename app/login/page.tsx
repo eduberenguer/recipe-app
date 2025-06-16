@@ -2,15 +2,26 @@
 import { useContext, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AuthContext, UserInteractionsContext } from "../context/context";
+import {
+  AuthContext,
+  AuthContextType,
+  UserInteractionsContext,
+  UserInteractionsContextType,
+} from "../context/context";
 import Button from "@/components/Button";
 import { customToast } from "../utils/showToast";
+import { UserCredentials } from "@/types/auth";
 
 export default function Login() {
-  const contextAuth = useContext(AuthContext);
-  const contextUserInteraction = useContext(UserInteractionsContext);
+  const contextAuth = useContext<AuthContextType | null>(AuthContext);
+  const contextUserInteraction = useContext<UserInteractionsContextType | null>(
+    UserInteractionsContext
+  );
   const router = useRouter();
-  const [user, setUser] = useState({ email: "", password: "" });
+  const [user, setUser] = useState<UserCredentials>({
+    email: "",
+    password: "",
+  });
 
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>

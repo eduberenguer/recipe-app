@@ -2,8 +2,11 @@
 import { useContext, useEffect, useState } from "react";
 import {
   AuthContext,
+  AuthContextType,
   RecipesContext,
+  RecipesContextType,
   UserInteractionsContext,
+  UserInteractionsContextType,
 } from "../context/context";
 
 import FilterByName from "@/components/FilterByName";
@@ -11,10 +14,12 @@ import CustomSpinner from "@/components/CustomSpinner";
 import RecipeCard from "@/components/RecipeCard";
 
 export default function Main() {
-  const contextAuth = useContext(AuthContext);
-  const contextRecipes = useContext(RecipesContext);
-  const contextUserInteraction = useContext(UserInteractionsContext);
-  const [isLoading, setIsLoading] = useState(true);
+  const contextAuth = useContext<AuthContextType | null>(AuthContext);
+  const contextRecipes = useContext<RecipesContextType | null>(RecipesContext);
+  const contextUserInteraction = useContext<UserInteractionsContextType | null>(
+    UserInteractionsContext
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (contextRecipes) {
@@ -23,7 +28,7 @@ export default function Main() {
     }
   }, []);
 
-  async function toggleFavourite(recipeId: string) {
+  async function toggleFavourite(recipeId: string): Promise<void> {
     if (!contextAuth?.user?.id || !contextUserInteraction) return;
 
     const isFav = contextUserInteraction.favouritesRecipes.some(

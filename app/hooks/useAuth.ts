@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import pb from "@/lib/pocketbase";
 import { loginUserApi, registerUserApi } from "@/lib/api/users";
 
-import { ApiResponseLogin, User } from "@/types/auth";
+import { ApiResponse, User } from "@/types/auth";
 import { customToast } from "../utils/showToast";
 
 export type AuthUser = Pick<User, "id" | "created" | "name" | "email"> & {
@@ -18,7 +18,9 @@ export function useAuth() {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  async function register(userData: Partial<User>): Promise<User | undefined> {
+  async function register(
+    userData: Partial<User>
+  ): Promise<ApiResponse | undefined> {
     try {
       const newUser = await registerUserApi(userData);
 
@@ -34,7 +36,7 @@ export function useAuth() {
   async function login(
     user: Partial<User>,
     retrieveFavouritesList?: (id: string) => void
-  ): Promise<ApiResponseLogin | undefined> {
+  ): Promise<ApiResponse | undefined> {
     try {
       const data = await loginUserApi(user);
       if (data.success) {
