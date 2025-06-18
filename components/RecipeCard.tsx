@@ -63,7 +63,7 @@ export default function RecipeCard({
           {user?.id && (
             <button
               aria-label="Toggle favourite"
-              className={`transition-transform duration-200 ${
+              className={`transition-transform duration-200 hover:cursor-pointer ${
                 isFavourite ? "text-red-500" : "text-gray-400"
               } hover:scale-110`}
               onClick={() =>
