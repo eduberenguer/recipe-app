@@ -5,8 +5,11 @@ import pb from "@/lib/pocketbase";
 import Image from "next/image";
 import {
   AuthContext,
+  AuthContextType,
   RecipesContext,
+  RecipesContextType,
   UserInteractionsContext,
+  UserInteractionsContextType,
 } from "@/app/context/context";
 import { getMessagesBetweenUsers } from "@/server/userInteractions";
 import { MessageWithSenderName } from "@/types/userInteractions";
@@ -27,9 +30,12 @@ export default function ChatWindow({
   isLoading = false,
   setIsLoading = () => {},
 }: ChatWindowProps) {
-  const { user } = useContext(AuthContext) || {};
-  const { createRecipe } = useContext(RecipesContext) || {};
-  const contextUseInteractions = useContext(UserInteractionsContext);
+  const { user } = useContext<AuthContextType | null>(AuthContext) || {};
+  const { createRecipe } =
+    useContext<RecipesContextType | null>(RecipesContext) || {};
+  const contextUseInteractions = useContext<UserInteractionsContextType | null>(
+    UserInteractionsContext
+  );
   const [messages, setMessages] = useState<MessageWithSenderName[]>([]);
   const pathname = usePathname();
 
@@ -50,7 +56,9 @@ export default function ChatWindow({
       return;
     }
 
-    const fetchMessagesAndSubscribe = async () => {
+    const fetchMessagesAndSubscribe = async (): Promise<
+      (() => void) | undefined
+    > => {
       if (!user?.id || !selectedUserId) return;
 
       const records = await getMessagesBetweenUsers(user.id, selectedUserId);
@@ -113,7 +121,7 @@ export default function ChatWindow({
     };
   }, [selectedUserId, user?.id, isAi]);
 
-  const generateNewRecipe = async () => {
+  const generateNewRecipe = async (): Promise<void> => {
     if (!user?.id) return;
     try {
       setIsLoading(true);
@@ -130,7 +138,7 @@ export default function ChatWindow({
     }
   };
 
-  const saveRecipe = async () => {
+  const saveRecipe = async (): Promise<void> => {
     const recipe = contextUseInteractions?.aiRecipe;
     if (!user?.id || !recipe) return;
 

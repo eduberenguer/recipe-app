@@ -16,7 +16,7 @@ export default function MobileNav({
   const pathname = usePathname();
   const router = useRouter();
 
-  const handleNav = (path: string) => {
+  const handleNav = (path: string): void => {
     setIsMenuOpen(false);
     router.push(path);
   };

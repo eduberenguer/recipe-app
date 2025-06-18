@@ -6,7 +6,7 @@ import {
   searchUsersByUsername,
 } from "@/server/userInteractions";
 import { User, UserWithName } from "@/types/auth";
-import { AuthContext } from "@/app/context/context";
+import { AuthContext, AuthContextType } from "@/app/context/context";
 import ChatInput from "./chatInput";
 
 interface ChatSidebarProps {
@@ -24,13 +24,14 @@ export default function ChatSidebar({
   refreshChatsTrigger,
   setRefreshChatsTrigger,
 }: ChatSidebarProps) {
-  const contextAuth = useContext(AuthContext);
+  const contextAuth = useContext<AuthContextType | null>(AuthContext);
   const [conversations, setConversations] = useState<User[]>([]);
-  const [showNewConversation, setShowNewConversation] = useState(false);
+  const [showNewConversation, setShowNewConversation] =
+    useState<boolean>(false);
   const [selectedNewUser, setSelectedNewUser] = useState<UserWithName | null>(
     null
   );
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<UserWithName[]>([]);
 
   useEffect(() => {
@@ -47,7 +48,7 @@ export default function ChatSidebar({
     fetchConversations();
   }, [contextAuth?.user?.id, refreshChatsTrigger]);
 
-  const handleNewConversation = () => {
+  const handleNewConversation = (): void => {
     setShowNewConversation(!showNewConversation);
     setSearchQuery("");
     setSelectedNewUser(null);
@@ -55,7 +56,9 @@ export default function ChatSidebar({
     handlerShowChatInput(true);
   };
 
-  const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ): Promise<void> => {
     const query = e.target.value;
     setSearchQuery(query);
 
@@ -68,7 +71,7 @@ export default function ChatSidebar({
     setSearchResults(results);
   };
 
-  const handleSelectSearchResult = (user: UserWithName) => {
+  const handleSelectSearchResult = (user: UserWithName): void => {
     setSelectedNewUser(user);
     setSearchQuery(user.name);
     setSearchResults([]);
@@ -147,7 +150,8 @@ export default function ChatSidebar({
               onSelectUser(selectedNewUser.id);
               handlerShowChatInput(true);
             }}
-            setRefreshChatsTrigger={setRefreshChatsTrigger}
+            isAi={false}
+            isLoading={false}
           />
         </div>
       )}

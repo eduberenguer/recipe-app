@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useContext } from "react";
-import { UserInteractionsContext } from "@/app/context/context";
+import {
+  UserInteractionsContext,
+  UserInteractionsContextType,
+} from "@/app/context/context";
 import { Loader2 } from "lucide-react";
 
 interface ChatInputProps {
@@ -21,11 +24,13 @@ export default function ChatInput({
   isLoading = false,
   setIsLoading = () => {},
 }: ChatInputProps) {
-  const contextUseInteractions = useContext(UserInteractionsContext);
-  const [message, setMessage] = useState("");
-  const [status, setStatus] = useState("");
+  const contextUseInteractions = useContext<UserInteractionsContextType | null>(
+    UserInteractionsContext
+  );
+  const [message, setMessage] = useState<string>("");
+  const [status, setStatus] = useState<string>("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     if (!toUserId || !fromUserId || !message.trim()) return;
 
