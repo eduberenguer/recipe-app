@@ -4,9 +4,11 @@ import {
   ToggleFavouriteRecipe,
   AddRecipeRating,
   MessageRecord,
+  UserInteractionsServerResponse,
+  BaseMessage,
 } from "@/types/userInteractions";
 import { Recipe } from "@/types/recipes";
-import { User } from "@/types/auth";
+import { User, UserWithName } from "@/types/auth";
 
 export async function retrieveFavourites(userId: string): Promise<Recipe[]> {
   try {
@@ -41,7 +43,7 @@ export async function retrieveFavourites(userId: string): Promise<Recipe[]> {
 
 export async function addFavouriteRecipe(
   newAddFavouriteRecipe: ToggleFavouriteRecipe
-) {
+): Promise<UserInteractionsServerResponse> {
   try {
     const result = await pb
       .collection("favourites")
@@ -59,7 +61,7 @@ export async function addFavouriteRecipe(
       });
     }
 
-    return { success: true, result };
+    return { success: true };
   } catch (error) {
     if (error instanceof Error) {
       return { success: false, error: error.message };
@@ -130,7 +132,9 @@ export async function retrieveRecipeRatings(
   }
 }
 
-export async function addRecipeRating(newRecipeRating: AddRecipeRating) {
+export async function addRecipeRating(
+  newRecipeRating: AddRecipeRating
+): Promise<UserInteractionsServerResponse> {
   try {
     const userExists = await pb
       .collection("users")
@@ -146,9 +150,9 @@ export async function addRecipeRating(newRecipeRating: AddRecipeRating) {
       throw new Error("Recipe not found");
     }
 
-    const result = await pb.collection("ratings").create(newRecipeRating);
+    await pb.collection("ratings").create(newRecipeRating);
 
-    return { success: true, result };
+    return { success: true };
   } catch (error) {
     if (error instanceof Error) {
       return { success: false, error: error.message };
@@ -157,7 +161,10 @@ export async function addRecipeRating(newRecipeRating: AddRecipeRating) {
   }
 }
 
-export async function hasUserRatedRecipe(userId: string, recipeId: string) {
+export async function hasUserRatedRecipe(
+  userId: string,
+  recipeId: string
+): Promise<UserInteractionsServerResponse> {
   if (!userId) {
     return { success: false, error: "User not authenticated" };
   }
@@ -180,17 +187,27 @@ export async function sendMessage(
   fromUserId: string,
   toUserId: string,
   content: string
-) {
+): Promise<BaseMessage> {
   const message = await pb.collection("messages").create({
     from: fromUserId,
     to: toUserId,
     content,
   });
 
-  return message;
+  const sentMessage: BaseMessage = {
+    id: message.id,
+    fromUserId: message.from,
+    toUserId: message.to,
+    content: message.content,
+    created: message.created,
+  };
+
+  return sentMessage;
 }
 
-export async function searchUsersByUsername(query: string) {
+export async function searchUsersByUsername(
+  query: string
+): Promise<UserWithName[]> {
   const results = await pb.collection("users").getList(1, 10, {
     filter: `name ~ "${query}"`,
   });

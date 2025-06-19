@@ -41,3 +41,9 @@ export interface RecipeRating {
   average: number;
   count: number;
 }
+
+export interface RecipeServerResponse {
+  success: boolean;
+  recipe?: Recipe;
+  error?: string;
+}

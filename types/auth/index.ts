@@ -16,7 +16,7 @@ export interface UserWithName {
   name: string;
 }
 
-export interface ApiResponse {
+export interface ApiResponseLogin {
   success: boolean;
   user: User;
   token: string;
@@ -28,4 +28,10 @@ export interface UserRegisterCredentials {
   email: string;
   password: string;
   repeatPassword: string;
+}
+
+export interface AuthServerResponse {
+  success: boolean;
+  user?: User;
+  error?: string;
 }

@@ -1,14 +1,29 @@
 "use server";
 import pb from "@/lib/pocketbase";
-import { Recipe } from "@/types/recipes";
+import { Recipe, RecipeServerResponse } from "@/types/recipes";
 import { retrieveRecipeRatings } from "./userInteractions";
 
-export async function createRecipe(recipe: Partial<Recipe>) {
+export async function createRecipe(
+  recipe: Partial<Recipe>
+): Promise<RecipeServerResponse> {
   try {
     recipe.isVisible = true;
     const recipeData = await pb.collection("recipes").create(recipe);
 
-    return { success: true, recipeData };
+    const newRecipe: Recipe = {
+      id: recipeData.id,
+      owner: recipeData.owner,
+      title: recipeData.title,
+      servings: recipeData.servings,
+      ingredients: recipeData.ingredients,
+      photo: recipeData.photo,
+      favouritesCounter: recipeData.favouritesCounter,
+      description: recipeData.description,
+      views: recipeData.views,
+      isVisible: recipeData.isVisible,
+    };
+
+    return { success: true, recipe: newRecipe };
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(error.message);
@@ -46,7 +61,7 @@ export async function retrieveAllRecipes(): Promise<
   }
 }
 
-export async function deleteOrphanFavourites() {
+export async function deleteOrphanFavourites(): Promise<RecipeServerResponse> {
   try {
     const orphanFavourites = await pb.collection("favourites").getFullList({
       filter: `recipeId = null`,
@@ -65,12 +80,31 @@ export async function deleteOrphanFavourites() {
     }
     return { success: false, error: "Something wrong" };
   }
+
+  return { success: true };
 }
 
-export async function updateRecipe(id: string, data: Partial<Recipe>) {
+export async function updateRecipe(
+  id: string,
+  data: Partial<Recipe>
+): Promise<RecipeServerResponse> {
   try {
     const updated = await pb.collection("recipes").update(id, data);
-    return updated;
+
+    const updatedRecipe: Recipe = {
+      id: updated.id,
+      owner: updated.owner,
+      title: updated.title,
+      servings: updated.servings,
+      ingredients: updated.ingredients,
+      photo: updated.photo,
+      favouritesCounter: updated.favouritesCounter,
+      description: updated.description,
+      views: updated.views,
+      isVisible: updated.isVisible,
+    };
+
+    return { success: true, recipe: updatedRecipe };
   } catch (error) {
     throw new Error(`Error updating recipe: ${(error as Error).message}`);
   }
@@ -78,11 +112,11 @@ export async function updateRecipe(id: string, data: Partial<Recipe>) {
 
 export async function deleteRecipeById(recipeId: string): Promise<boolean> {
   try {
-    const data = await pb.collection("recipes").delete(recipeId);
+    const response = await pb.collection("recipes").delete(recipeId);
 
-    if (data) deleteOrphanFavourites();
+    if (response) deleteOrphanFavourites();
 
-    return data;
+    return response;
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(error.message);
@@ -91,7 +125,7 @@ export async function deleteRecipeById(recipeId: string): Promise<boolean> {
   }
 }
 
-export async function incrementRecipeViews(recipeId: string) {
+export async function incrementRecipeViews(recipeId: string): Promise<void> {
   try {
     const recipe = await pb.collection("recipes").getOne(recipeId);
     await pb.collection("recipes").update(recipeId, {

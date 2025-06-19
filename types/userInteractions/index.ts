@@ -32,3 +32,9 @@ export type MessageRecord = {
     from?: { name: string };
   };
 };
+
+export interface UserInteractionsServerResponse {
+  success: boolean;
+  alreadyRated?: boolean;
+  error?: string;
+}
