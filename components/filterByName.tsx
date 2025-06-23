@@ -1,8 +1,8 @@
-import { RecipesContext } from "@/app/context/context";
+import { RecipesContext, RecipesContextType } from "@/app/context/context";
 import { useContext, useState, useEffect } from "react";
 
 export default function FilterByName() {
-  const contextRecipes = useContext(RecipesContext);
+  const contextRecipes = useContext<RecipesContextType | null>(RecipesContext);
   const [filter, setFilter] = useState<string>("");
 
   useEffect(() => {

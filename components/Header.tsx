@@ -2,7 +2,7 @@
 import { useContext, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AuthContext } from "../app/context/context";
+import { AuthContext, AuthContextType } from "../app/context/context";
 
 import Logo from "./Logo";
 import DesktopNav from "./navbar/DesktopNav";
@@ -11,10 +11,10 @@ import { Menu, X } from "lucide-react";
 
 export default function Header() {
   const router = useRouter();
-  const auth = useContext(AuthContext);
+  const auth = useContext<AuthContextType | null>(AuthContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  function logout() {
+  function logout(): void {
     auth?.logout();
     setIsMenuOpen(false);
     router.push("/login");

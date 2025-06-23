@@ -9,11 +9,13 @@ export default function RatingForm({
 }) {
   const [rating, setRating] = useState("");
 
-  const handleRatingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRatingChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     setRating(event.target.value);
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault();
     const numericRating = Number(rating);
 
