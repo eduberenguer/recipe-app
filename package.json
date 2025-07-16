@@ -11,7 +11,11 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
+    "@fullcalendar/daygrid": "^6.1.18",
+    "@fullcalendar/interaction": "^6.1.18",
+    "@fullcalendar/react": "^6.1.18",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "date-fns": "^4.1.0",
     "form-data": "^4.0.2",
     "formidable": "^3.5.2",
     "js-cookie": "^3.0.5",
