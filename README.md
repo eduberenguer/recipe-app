@@ -18,6 +18,7 @@ Recipe App (WIP)
 - User Authentication (Login/Register)
 - Chat between users (websockets in pocketbase)
 - Chat with ChefGPT
+- Weekly Menu
 - Create and Edit Recipes
 - Recipe List View
 - Recipe Search
@@ -35,7 +36,6 @@ Recipe App (WIP)
 
 - Recipe API (for food data)
 - Allergens Information
-- Weekly Menu
 - Pagination
 - Recipe Comments System
 - User-generated Recipe Collections
