@@ -1,5 +1,5 @@
 "use client";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import {
   AuthContext,
   RecipesContext,
@@ -7,27 +7,12 @@ import {
 } from "../context/context";
 
 import { RecipeWithRating } from "@/types/recipes";
-import CustomSpinner from "@/components/CustomSpinner";
 import RecipeCardExpanded from "@/components/RecipeCardExpanded";
 
 export default function Favourites() {
   const contextAuth = useContext(AuthContext);
   const contextRecipes = useContext(RecipesContext);
   const contextUserInteraction = useContext(UserInteractionsContext);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchFavourites() {
-      if (contextAuth?.user?.id && contextUserInteraction) {
-        await contextUserInteraction.retrieveFavouritesList(
-          contextAuth.user.id
-        );
-        setIsLoading(false);
-      }
-    }
-
-    fetchFavourites();
-  }, [contextAuth?.user?.id]);
 
   async function toggleFavourite(recipeId: string): Promise<void> {
     if (!contextAuth?.user?.id || !contextUserInteraction) return;
@@ -42,10 +27,6 @@ export default function Favourites() {
         recipeId
       );
     }
-  }
-
-  if (isLoading || !contextAuth || !contextRecipes) {
-    return <CustomSpinner message={"Loading favourites..."} />;
   }
 
   return (
