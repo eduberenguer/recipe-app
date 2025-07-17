@@ -27,6 +27,8 @@ import {
   ToggleFavouriteRecipe,
 } from "@/types/userInteractions";
 import { RecipesContext, RecipesContextType } from "../context/context";
+import { AuthContext, AuthContextType } from "../context/context";
+import { useEffect } from "react";
 import { fetchPexelsImageUrl } from "../utils/pexelsImageUrl";
 
 export function useUserInteractions() {
@@ -36,6 +38,7 @@ export function useUserInteractions() {
   };
 
   const contextRecipes = useContext<RecipesContextType | null>(RecipesContext);
+  const contextAuth = useContext<AuthContextType | null>(AuthContext);
   const [state, dispatch] = useReducer(
     userInteractionsReducer,
     initialUserInteractionsState
@@ -160,6 +163,12 @@ export function useUserInteractions() {
 
     setAiRecipe(aiRecipe);
   }
+
+  useEffect(() => {
+    if (contextAuth?.user?.id) {
+      retrieveFavouritesList(contextAuth.user.id);
+    }
+  }, [contextAuth?.user?.id]);
 
   return {
     favouritesRecipesId: state.favouritesRecipesId,
