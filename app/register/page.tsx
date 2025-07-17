@@ -83,7 +83,11 @@ export default function Register() {
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <div className="flex justify-center">
-          <Button type="submit" backgroundColor="bg-green-500">
+          <Button
+            type="submit"
+            backgroundColor="bg-[#6366F1] text-white"
+            hoverColor="hover:bg-[#6366F1]/90"
+          >
             Sign Up
           </Button>
         </div>

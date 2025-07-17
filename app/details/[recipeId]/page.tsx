@@ -9,7 +9,6 @@ import {
 import { useParams } from "next/navigation";
 import photoSrc from "@/app/utils/photoSrc";
 import CustomSpinner from "@/components/CustomSpinner";
-
 import RatingForm from "@/components/RatingForm";
 import ForkRating from "@/components/ForkRating";
 import { incrementRecipeViews } from "@/server/recipes";
@@ -30,7 +29,6 @@ export default function Details() {
       if (typeof recipeId === "string" && contextRecipes) {
         contextRecipes.clearStateRecipe?.();
         await contextRecipes.retrieveRecipe(recipeId);
-
         try {
           const data = await contextUserInteraction?.retrieveRecipeRatings(
             recipeId
@@ -40,23 +38,18 @@ export default function Details() {
           } else {
             setRating(null);
           }
-        } catch (error) {
-          console.error("Error retrieving rating:", error);
+        } catch {
           setRating(null);
         }
       }
     };
-
     fetchRecipe();
   }, [recipeId]);
 
   useEffect(() => {
     if (typeof recipeId !== "string") return;
-
     const viewedKey = `viewed_${recipeId}`;
-
     if (sessionStorage.getItem(viewedKey)) return;
-
     incrementRecipeViews(recipeId);
     sessionStorage.setItem(viewedKey, "true");
   }, [recipeId]);
@@ -69,16 +62,12 @@ export default function Details() {
             contextUser?.user.id,
             recipeId
           );
-
           if (result) {
             setAlreadyRated(result);
           }
-        } catch (error) {
-          console.error("Error checking if rated:", error);
-        }
+        } catch {}
       }
     };
-
     checkIfRated();
   }, [recipeId, rating]);
 
@@ -92,27 +81,22 @@ export default function Details() {
         recipeId: recipeId ?? "",
         rating: newRating,
       });
-
       const newRatingData = await contextUserInteraction?.retrieveRecipeRatings(
         recipeId
       );
       setRating(newRatingData ?? null);
-    } catch (error) {
-      console.error("Error adding rating:", error);
-    }
+    } catch {}
   };
 
   function renderRatingSection(): React.ReactNode {
     if (contextRecipes?.stateRecipe?.owner === contextUser?.user?.id) {
       return null;
     }
-
     if (alreadyRated) {
       return (
         <p className="italic text-green-700">You already rated this recipe.</p>
       );
     }
-
     return (
       <RatingForm
         recipeId={recipeId as string}
@@ -122,62 +106,68 @@ export default function Details() {
   }
 
   return (
-    <div className="p-4 max-w-4xl mx-auto">
-      <h1 className="text-xl font-semibold mb-6">Recipe Details</h1>
-      {contextRecipes?.stateRecipe &&
-      Object.keys(contextRecipes?.stateRecipe).length > 0 ? (
-        <div className="bg-white p-6 rounded-lg shadow-md flex gap-8">
-          <div className="flex-shrink-0 w-2/3">
-            <div className="relative w-full aspect-video rounded-lg overflow-hidden">
-              <Image
-                src={photoSrc(
-                  contextRecipes.stateRecipe.id ?? "",
-                  contextRecipes.stateRecipe.photo as string
+    <main className="bg-gray-50 min-h-screen font-sans">
+      <div className="max-w-5xl mx-auto px-4 py-10">
+        {contextRecipes?.stateRecipe &&
+        Object.keys(contextRecipes?.stateRecipe).length > 0 ? (
+          <div className="bg-white rounded-3xl shadow-xl flex flex-col md:flex-row gap-10 p-8 md:p-12 animate-fadein">
+            <div className="md:w-1/2 w-full flex flex-col gap-6">
+              <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-md">
+                <Image
+                  src={photoSrc(
+                    contextRecipes.stateRecipe.id ?? "",
+                    contextRecipes.stateRecipe.photo as string
+                  )}
+                  alt={contextRecipes.stateRecipe.title || "Recipe image"}
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
+              <div className="flex flex-row gap-2 items-center mt-2">
+                {rating && rating.count > 0 ? (
+                  <>
+                    <ForkRating rating={rating.average} />
+                    <span className="text-base text-gray-700 font-medium">
+                      ({rating.count} ratings)
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-base text-gray-400 italic">
+                    No ratings
+                  </span>
                 )}
-                alt={contextRecipes.stateRecipe.title || "Recipe image"}
-                fill
-                className="object-cover"
-              />
+              </div>
+              <p className="mt-2 text-gray-600 text-lg leading-relaxed">
+                {contextRecipes.stateRecipe.description}
+              </p>
             </div>
-            <div className="flex flex-row gap-2 items-center mt-2">
-              {rating && rating.count > 0 ? (
-                <>
-                  <ForkRating rating={rating.average} />
-                  <p className="text-sm text-gray-700">
-                    ({rating.count} ratings)
-                  </p>
-                </>
-              ) : (
-                <p className="text-sm text-gray-400 italic">No ratings</p>
-              )}
+            <div className="flex-1 flex flex-col gap-8">
+              <div>
+                <h1 className="text-3xl font-extrabold text-gray-900 mb-4">
+                  {contextRecipes.stateRecipe.title}
+                </h1>
+                <h2 className="font-semibold text-lg mb-2 text-gray-800">
+                  Ingredients
+                </h2>
+                <ul className="list-disc pl-6 space-y-2">
+                  {contextRecipes.stateRecipe.ingredients?.map(
+                    (ingredient, index) => (
+                      <li key={index} className="text-gray-700 text-base">
+                        <span className="font-medium">{ingredient.name}:</span>{" "}
+                        {ingredient.quantity} {ingredient.unity}
+                      </li>
+                    )
+                  )}
+                </ul>
+              </div>
+              <div className="mt-4">{renderRatingSection()}</div>
             </div>
-            <p className="mt-4 text-gray-600">
-              {contextRecipes.stateRecipe.description}
-            </p>
           </div>
-          <div className="flex-1">
-            <h2 className="text-2xl font-semibold mb-2">
-              {contextRecipes.stateRecipe.title}
-            </h2>
-            <div>
-              <h3 className="font-semibold text-lg mb-2">Ingredients</h3>
-              <ul className="list-disc pl-6 space-y-2">
-                {contextRecipes.stateRecipe.ingredients?.map(
-                  (ingredient, index) => (
-                    <li key={index} className="text-gray-700">
-                      <span className="font-medium">{ingredient.name}:</span>{" "}
-                      {ingredient.quantity} {ingredient.unity}
-                    </li>
-                  )
-                )}
-              </ul>
-            </div>
-            {renderRatingSection()}
-          </div>
-        </div>
-      ) : (
-        <CustomSpinner message={"Loading recipe details..."} />
-      )}
-    </div>
+        ) : (
+          <CustomSpinner message={"Loading recipe details..."} />
+        )}
+      </div>
+    </main>
   );
 }

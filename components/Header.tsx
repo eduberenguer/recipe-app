@@ -3,11 +3,11 @@ import { useContext, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AuthContext, AuthContextType } from "../app/context/context";
-
 import Logo from "./Logo";
 import DesktopNav from "./navbar/DesktopNav";
 import MobileNav from "./navbar/MobileNav";
 import { Menu, X } from "lucide-react";
+import Button from "./Button";
 
 export default function Header() {
   const router = useRouter();
@@ -21,33 +21,36 @@ export default function Header() {
   }
 
   return (
-    <header className="relative flex justify-between items-center text-stone-500 h-max p-4">
-      <h1>
-        <Link href={auth?.user ? "/main" : "/"}>
+    <header className="sticky top-0 z-40 bg-white">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-8 py-3">
+        <Link href={auth?.user ? "/main" : "/"} className="flex items-center">
           <Logo />
         </Link>
-      </h1>
-      {auth?.user && (
-        <>
-          <nav className="hidden md:flex gap-4 items-center">
-            <DesktopNav logout={logout} />
-          </nav>
-          <button
-            className="md:hidden"
-            aria-label="Toggle menu"
-            onClick={() => {
-              setIsMenuOpen(!isMenuOpen);
-            }}
-          >
-            {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
-          <MobileNav
-            logout={logout}
-            isMenuOpen={isMenuOpen}
-            setIsMenuOpen={setIsMenuOpen}
-          />
-        </>
-      )}
+        {auth?.user && (
+          <>
+            <nav className="hidden md:flex flex-1 justify-center">
+              <DesktopNav logout={logout} />
+            </nav>
+            <div className="flex items-center md:hidden">
+              <Button
+                backgroundColor="bg-[#6366F1] text-white"
+                hoverColor="hover:bg-[#6366F1]/90"
+                aria-label="Toggle menu"
+                onClick={() => {
+                  setIsMenuOpen(!isMenuOpen);
+                }}
+              >
+                {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+              </Button>
+            </div>
+            <MobileNav
+              logout={logout}
+              isMenuOpen={isMenuOpen}
+              setIsMenuOpen={setIsMenuOpen}
+            />
+          </>
+        )}
+      </div>
     </header>
   );
 }

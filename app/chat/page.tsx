@@ -20,8 +20,8 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex">
-      <div className="w-1/3 bg-white p-4 overflow-y-auto rounded-l-lg">
+    <main className="bg-gray-50 flex items-center justify-center py-10 px-2 font-sans">
+      <div className="w-full max-w-6xl flex gap-8 animate-fadein max-h-full">
         <ChatSidebar
           onSelectUser={handleSelectUser}
           selectedUserId={selectedUserId}
@@ -29,18 +29,23 @@ export default function Chat() {
           refreshChatsTrigger={refreshChatsTrigger}
           setRefreshChatsTrigger={setRefreshChatsTrigger}
         />
-      </div>
-      {selectedUserId && contextAuth?.user?.id && (
-        <div className="flex flex-col flex-1 bg-gray-50">
-          <div className="flex-1 overflow-y-auto p-4 bg-white">
-            <ChatWindow
-              selectedUserId={selectedUserId}
-              isAi={false}
-              isLoading={false}
-            />
+        <div className="flex flex-col flex-1 bg-white rounded-3xl shadow-xl overflow-hidden animate-fadein">
+          <div className="flex-1 p-8 min-h-[400px] max-h-[600px] h-[500px] w-full overflow-y-scroll flex flex-col justify-center">
+            {selectedUserId && contextAuth?.user?.id ? (
+              <ChatWindow
+                selectedUserId={selectedUserId}
+                isAi={false}
+                isLoading={false}
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full w-full text-gray-400 text-xl font-semibold">
+                <span className="text-5xl mb-2">💬</span>
+                Select a chat to start messaging
+              </div>
+            )}
           </div>
-          <div className="p-4 bg-white border-t flex-shrink-0">
-            {showChatInput && (
+          <div className="p-6 border-t border-gray-100 bg-white">
+            {selectedUserId && contextAuth?.user?.id && showChatInput && (
               <ChatInput
                 fromUserId={contextAuth.user.id}
                 toUserId={selectedUserId}
@@ -49,7 +54,7 @@ export default function Chat() {
             )}
           </div>
         </div>
-      )}
-    </div>
+      </div>
+    </main>
   );
 }
