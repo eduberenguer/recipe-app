@@ -22,6 +22,7 @@ Recipe App (WIP)
 - Create and Edit Recipes
 - Recipe List View
 - Recipe Search
+- Filter recipe by name and by ingredients
 - Responsive Design (Desktop/Mobile)
 - Toast Notifications for Errors/Success
 - Private Routes (Authenticated users only)
