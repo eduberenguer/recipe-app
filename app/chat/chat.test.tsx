@@ -16,6 +16,7 @@ jest.mock("@/lib/pocketbase", () => ({
     collection: jest.fn(() => ({
       getFullList: jest.fn().mockResolvedValue([]),
       subscribe: jest.fn().mockResolvedValue(() => {}),
+      unsubscribe: jest.fn(),
     })),
   },
 }));
@@ -60,7 +61,7 @@ describe("Chat component", () => {
     fireEvent.click(userButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/messages/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/messages/i).length).toBe(2);
     });
   });
 });

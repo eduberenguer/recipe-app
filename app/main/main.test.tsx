@@ -19,7 +19,7 @@ jest.mock("next/image", () => ({
   default: (
     props: React.ImgHTMLAttributes<HTMLImageElement> & { fill?: boolean }
   ) => {
-    const { src, alt, fill, ...rest } = props;
+    const { src, alt, ...rest } = props;
     return <img src={src || ""} alt={alt || ""} {...rest} />;
   },
 }));
@@ -79,7 +79,9 @@ describe("Main component", () => {
     expect(screen.getByAltText("Test Recipe")).toBeInTheDocument();
     expect(screen.getByAltText("Test Recipe 2")).toBeInTheDocument();
 
-    const deleteButton = screen.getAllByRole("button", { name: /x/i });
+    const deleteButton = screen.getAllByRole("button", {
+      name: "Delete recipe",
+    });
     expect(deleteButton[0]).toBeInTheDocument();
 
     fireEvent.click(deleteButton[0]);

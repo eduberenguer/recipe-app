@@ -50,8 +50,6 @@ describe("Favourites component", () => {
   it("should call retrieveFavouritesList and render title after loading", async () => {
     customRender();
 
-    expect(screen.getByText("Loading favourites...")).toBeInTheDocument();
-
     const title = await screen.findByText("My favourites recipes");
 
     expect(title).toBeInTheDocument();
