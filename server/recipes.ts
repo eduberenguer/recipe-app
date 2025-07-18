@@ -184,3 +184,57 @@ export async function retrieveRecipesByUserId(
     throw new Error("Error");
   }
 }
+
+export async function retrieveRecipeIngredients(): Promise<string[]> {
+  try {
+    const data = await pb.collection("recipes").getFullList({
+      sort: "-created",
+      $autoCancel: false,
+      filter: `isVisible = true`,
+    });
+
+    const allIngredients = data
+      .flatMap((recipe) => (recipe as unknown as Recipe).ingredients || [])
+      .map((ingredient: { name: string }) =>
+        ingredient.name?.trim().toLowerCase()
+      )
+      .filter(Boolean);
+
+    const uniqueIngredients = Array.from(new Set(allIngredients));
+
+    uniqueIngredients.sort();
+
+    return uniqueIngredients;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    throw new Error("Error");
+  }
+}
+
+export async function retrieveRecipesByIngredients(
+  ingredients: string[]
+): Promise<Recipe[]> {
+  try {
+    const data = await pb.collection("recipes").getFullList({
+      filter: `isVisible = true`,
+    });
+
+    const searchSet = new Set(ingredients.map((i) => i.trim().toLowerCase()));
+
+    const filtered = data.filter((recipe) =>
+      ((recipe as unknown as Recipe).ingredients || []).some(
+        (ingredients: { name: string }) =>
+          searchSet.has(ingredients.name?.trim().toLowerCase())
+      )
+    );
+
+    return filtered as unknown as Recipe[];
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    throw new Error("Error");
+  }
+}

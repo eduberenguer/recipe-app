@@ -3,7 +3,9 @@ import {
   deleteRecipeApi,
   retrieveAllRecipesApi,
   retrieveRecipeByIdApi,
+  retrieveRecipeIngredientsApi,
   retrieveRecipesByFilterNameApi,
+  retrieveRecipesByIngredientsApi,
   retrieveRecipesByUserIdApi,
   toggleVisibleRecipeApi,
 } from "@/lib/api/recipes";
@@ -58,12 +60,32 @@ export function useRecipes() {
     }
   }
 
+  async function retrieveRecipeIngredients(): Promise<string[]> {
+    const result = await retrieveRecipeIngredientsApi();
+
+    return result;
+  }
+
+  async function retrieveRecipesByIngredients(
+    ingredients: string[]
+  ): Promise<string[]> {
+    const data = await retrieveRecipesByIngredientsApi(ingredients);
+
+    if (data) {
+      dispatch({ type: RecipeActionTypes.SET_RECIPES, payload: data });
+    }
+
+    return data;
+  }
+
   async function deleteRecipe(recipeId: string): Promise<void> {
     const result = await deleteRecipeApi(recipeId);
 
     if (result) {
       dispatch({ type: RecipeActionTypes.DELETE_RECIPE, payload: result });
     }
+
+    retrieveRecipeIngredients();
   }
 
   async function retrieveRecipe(recipeId: string): Promise<Recipe> {
@@ -116,5 +138,7 @@ export function useRecipes() {
     retrieveRecipesByFilterName,
     retrieveRecipesByUserId,
     clearStateRecipe,
+    retrieveRecipeIngredients,
+    retrieveRecipesByIngredients,
   };
 }

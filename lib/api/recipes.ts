@@ -89,3 +89,29 @@ export async function retrieveRecipesByUserIdApi(userId: string) {
   }
   return res.json();
 }
+
+export async function retrieveRecipeIngredientsApi() {
+  const res = await fetch(`/api/recipes/retrieveRecipeIngredients`);
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.error || "Error");
+  }
+  return res.json();
+}
+
+export async function retrieveRecipesByIngredientsApi(ingredients: string[]) {
+  const params = new URLSearchParams({
+    ingredients: ingredients.join(","),
+  });
+
+  const res = await fetch(
+    `/api/recipes/retrieveRecipesByIngredients?${params.toString()}`
+  );
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.error || "Error");
+  }
+  return res.json();
+}
