@@ -2,12 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import checkOwnerRecipe from "@/app/utils/checkOwnerRecipe";
 import photoSrc from "@/app/utils/photoSrc";
-import Button from "@/components/Button";
 import { RecipeWithRating } from "@/types/recipes";
 import { AuthUser } from "@/app/hooks/useAuth";
-import { TbEggCracked } from "react-icons/tb";
-import { BsEggFried } from "react-icons/bs";
 import ForkRating from "@/components/ForkRating";
+import { MdDeleteForever } from "react-icons/md";
 
 export default function RecipeCard({
   recipe,
@@ -25,8 +23,8 @@ export default function RecipeCard({
   isFromMain?: boolean;
 }) {
   return (
-    <div className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 w-full max-w-[370px] cursor-pointer group">
-      <div className="relative w-full aspect-square overflow-hidden">
+    <div className="bg-white rounded-3xl transition-all duration-300 w-full max-w-[370px] h-[450px] flex flex-col overflow-hidden">
+      <div className="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden flex items-center justify-center">
         <Link href={`/details/${recipe.id}`}>
           <Image
             src={photoSrc(recipe.id ?? "", (recipe.photo as string) ?? "")}
@@ -35,30 +33,35 @@ export default function RecipeCard({
             className="object-cover transition-transform duration-300 group-hover:scale-105"
             draggable={false}
             style={{ borderRadius: "1.5rem 1.5rem 0 0" }}
+            sizes="(max-width: 600px) 100vw, 370px"
           />
         </Link>
         {user?.id &&
           checkOwnerRecipe(user.id ?? "", recipe.owner ?? "") &&
           isFromMain && (
-            <Button
+            <button
               onClick={() => recipe.id && deleteRecipe(recipe.id)}
-              className="absolute top-3 right-3 border border-gray-300 shadow-sm text-gray-600 hover:bg-red-500 hover:text-white rounded-full w-9 h-9 flex items-center justify-center text-lg font-bold transition-colors"
+              className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-9 h-9 flex items-center justify-center p-0 shadow-sm transition-all duration-200 hover:scale-110 hover:bg-red-600 cursor-pointer"
               role="button"
               aria-label="Delete recipe"
+              title="Delete recipe"
+              type="button"
             >
-              X
-            </Button>
+              <MdDeleteForever size={22} />
+            </button>
           )}
       </div>
-      <div className="p-5 flex flex-col gap-3">
-        <div className="flex justify-between items-start">
-          <h3 className="text-xl font-bold text-gray-900 line-clamp-2">
-            {recipe.title}
-          </h3>
+      <div className="p-5 flex flex-col gap-3 flex-1">
+        <div className="flex items-center gap-2 justify-between">
+          <Link href={`/details/${recipe.id}`} className="flex-1">
+            <h3 className="text-xl font-bold text-gray-900 line-clamp-2 group-hover:underline">
+              {recipe.title}
+            </h3>
+          </Link>
           {user?.id && (
             <button
               aria-label="Toggle favourite"
-              className="transition-transform duration-200 hover:scale-125"
+              className="transition-transform duration-200 hover:scale-125 cursor-pointer"
               onClick={() =>
                 user?.id &&
                 recipe.id &&
@@ -66,28 +69,27 @@ export default function RecipeCard({
               }
             >
               {isFavourite ? (
-                <BsEggFried
-                  size={30}
-                  color="#FFD600"
-                  style={{ filter: "drop-shadow(0 0 2px #fff)" }}
-                />
+                <span className="text-xl text-indigo-500">♥</span>
               ) : (
-                <TbEggCracked size={30} color="#d1d5db" />
+                <span className="text-xl text-gray-400">♥</span>
               )}
             </button>
           )}
         </div>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 text-yellow-400">
           {recipe.rating && recipe.rating.count > 0 ? (
-            <div className="flex items-center gap-2">
+            <>
               <ForkRating rating={recipe.rating.average} />
               <span className="text-sm text-gray-600">
                 ({recipe.rating.count})
               </span>
-            </div>
+            </>
           ) : (
             <p className="text-sm text-gray-400 italic">No ratings</p>
           )}
+        </div>
+        <div className="text-gray-500 text-sm line-clamp-2 flex-1 min-h-[48px] pb-1">
+          {recipe.description || "No description."}
         </div>
       </div>
     </div>
