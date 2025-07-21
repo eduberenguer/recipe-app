@@ -1,5 +1,5 @@
 "use client";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import {
   AuthContext,
   RecipesContext,
@@ -13,6 +13,12 @@ export default function Favourites() {
   const contextAuth = useContext(AuthContext);
   const contextRecipes = useContext(RecipesContext);
   const contextUserInteraction = useContext(UserInteractionsContext);
+
+  useEffect(() => {
+    if (contextAuth?.user?.id) {
+      contextUserInteraction?.retrieveFavouritesList(contextAuth.user.id);
+    }
+  }, [contextAuth?.user?.id]);
 
   async function toggleFavourite(recipeId: string): Promise<void> {
     if (!contextAuth?.user?.id || !contextUserInteraction) return;
