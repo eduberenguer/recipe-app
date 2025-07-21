@@ -11,6 +11,7 @@ import {
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { GripVertical, Eye } from "lucide-react";
+import { Unity } from "@/types/recipes";
 
 interface CalendarEvent {
   id: string;
@@ -24,6 +25,7 @@ type PlannerCalendarProps = {
   onEventAdd: (event: Omit<CalendarEvent, "id">) => void;
   onEventDelete: (event: CalendarEvent) => void;
   onEventMove: (event: CalendarEvent) => void;
+  ingredientsList: { name: string; quantity: number; unity: Unity }[];
 };
 
 export default function PlannerCalendar({
@@ -31,6 +33,7 @@ export default function PlannerCalendar({
   onEventAdd,
   onEventDelete,
   onEventMove,
+  ingredientsList,
 }: PlannerCalendarProps) {
   const router = useRouter();
   const contextUserInteraction = useContext<UserInteractionsContextType | null>(
@@ -60,7 +63,8 @@ export default function PlannerCalendar({
           style={{ cursor: "pointer", marginLeft: 6 }}
           onClick={(e) => {
             e.stopPropagation();
-            if (onEventDelete) onEventDelete(eventInfo.event as CalendarEvent);
+            if (onEventDelete)
+              onEventDelete(eventInfo.event as unknown as CalendarEvent);
           }}
           title="Delete"
         >
@@ -73,7 +77,7 @@ export default function PlannerCalendar({
   return (
     <div className="flex gap-8 p-4">
       <div id="external-recipes" className="w-1/4">
-        <h3 className="font-bold mb-2">Recipes to add:</h3>
+        <h3 className="font-bold mb-2">Your favorites recipes:</h3>
         {contextUserInteraction?.favouritesRecipes.map((interaction) => (
           <div
             key={interaction.id}
@@ -104,7 +108,6 @@ export default function PlannerCalendar({
           eventReceive={(info) => {
             const title = info.event.title;
             const start = info.event.start;
-
             const id = `${title}-${start?.toString()}`;
 
             if (events.some((ev) => ev.id === id)) {
@@ -122,10 +125,16 @@ export default function PlannerCalendar({
           height={600}
           eventDrop={function (info) {
             if (typeof onEventMove === "function") {
-              onEventMove(info.event as CalendarEvent);
+              onEventMove(info.event as unknown as CalendarEvent);
             }
           }}
         />
+      </div>
+      <div className="w-1/4">
+        <h3 className="font-bold mb-2">Ingredients to buy:</h3>
+        {ingredientsList.map((ingredient) => (
+          <div key={ingredient.name}>{ingredient.name}</div>
+        ))}
       </div>
     </div>
   );
