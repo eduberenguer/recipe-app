@@ -96,7 +96,12 @@ export default function RecipeForm() {
     formData.append("title", recipe.title);
     formData.append("servings", recipe.servings.toString());
     formData.append("owner", contextUser?.user?.id || "");
-    formData.append("ingredients", JSON.stringify(recipe.ingredients));
+    const normalizedIngredients = recipe.ingredients.map((ing) => ({
+      name: ing.name.trim().toLowerCase(),
+      quantity: ing.quantity,
+      unity: ing.unity,
+    }));
+    formData.append("ingredients", JSON.stringify(normalizedIngredients));
     formData.append("description", recipe.description || "");
 
     if (recipe.photo) {

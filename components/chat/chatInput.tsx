@@ -54,34 +54,36 @@ export default function ChatInput({
   return (
     <form
       onSubmit={handleSubmit}
-      className="fixed bottom-0 left-1/2 transform -translate-x-1/2 z-10 w-full max-w-3xl mx-auto p-4 bg-white/90 backdrop-blur-md shadow-md flex flex-col gap-3"
+      className="w-full max-w-2xl mx-auto p-6 bg-white rounded-3xl  flex flex-col gap-2 animate-fadein border border-gray-100"
+      style={{ position: "static" }}
     >
-      <textarea
-        placeholder="Escribe tu mensaje..."
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        className="w-full bg-white border border-gray-300 rounded-md p-4 resize-none h-28 text-base focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-400"
-        disabled={isLoading}
-      />
-
-      <button
-        type="submit"
-        disabled={isLoading}
-        className={`self-center flex items-center justify-center gap-2 bg-blue-600 text-white text-base font-semibold py-2 px-6 rounded-full transition duration-200 ${
-          isLoading
-            ? "opacity-50 cursor-not-allowed"
-            : "hover:bg-blue-700 cursor-pointer"
-        }`}
-      >
-        {isLoading ? (
-          <>
-            <Loader2 className="animate-spin w-5 h-5" /> Enviando...
-          </>
-        ) : (
-          "Enviar"
-        )}
-      </button>
-
+      <div className="flex flex-row gap-3 items-end">
+        <textarea
+          placeholder="Type your message..."
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          className="flex-1 bg-gray-50 border border-gray-200 rounded-2xl p-4 resize-none h-20 text-base focus:outline-none focus:ring-2 focus:ring-[#6366F1] placeholder-gray-400 transition"
+          disabled={isLoading}
+        />
+        <button
+          type="submit"
+          disabled={isLoading}
+          className={`flex items-center justify-center gap-2 bg-[#6366F1] text-white text-base font-bold py-3 px-8 rounded-full shadow transition duration-200 ml-2 ${
+            isLoading
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:bg-[#6366F1]/90 cursor-pointer scale-105"
+          }`}
+          style={{ minHeight: "3rem" }}
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="animate-spin w-5 h-5" /> Cooking...
+            </>
+          ) : (
+            "Send"
+          )}
+        </button>
+      </div>
       {status && (
         <p className="text-sm text-red-500 italic text-center">{status}</p>
       )}

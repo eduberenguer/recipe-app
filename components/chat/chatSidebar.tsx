@@ -17,6 +17,13 @@ interface ChatSidebarProps {
   setRefreshChatsTrigger: (value: number) => void;
 }
 
+// Simulación de mensajes no leídos (en real, vendría del backend)
+function getUnreadCount(userId: string) {
+  // Ejemplo: para el primero, 2 mensajes no leídos, para el resto 0
+  if (userId.endsWith("1")) return 2;
+  return 0;
+}
+
 export default function ChatSidebar({
   onSelectUser,
   selectedUserId,
@@ -44,7 +51,6 @@ export default function ChatSidebar({
         console.error("Error loading conversations", error);
       }
     };
-
     fetchConversations();
   }, [contextAuth?.user?.id, refreshChatsTrigger]);
 
@@ -61,12 +67,10 @@ export default function ChatSidebar({
   ): Promise<void> => {
     const query = e.target.value;
     setSearchQuery(query);
-
     if (query.trim() === "") {
       setSearchResults([]);
       return;
     }
-
     const results = await searchUsersByUsername(query);
     setSearchResults(results);
   };
@@ -79,36 +83,38 @@ export default function ChatSidebar({
   };
 
   return (
-    <div className="bg-white p-4 shadow-lg rounded-md overflow-y-auto">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold">Chats</h2>
+    <aside className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6 w-full max-w-xs flex flex-col gap-6 animate-fadein">
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">
+          Chats
+        </h2>
         <button
           onClick={handleNewConversation}
-          className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-800 hover:cursor-pointer"
+          className={`py-2 px-4 rounded-full font-bold shadow transition text-white text-base ${
+            showNewConversation
+              ? "bg-[#6366F1] hover:bg-[#6366F1]/90"
+              : "bg-green-500 hover:bg-green-600"
+          }`}
         >
-          {showNewConversation ? "X" : "New chat"}
+          {showNewConversation ? "Close" : "New chat"}
         </button>
       </div>
-
       {showNewConversation && (
-        <div>
-          <div className="mb-4">
-            <input
-              type="text"
-              placeholder="Search user by name"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
+        <div className="flex flex-col gap-3 animate-fadein">
+          <input
+            type="text"
+            placeholder="Search user by name"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6366F1] text-base placeholder-gray-400 transition"
+          />
           {searchResults.length > 0 && (
             <ul className="space-y-2">
               {searchResults.map((user) => (
                 <li
                   key={user.id}
                   onClick={() => handleSelectSearchResult(user)}
-                  className="cursor-pointer hover:bg-blue-100 p-2 rounded-md"
+                  className="cursor-pointer hover:bg-[#6366F1]/10 p-2 rounded-lg text-gray-800 font-medium transition"
                 >
                   {user.name}
                 </li>
@@ -117,26 +123,37 @@ export default function ChatSidebar({
           )}
         </div>
       )}
-      <ul className="space-y-2">
+      <ul className="space-y-2 flex-1">
         {!showNewConversation &&
           conversations.map((user) => {
             const isActive = user.id === selectedUserId;
+            const unread = getUnreadCount(user.id);
             return (
               <li
                 key={user.id}
                 onClick={() => onSelectUser(user.id)}
-                className={`cursor-pointer p-2 rounded-md ${
-                  isActive ? "bg-blue-200 font-semibold" : "hover:bg-blue-100"
-                }`}
+                className={`cursor-pointer p-3 rounded-xl font-semibold flex items-center gap-2 transition relative ${
+                  isActive
+                    ? "bg-[#6366F1]/10 text-[#6366F1] shadow scale-105"
+                    : "hover:bg-gray-100 text-gray-800"
+                } animate-fadein`}
+                style={{ transition: "transform 0.15s" }}
               >
+                <span className="w-8 h-8 rounded-full bg-[#6366F1]/20 flex items-center justify-center text-lg font-bold">
+                  {user.name.charAt(0).toUpperCase()}
+                </span>
                 {user.name}
+                {unread > 0 && (
+                  <span className="ml-auto flex items-center justify-center w-6 h-6 rounded-full bg-red-500 text-white text-xs font-bold animate-bounce">
+                    {unread}
+                  </span>
+                )}
               </li>
             );
           })}
       </ul>
-
       {selectedNewUser && contextAuth?.user?.id && (
-        <div className="mt-4">
+        <div className="mt-4 animate-fadein">
           <p className="text-sm text-gray-700 mb-2">
             Sending message to: <strong>{selectedNewUser.name}</strong>
           </p>
@@ -155,6 +172,6 @@ export default function ChatSidebar({
           />
         </div>
       )}
-    </div>
+    </aside>
   );
 }

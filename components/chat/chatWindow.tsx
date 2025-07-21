@@ -16,6 +16,7 @@ import { MessageWithSenderName } from "@/types/userInteractions";
 import { urlToFile } from "@/app/utils/urlToFile";
 import { customToast } from "@/app/utils/showToast";
 import { usePathname } from "next/navigation";
+import { initialMessageAi } from "@/app/__mocks__/mockInitialMessageAi";
 
 interface ChatWindowProps {
   selectedUserId: string;
@@ -43,16 +44,7 @@ export default function ChatWindow({
     let unsubscribed = false;
 
     if (isAi) {
-      setMessages([
-        {
-          id: "init-ai-msg",
-          content:
-            "Hi! I'm your personal chef. What ingredients do you have, and how many people are you cooking for?",
-          fromUserId: "ai",
-          fromUserName: "ChefGPT",
-          created: new Date(),
-        },
-      ]);
+      setMessages([initialMessageAi]);
       return;
     }
 
@@ -63,22 +55,22 @@ export default function ChatWindow({
 
       const records = await getMessagesBetweenUsers(user.id, selectedUserId);
 
-      const mapped = records.map((r) => ({
-        id: r.id,
-        content: r.content,
-        fromUserId: r.from,
-        fromUserName: r.expand?.from?.name ?? r.from,
-        created: r.created,
+      const mapped = records.map((record) => ({
+        id: record.id,
+        content: record.content,
+        fromUserId: record.from,
+        fromUserName: record.expand?.from?.name ?? record.from,
+        created: record.created,
       }));
 
       if (!unsubscribed) setMessages(mapped);
 
       const unsubscribe = await pb
         .collection("messages")
-        .subscribe("*", async (e) => {
-          if (e.action !== "create") return;
+        .subscribe("*", async (event) => {
+          if (event.action !== "create") return;
 
-          const msg = e.record;
+          const msg = event.record;
           const relevant =
             (msg.from === user.id && msg.to === selectedUserId) ||
             (msg.from === selectedUserId && msg.to === user.id);
@@ -122,6 +114,11 @@ export default function ChatWindow({
   }, [selectedUserId, user?.id, isAi]);
 
   const generateNewRecipe = async (): Promise<void> => {
+    if (contextUseInteractions) {
+      contextUseInteractions.aiRecipe = null;
+    }
+    setMessages([initialMessageAi]);
+
     if (!user?.id) return;
     try {
       setIsLoading(true);
@@ -175,65 +172,76 @@ export default function ChatWindow({
   };
 
   return (
-    <div className="flex flex-col flex-1 max-h-[600px] p-6 bg-neutral-50 rounded-2xl border border-neutral-200 overflow-auto">
-      <h2 className="text-2xl font-semibold text-neutral-800 mb-4">
+    <div className="flex flex-col flex-1 p-8 bg-white rounded-3xl border border-neutral-100 animate-fadein max-h-full">
+      <h2 className="text-3xl font-extrabold text-gray-900 mb-6 text-center tracking-tight">
         {isAi ? "My Personal Chef 🤖" : "Messages"}
       </h2>
-
-      <div className="flex flex-col gap-3 mb-6">
+      <div className="flex flex-col gap-4 mb-8 max-h-[300px] overflow-y-auto">
         {messages.length === 0 && !isAi && (
           <p className="text-center text-neutral-400 italic">No messages yet</p>
         )}
-        {messages.map((msg) => {
+        {messages.map((msg, idx) => {
           const isOwn = msg.fromUserId === user?.id;
+          const isChef = msg.fromUserId === "ai";
           return (
             <div
               key={msg.id}
-              className={`rounded-lg px-4 py-3 text-sm max-w-[75%] ${
-                isOwn
-                  ? "self-end bg-blue-500 text-white"
-                  : "self-start bg-neutral-200 text-neutral-900"
-              }`}
+              className={`flex items-end gap-3 ${
+                isOwn ? "justify-end" : "justify-start"
+              } animate-fadein`}
+              style={{ animationDelay: `${idx * 40}ms` }}
             >
-              <div className="flex items-center justify-between mb-1">
-                <span className="font-medium text-xs">{msg.fromUserName}</span>
-                <time
-                  className="text-xs text-neutral-500 ml-3"
-                  title={new Date(msg.created).toLocaleString()}
-                >
-                  {new Date(msg.created).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </time>
+              <div
+                className={`rounded-2xl px-5 py-3 text-base max-w-[75%] shadow-sm transition-all duration-200 ${
+                  isOwn
+                    ? "bg-gray-300 text-gray-900 self-end"
+                    : isChef
+                    ? "bg-yellow-50 text-yellow-900 border border-yellow-200"
+                    : "bg-gray-100 text-gray-900 self-start"
+                }`}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-semibold text-xs">
+                    {msg.fromUserName}
+                  </span>
+                  <time
+                    className="text-xs text-gray-400 ml-3"
+                    title={new Date(msg.created).toLocaleString()}
+                  >
+                    {new Date(msg.created).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </time>
+                </div>
+                <p className="whitespace-pre-line leading-relaxed">
+                  {msg.content}
+                </p>
               </div>
-              <p className="whitespace-pre-line">{msg.content}</p>
             </div>
           );
         })}
       </div>
-
       {contextUseInteractions?.aiRecipe && pathname === "/personal.chef" && (
-        <div className="flex flex-col md:flex-row gap-6 bg-white border border-neutral-200 p-5 rounded-xl">
+        <div className="flex flex-col md:flex-row gap-8 bg-yellow-50 border-2 border-yellow-200 p-6 rounded-2xl animate-fadein">
           <div className="flex-1">
-            <h3 className="text-xl font-semibold text-neutral-800 mb-2">
+            <h3 className="text-xl font-bold text-yellow-900 mb-2">
               {contextUseInteractions.aiRecipe.title}
             </h3>
-            <p className="text-neutral-600 font-medium mb-2">
+            <p className="text-yellow-800 font-medium mb-2">
               Servings: {contextUseInteractions.aiRecipe.servings}
             </p>
-            <ul className="list-disc list-inside text-neutral-700 mb-4">
+            <ul className="list-disc list-inside text-yellow-900 mb-4">
               {contextUseInteractions.aiRecipe.ingredients?.map((ing, i) => (
                 <li key={i}>
                   {ing.name} — {ing.quantity} {ing.unity}
                 </li>
               ))}
             </ul>
-            <p className="text-neutral-700 whitespace-pre-line">
+            <p className="text-yellow-900 whitespace-pre-line">
               {contextUseInteractions.aiRecipe.description}
             </p>
           </div>
-
           <div className="flex flex-col items-center gap-4 w-72">
             {contextUseInteractions.aiRecipe.photo && (
               <Image
@@ -241,24 +249,24 @@ export default function ChatWindow({
                 alt="Recipe"
                 width={280}
                 height={280}
-                className="rounded-xl border border-neutral-300"
+                className="rounded-xl border border-yellow-300 shadow"
               />
             )}
             {isLoading ? (
-              <p className="text-blue-600 font-medium animate-pulse">
+              <p className="text-pink-600 font-medium animate-pulse">
                 Generating new recipe...
               </p>
             ) : (
               <div className="flex gap-2 w-full">
                 <button
                   onClick={generateNewRecipe}
-                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition"
+                  className="w-full bg-[#6366F1] text-white py-2 px-4 rounded-lg hover:bg-[#6366F1]/90 transition font-semibold shadow cursor-pointer"
                 >
                   Other recipe
                 </button>
                 <button
                   onClick={saveRecipe}
-                  className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition"
+                  className="w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition font-semibold shadow cursor-pointer"
                 >
                   Save recipe
                 </button>
