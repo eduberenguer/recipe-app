@@ -11,6 +11,7 @@ export const mockRecipesContext = {
     favouritesCounter: number;
     description: string;
     views: number;
+    isVisible: boolean;
   }>,
   stateRecipe: {},
   stateUserRecipes: [],
@@ -22,4 +23,6 @@ export const mockRecipesContext = {
   retrieveRecipesByUserId: jest.fn(),
   clearStateRecipe: jest.fn(),
   toggleVisibleRecipe: jest.fn(),
+  retrieveRecipeIngredients: jest.fn(),
+  retrieveRecipesByIngredients: jest.fn(),
 };

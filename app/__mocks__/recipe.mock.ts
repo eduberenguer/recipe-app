@@ -35,6 +35,7 @@ export const mockRecipeWithIdv1: RecipeWithRating = {
     count: 1,
   },
   views: 7,
+  isVisible: true,
 };
 
 export const mockRecipeWithIdv2 = [
@@ -44,13 +45,14 @@ export const mockRecipeWithIdv2 = [
     title: "Test Recipe",
     servings: 4,
     ingredients: [
-      { name: "Egg", quantity: 2, unity: "pcs" },
-      { name: "Flour", quantity: 200, unity: "g" },
+      { name: "Egg", quantity: 2, unity: "unit" as Unity },
+      { name: "Flour", quantity: 200, unity: "gr" as Unity },
     ],
     photo: "undefined/recipe123/test-photo.jpg",
     favouritesCounter: 5,
     description: "A test recipe",
     views: 10,
+    isVisible: true,
   },
   {
     id: "recipe456",
@@ -58,12 +60,13 @@ export const mockRecipeWithIdv2 = [
     title: "Test Recipe 2",
     servings: 2,
     ingredients: [
-      { name: "Milk", quantity: 1, unity: "l" },
-      { name: "Sugar", quantity: 100, unity: "g" },
+      { name: "Milk", quantity: 1, unity: "ml" as Unity },
+      { name: "Sugar", quantity: 100, unity: "gr" as Unity },
     ],
     photo: "undefined/recipe456/test-photo2.jpg",
     favouritesCounter: 3,
     description: "Another test recipe",
     views: 7,
+    isVisible: true,
   },
 ];
