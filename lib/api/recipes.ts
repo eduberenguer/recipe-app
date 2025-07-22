@@ -1,4 +1,6 @@
-export async function createNewRecipesApi(recipe: FormData) {
+import { Recipe } from "@/types/recipes";
+
+export async function createNewRecipesApi(recipe: FormData): Promise<Recipe> {
   const res = await fetch("/api/recipes/create", {
     method: "POST",
     body: recipe,
@@ -12,7 +14,7 @@ export async function createNewRecipesApi(recipe: FormData) {
   return res.json();
 }
 
-export async function retrieveAllRecipesApi() {
+export async function retrieveAllRecipesApi(): Promise<Recipe[]> {
   const res = await fetch("/api/recipes/retrieveRecipes");
 
   if (!res.ok) {
@@ -26,7 +28,7 @@ export async function retrieveAllRecipesApi() {
 export async function toggleVisibleRecipeApi(
   recipeId: string,
   newIsVisible: boolean
-) {
+): Promise<string> {
   const res = await fetch(`/api/recipes/toggleVisibleRecipe/${recipeId}`, {
     method: "PATCH",
     headers: {
@@ -43,7 +45,7 @@ export async function toggleVisibleRecipeApi(
   return recipeId;
 }
 
-export async function deleteRecipeApi(recipeId: string) {
+export async function deleteRecipeApi(recipeId: string): Promise<string> {
   const res = await fetch(`/api/recipes/deletedRecipes/${recipeId}`, {
     method: "DELETE",
   });
@@ -56,7 +58,7 @@ export async function deleteRecipeApi(recipeId: string) {
   return recipeId;
 }
 
-export async function retrieveRecipeByIdApi(recipeId: string) {
+export async function retrieveRecipeByIdApi(recipeId: string): Promise<Recipe> {
   const res = await fetch(`/api/recipes/retrieveRecipe/${recipeId}`);
 
   if (!res.ok) {
@@ -67,7 +69,9 @@ export async function retrieveRecipeByIdApi(recipeId: string) {
   return res.json();
 }
 
-export async function retrieveRecipesByFilterNameApi(filter: string) {
+export async function retrieveRecipesByFilterNameApi(
+  filter: string
+): Promise<Recipe[]> {
   const res = await fetch(`/api/recipes/retrieveRecipesByName?title=${filter}`);
 
   if (!res.ok) {
@@ -78,7 +82,9 @@ export async function retrieveRecipesByFilterNameApi(filter: string) {
   return res.json();
 }
 
-export async function retrieveRecipesByUserIdApi(userId: string) {
+export async function retrieveRecipesByUserIdApi(
+  userId: string
+): Promise<Recipe[]> {
   const res = await fetch(
     `/api/recipes/retrieveRecipesByUserId?owner=${userId}`
   );
@@ -90,7 +96,7 @@ export async function retrieveRecipesByUserIdApi(userId: string) {
   return res.json();
 }
 
-export async function retrieveRecipeIngredientsApi() {
+export async function retrieveRecipeIngredientsApi(): Promise<Recipe[]> {
   const res = await fetch(`/api/recipes/retrieveRecipeIngredients`);
 
   if (!res.ok) {
@@ -100,7 +106,9 @@ export async function retrieveRecipeIngredientsApi() {
   return res.json();
 }
 
-export async function retrieveRecipesByIngredientsApi(ingredients: string[]) {
+export async function retrieveRecipesByIngredientsApi(
+  ingredients: string[]
+): Promise<Recipe[]> {
   const params = new URLSearchParams({
     ingredients: ingredients.join(","),
   });
