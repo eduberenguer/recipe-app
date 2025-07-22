@@ -19,6 +19,7 @@ function createFakeFormDataRequest(data: Record<string, string>): Request {
   return {
     formData: async () =>
       ({
+        get: (key: string) => data[key],
         entries: () => Object.entries(data)[Symbol.iterator](),
       } as unknown),
   } as unknown as Request;

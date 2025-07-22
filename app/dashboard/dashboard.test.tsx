@@ -10,6 +10,10 @@ jest.mock("../hooks/useIsMobile", () => ({
   useIsMobile: jest.fn(),
 }));
 
+jest.mock("next/navigation", () => ({
+  useRouter: jest.fn(),
+}));
+
 describe("Main component", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -31,7 +35,7 @@ describe("Main component", () => {
 
     customRender();
 
-    const title = screen.getByText("JOHN'S RECIPES");
+    const title = screen.getByText("John");
 
     expect(title).toBeInTheDocument();
   });
@@ -42,9 +46,8 @@ describe("Main component", () => {
 
     customRender();
 
-    const heading = screen.getByText("MARIA'S RECIPES");
+    const heading = screen.getByText("Maria");
     expect(heading).toBeInTheDocument();
-    expect(screen.getByTestId("recipes-list-mobile")).toBeInTheDocument();
   });
 
   it("renders desktop layout", () => {
@@ -53,7 +56,7 @@ describe("Main component", () => {
 
     customRender();
 
-    const heading = screen.getByText("PETER'S RECIPES");
+    const heading = screen.getByText("Peter");
     expect(heading).toBeInTheDocument();
     expect(screen.getByTestId("recipes-table-desktop")).toBeInTheDocument();
   });

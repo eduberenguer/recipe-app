@@ -1,22 +1,20 @@
-import request from "supertest";
-import { createServer } from "http";
 import { POST } from "./route";
 
+jest.mock("next/server", () => ({
+  NextResponse: {
+    json: (data: unknown, { status = 200 } = {}) => ({
+      status,
+      json: async () => data,
+    }),
+  },
+}));
+
 describe("POST /api/auth/logout", () => {
-  let server: ReturnType<typeof createServer>;
+  it("should return 200 and success message", async () => {
+    const response = await POST();
+    expect(response.status).toBe(200);
 
-  beforeAll(() => {
-    server = createServer(async (req, res) => {
-      if (req.method === "POST") {
-        const result = await POST();
-        res.statusCode = result ? 200 : 204;
-        res.end();
-      }
-    });
-  });
-
-  it("should return null when logout", async () => {
-    const response = await request(server).post("/api/auth/logout");
-    expect(response.status).toBe(204);
+    const data = await response.json();
+    expect(data).toEqual({ success: true, message: "Logged out" });
   });
 });

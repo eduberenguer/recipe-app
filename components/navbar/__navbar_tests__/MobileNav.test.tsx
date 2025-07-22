@@ -31,7 +31,7 @@ describe("MobileNav component", () => {
 
     const recipesButton = screen.getByText("Recipes");
     const createRecipeButton = screen.getByText("Create Recipe");
-    const dashboardButton = screen.getByText("Dashboard");
+    const dashboardButton = screen.getByText("My space");
     const logoutButton = screen.getByText("Logout");
 
     expect(recipesButton).toBeInTheDocument();

@@ -57,7 +57,7 @@ describe("Header component", () => {
     const menuButton = screen.getByLabelText("Toggle menu");
     fireEvent.click(menuButton);
 
-    const dashboardButton = screen.getByRole("button", { name: "Dashboard" });
+    const dashboardButton = screen.getByRole("button", { name: "My space" });
     expect(dashboardButton).toBeInTheDocument();
   });
 

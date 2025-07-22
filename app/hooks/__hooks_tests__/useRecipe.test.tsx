@@ -29,6 +29,7 @@ jest.mock("@/lib/api/recipes", () => ({
   retrieveRecipesByUserIdApi: jest
     .fn()
     .mockResolvedValue([{ id: "1", title: "Test Recipe" }]),
+  retrieveRecipeIngredientsApi: jest.fn().mockResolvedValue([]),
 }));
 
 describe("useRecipes test", () => {

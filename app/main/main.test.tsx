@@ -47,7 +47,7 @@ describe("Main component", () => {
   it("main is render", () => {
     customRender();
 
-    const titlePage = screen.getByText("🍽️ Recipes Collection");
+    const titlePage = screen.getByText("Recipe Explorer");
 
     expect(titlePage).toBeInTheDocument();
   });
