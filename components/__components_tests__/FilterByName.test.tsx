@@ -34,6 +34,9 @@ describe("Filter by name component", () => {
           stateUserRecipes: [],
           retrieveRecipesByUserId: jest.fn(),
           clearStateRecipe: jest.fn(),
+          toggleVisibleRecipe: jest.fn(),
+          retrieveRecipeIngredients: jest.fn(),
+          retrieveRecipesByIngredients: jest.fn(),
         }}
       >
         <FilterByName />
