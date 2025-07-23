@@ -156,7 +156,7 @@ export async function retrieveRecipesByFilterName(
 ): Promise<Recipe[]> {
   try {
     const data = await pb.collection("recipes").getList(1, 50, {
-      filter: `title ~ "${filter}"`,
+      filter: `title ~ "${filter}" && isVisible = true`,
     });
 
     return data.items as unknown as Recipe[];
