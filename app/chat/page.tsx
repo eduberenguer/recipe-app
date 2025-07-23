@@ -30,7 +30,7 @@ export default function Chat() {
           setRefreshChatsTrigger={setRefreshChatsTrigger}
         />
         <div className="flex flex-col flex-1 bg-white rounded-3xl shadow-xl overflow-hidden animate-fadein">
-          <div className="flex-1 p-8 min-h-[400px] max-h-[600px] h-[500px] w-full overflow-y-scroll flex flex-col justify-center">
+          <div className="flex-1 p-8 min-h-[400px] max-h-[600px] h-[500px] w-full flex flex-col justify-center">
             {selectedUserId && contextAuth?.user?.id ? (
               <ChatWindow
                 selectedUserId={selectedUserId}

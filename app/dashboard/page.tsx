@@ -99,6 +99,13 @@ export default function Dashboard() {
                   {favouritesIds.length}
                 </span>
               </button>
+              <button
+                className="relative bg-white border border-gray-200 rounded-full p-2 hover:bg-indigo-50 transition"
+                onClick={() => {}}
+                title="settings"
+              >
+                <span className="text-xl cursor-pointer">⚙️</span>
+              </button>
             </div>
           </div>
           <div className="flex gap-2 mt-2 flex-wrap">
