@@ -1,0 +1,15 @@
+export const mockContextRecipes = {
+  stateAllRecipes: [],
+  stateRecipe: {},
+  createRecipe: jest.fn(),
+  retrieveRecipesList: jest.fn(),
+  deleteRecipe: jest.fn(),
+  retrieveRecipe: jest.fn(),
+  retrieveRecipesByFilterName: jest.fn(),
+  stateUserRecipes: [],
+  retrieveRecipesByUserId: jest.fn(),
+  clearStateRecipe: jest.fn(),
+  toggleVisibleRecipe: jest.fn(),
+  retrieveRecipeIngredients: jest.fn(),
+  retrieveRecipesByIngredients: jest.fn(),
+};
