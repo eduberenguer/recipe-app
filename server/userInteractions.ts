@@ -6,6 +6,9 @@ import {
   MessageRecord,
   UserInteractionsServerResponse,
   BaseMessage,
+  CommentsRecipe,
+  NewCommentRecipe,
+  ToogleLikeCommentRecipe,
 } from "@/types/userInteractions";
 import { Recipe } from "@/types/recipes";
 import { User, UserWithName } from "@/types/auth";
@@ -257,4 +260,108 @@ export async function getConversationsForUser(userId: string): Promise<User[]> {
   }
 
   return Array.from(userMap.values());
+}
+
+export async function getUserLikedComments(
+  userId: string,
+  recipeId: string
+): Promise<string[]> {
+  const comments = await pb.collection("comments").getFullList(undefined, {
+    filter: `recipeId="${recipeId}"`,
+    fields: "id",
+  });
+
+  const commentIds = comments.map((c) => c.id);
+
+  const likes = await pb.collection("comment_likes").getFullList(undefined, {
+    filter: `userId="${userId}" && commentId in ("${commentIds.join('","')}")`,
+  });
+
+  return likes.map((like) => like.commentId);
+}
+
+export async function retrieveCommentsRecipe(
+  recipeId: string
+): Promise<CommentsRecipe[]> {
+  const comments = await pb.collection("comments").getFullList<CommentsRecipe>({
+    filter: `recipeId = "${recipeId}"`,
+    expand: "userId",
+  });
+
+  return comments;
+}
+
+export async function createNewCommentRecipe(
+  newCommentRecipe: NewCommentRecipe
+): Promise<UserInteractionsServerResponse> {
+  try {
+    await pb.collection("comments").create(newCommentRecipe);
+
+    return { success: true };
+  } catch (error) {
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: "Something wrong" };
+  }
+}
+
+export async function toggleLikeCommentRecipe(
+  data: ToogleLikeCommentRecipe
+): Promise<UserInteractionsServerResponse> {
+  try {
+    const comment = await pb.collection("comments").getOne(data.commentId);
+    const existingLikes = await pb.collection("comment_likes").getFullList(1, {
+      filter: `userId="${data.userId}" && commentId="${data.commentId}"`,
+    });
+
+    if (existingLikes.length > 0) {
+      await pb.collection("comment_likes").delete(existingLikes[0].id);
+
+      await pb.collection("comments").update(data.commentId, {
+        commentLikes: Math.max(0, (comment.commentLikes || 1) - 1),
+      });
+    } else {
+      await pb.collection("comment_likes").create({
+        userId: data.userId,
+        commentId: data.commentId,
+      });
+
+      await pb.collection("comments").update(data.commentId, {
+        commentLikes: (comment.commentLikes || 0) + 1,
+      });
+    }
+
+    return { success: true };
+  } catch (error) {
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: "Something went wrong" };
+  }
+}
+
+export async function getUserLikedCommentIds(
+  userId: string
+): Promise<string[]> {
+  const likes = await pb.collection("comment_likes").getFullList({
+    filter: `userId = "${userId}"`,
+  });
+
+  return likes.map((like) => like.commentId);
+}
+
+export async function retrieveCommentCountByRecipeId(
+  recipeId: string
+): Promise<number> {
+  try {
+    const result = await pb.collection("comments").getList(1, 1, {
+      filter: `recipeId = "${recipeId}"`,
+    });
+
+    return result.totalItems;
+  } catch (error) {
+    console.error("Error retrieving comment count:", error);
+    return 0;
+  }
 }

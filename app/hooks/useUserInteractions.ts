@@ -4,11 +4,15 @@ import {
   addFavouriteRecipeApi,
   addRecipeRatingApi,
   checkUserHasRatedApi,
+  createCommentRecipeApi,
   removeRecipeApi,
+  retrieveCommentCountByRecipeIdApi,
+  retrieveCommentsRecipeApi,
   retrieveFavouritesApi,
   retrieveRecipeRatingsApi,
   sendMessageAiApi,
   sendMessageApi,
+  toggleLikeCommentRecipeApi,
 } from "@/lib/api/userInteractions";
 import {
   userInteractionsReducer,
@@ -24,12 +28,16 @@ import {
 import {
   AddRecipeRating,
   BaseMessage,
+  CommentsRecipe,
+  NewCommentRecipe,
   ToggleFavouriteRecipe,
+  ToogleLikeCommentRecipe,
 } from "@/types/userInteractions";
 import { RecipesContext, RecipesContextType } from "../context/context";
 import { AuthContext, AuthContextType } from "../context/context";
 import { useEffect } from "react";
 import { fetchPexelsImageUrl } from "../utils/pexelsImageUrl";
+import { getUserLikedCommentIds } from "@/server/userInteractions";
 
 export function useUserInteractions() {
   const initialUserInteractionsState: userInteractionsState = {
@@ -164,6 +172,53 @@ export function useUserInteractions() {
     setAiRecipe(aiRecipe);
   }
 
+  async function retrieveCommentsRecipe(
+    userId: string,
+    recipeId: string
+  ): Promise<CommentsRecipe[]> {
+    const allComments = await retrieveCommentsRecipeApi(recipeId);
+    const likedIds = await getUserLikedCommentIds(userId);
+
+    const withLikeFlags =
+      allComments?.map((comment: CommentsRecipe) => ({
+        ...comment,
+        userHasLiked: likedIds.includes(comment.id),
+      })) || [];
+
+    return withLikeFlags;
+  }
+
+  async function createNewCommentRecipe(
+    PartialNewCommentRecipe: Partial<NewCommentRecipe>
+  ): Promise<{ success: boolean; error?: string }> {
+    const newCommentRecipe: NewCommentRecipe = {
+      content: PartialNewCommentRecipe.content!,
+      userId: PartialNewCommentRecipe.userId!,
+      recipeId: PartialNewCommentRecipe.recipeId!,
+      commentLikes: 0,
+    };
+
+    const result = await createCommentRecipeApi(newCommentRecipe);
+
+    return result;
+  }
+
+  async function toggleLikeCommentRecipe(
+    toggleLikeCommentRecipe: ToogleLikeCommentRecipe
+  ): Promise<{ success: boolean; error?: string }> {
+    const result = await toggleLikeCommentRecipeApi(toggleLikeCommentRecipe);
+
+    return result;
+  }
+
+  async function retrieveCommentCountByRecipeId(recipeId: string) {
+    const totalComments: number = await retrieveCommentCountByRecipeIdApi(
+      recipeId
+    );
+
+    return totalComments;
+  }
+
   useEffect(() => {
     if (contextAuth?.user?.id) {
       retrieveFavouritesList(contextAuth.user.id);
@@ -183,5 +238,10 @@ export function useUserInteractions() {
     sendMessage,
     sendMessageAi,
     aiRecipe,
+    setAiRecipe,
+    retrieveCommentsRecipe,
+    createNewCommentRecipe,
+    toggleLikeCommentRecipe,
+    retrieveCommentCountByRecipeId,
   };
 }
