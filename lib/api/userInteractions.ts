@@ -1,6 +1,8 @@
 import {
   AddRecipeRating,
+  NewCommentRecipe,
   ToggleFavouriteRecipe,
+  ToogleLikeCommentRecipe,
 } from "@/types/userInteractions";
 
 export async function retrieveFavouritesApi(id: string) {
@@ -123,4 +125,68 @@ export async function sendMessageAiApi(content: string) {
   if (!response.ok) throw new Error(result.error || "Failed to send message");
 
   return result.message;
+}
+
+export async function retrieveCommentsRecipeApi(recipeId: string) {
+  const res = await fetch(
+    `/api/userInteractions/retrieveCommentsRecipe/${recipeId}`,
+    {
+      method: "GET",
+    }
+  );
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.error || "Error");
+  }
+
+  return await res.json();
+}
+
+export async function createCommentRecipeApi(
+  newCommentRecipe: NewCommentRecipe
+) {
+  const res = await fetch("/api/userInteractions/createNewCommentRecipe", {
+    method: "POST",
+    body: JSON.stringify(newCommentRecipe),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.error || "Error");
+  }
+
+  return await res.json();
+}
+
+export async function toggleLikeCommentRecipeApi(
+  toggleLikeCommentRecipe: ToogleLikeCommentRecipe
+) {
+  const res = await fetch("/api/userInteractions/toggleLikeCommentRecipe", {
+    method: "POST",
+    body: JSON.stringify(toggleLikeCommentRecipe),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.error || "Error");
+  }
+
+  return await res.json();
+}
+
+export async function retrieveCommentCountByRecipeIdApi(recipeId: string) {
+  const res = await fetch(
+    `/api/userInteractions/retrieveCommentCountByRecipeId/${recipeId}`,
+    {
+      method: "GET",
+    }
+  );
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.error || "Error");
+  }
+
+  return await res.json();
 }

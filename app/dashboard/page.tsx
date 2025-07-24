@@ -61,7 +61,7 @@ export default function Dashboard() {
               </div>
               <div>
                 <div className="text-lg font-bold text-gray-900">
-                  {contextAuth?.user?.name || "Usuario"}
+                  {contextAuth?.user?.name || "User"}
                 </div>
                 <div className="text-sm text-gray-500">Your recipes</div>
               </div>

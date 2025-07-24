@@ -32,13 +32,12 @@ Recipe App (WIP)
 - Session Persistence with cookies
 - Dashboard Page (admin Panel for managing recipes)
 - Recipe Rating System
+- Recipe comments and comment likes system
 
 ## Upcoming Features
 
-- Recipe API (for food data)
 - Allergens Information
 - Pagination
-- Recipe Comments System
 - User-generated Recipe Collections
 - Multi-language Support
 - Dark Mode
