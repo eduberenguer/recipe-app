@@ -96,7 +96,7 @@ export async function retrieveRecipesByUserIdApi(
   return res.json();
 }
 
-export async function retrieveRecipeIngredientsApi(): Promise<Recipe[]> {
+export async function retrieveRecipeIngredientsApi(): Promise<string[]> {
   const res = await fetch(`/api/recipes/retrieveRecipeIngredients`);
 
   if (!res.ok) {
