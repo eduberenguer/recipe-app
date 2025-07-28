@@ -21,6 +21,7 @@ export async function createRecipe(
       description: recipeData.description,
       views: recipeData.views,
       isVisible: recipeData.isVisible,
+      created: recipeData.created,
     };
 
     return { success: true, recipe: newRecipe };
@@ -40,14 +41,21 @@ export async function retrieveAllRecipes(): Promise<
       sort: "-created",
       $autoCancel: false,
       filter: `isVisible = true`,
+      expand: "owner",
     });
 
     const recipesWithRatings = await Promise.all(
       data.map(async (recipe) => {
         const rating = await retrieveRecipeRatings(recipe.id);
+
+        const owner = recipe.expand?.owner;
+        const ownerName =
+          typeof owner === "object" && owner !== null ? owner.name : "Unknown";
+
         return {
           ...recipe,
           rating,
+          ownerName,
         };
       })
     );
@@ -102,6 +110,7 @@ export async function updateRecipe(
       description: updated.description,
       views: updated.views,
       isVisible: updated.isVisible,
+      created: updated.created,
     };
 
     return { success: true, recipe: updatedRecipe };

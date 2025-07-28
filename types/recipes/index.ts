@@ -11,11 +11,18 @@ export interface Recipe {
   description: string;
   views: number;
   isVisible: boolean;
+  created: Date;
 }
 export interface RecipeWithRating extends Recipe {
   rating: {
     average: number;
     count: number;
+  };
+  expand?: {
+    owner?: {
+      id: string;
+      name?: string;
+    };
   };
 }
 
