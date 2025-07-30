@@ -1,7 +1,11 @@
 import { RecipesContext, RecipesContextType } from "@/app/context/context";
 import { useContext, useState, useEffect } from "react";
 
-export default function FilterByName() {
+type FilterByNameProps = {
+  className?: string;
+};
+
+export default function FilterByName({ className }: FilterByNameProps) {
   const contextRecipes = useContext<RecipesContextType | null>(RecipesContext);
   const [filter, setFilter] = useState<string>("");
 
@@ -19,7 +23,7 @@ export default function FilterByName() {
     <form className="flex flex-row">
       <input
         type="text"
-        className="border border-gray-300 rounded-md p-2"
+        className={className}
         placeholder="Search by name"
         value={filter}
         onChange={(e) => setFilter(e.target.value)}

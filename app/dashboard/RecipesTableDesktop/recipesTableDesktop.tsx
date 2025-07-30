@@ -7,6 +7,7 @@ import photoSrc from "@/app/utils/photoSrc";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { MdDeleteForever } from "react-icons/md";
 import { Eye, EyeOff } from "lucide-react";
+import { FaEdit } from "react-icons/fa";
 
 export default function RecipesTable({
   recipes,
@@ -28,11 +29,13 @@ export default function RecipesTable({
       <thead>
         <tr className="bg-gray-100">
           <th className="px-4 py-2">Title</th>
+          <th className="px-4 py-2">Created at</th>
           <th className="px-4 py-2">Servings</th>
-          <th className="px-4 py-2">Favourites</th>
+          <th className="px-4 py-2">Is favourite</th>
           <th className="px-4 py-2">Rating</th>
           <th className="px-4 py-2">Photo</th>
           <th className="px-4 py-2">Is visible</th>
+          <th className="px-4 py-2">Edit</th>
           <th className="px-4 py-2">Delete</th>
         </tr>
       </thead>
@@ -47,8 +50,14 @@ export default function RecipesTable({
                 {recipe.title} <FaMagnifyingGlass className="text-base" />
               </Link>
             </td>
+            <td className="px-4 py-2">
+              {new Date(recipe.created).toLocaleDateString()}
+            </td>
             <td className="px-4 py-2">{recipe.servings}</td>
-            <td className="px-4 py-2">{recipe.favouritesCounter}</td>
+            <td className="px-4 py-2">
+              {recipe.favouritesCounter}{" "}
+              {recipe.favouritesCounter > 1 ? "times" : "time"}
+            </td>
             <td className="px-4 py-2">
               {recipe.rating && (
                 <span>
@@ -78,6 +87,11 @@ export default function RecipesTable({
                   <EyeOff className="text-3xl" />
                 )}
               </button>
+            </td>
+            <td className="px-4 py-2">
+              <Link href={`/edit/${recipe.id}`}>
+                <FaEdit className="text-3xl text-indigo-500 hover:text-indigo-700" />
+              </Link>
             </td>
             <td className="px-4 py-2">
               <button
