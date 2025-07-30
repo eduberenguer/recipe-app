@@ -34,7 +34,6 @@ export async function GET(request: Request): Promise<Response> {
       status: result ? 200 : 400,
     });
   } catch (error) {
-    console.log(error);
     return NextResponse.json(
       {
         success: false,
