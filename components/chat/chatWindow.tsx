@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import pb from "@/lib/pocketbase";
 import Image from "next/image";
 import {
@@ -39,6 +39,7 @@ export default function ChatWindow({
   );
   const [messages, setMessages] = useState<MessageWithSenderName[]>([]);
   const pathname = usePathname();
+  const bottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let unsubscribed = false;
@@ -113,11 +114,14 @@ export default function ChatWindow({
     };
   }, [selectedUserId, user?.id, isAi]);
 
-  const generateNewRecipe = async (): Promise<void> => {
-    if (contextUseInteractions) {
-      contextUseInteractions.aiRecipe = null;
+  useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
     }
-    setMessages([initialMessageAi]);
+  }, [messages]);
+
+  const generateNewRecipe = async (): Promise<void> => {
+    contextUseInteractions?.setAiRecipe(null);
 
     if (!user?.id) return;
     try {
@@ -165,6 +169,8 @@ export default function ChatWindow({
 
       await createRecipe?.(form);
       customToast("Recipe created successfully", "success");
+
+      contextUseInteractions?.setAiRecipe(null);
     } catch (error) {
       console.error("Error saving recipe", error);
       customToast("Recipe could not be saved", "error");
@@ -172,11 +178,11 @@ export default function ChatWindow({
   };
 
   return (
-    <div className="flex flex-col flex-1 p-8 bg-white rounded-3xl border border-neutral-100 animate-fadein max-h-full">
+    <div className="flex flex-col flex-1 p-4 bg-white border border-neutral-100 animate-fadein max-h-full overflow-y-auto">
       <h2 className="text-3xl font-extrabold text-gray-900 mb-6 text-center tracking-tight">
         {isAi ? "My Personal Chef 🤖" : "Messages"}
       </h2>
-      <div className="flex flex-col gap-4 mb-8 max-h-[300px] overflow-y-auto">
+      <div className="flex flex-col gap-4 mb-8 max-h-[300px]">
         {messages.length === 0 && !isAi && (
           <p className="text-center text-neutral-400 italic">No messages yet</p>
         )}
@@ -192,7 +198,7 @@ export default function ChatWindow({
               style={{ animationDelay: `${idx * 40}ms` }}
             >
               <div
-                className={`rounded-2xl px-5 py-3 text-base max-w-[75%] shadow-sm transition-all duration-200 ${
+                className={`rounded-2xl p-5 py-3 text-base max-w-[75%] shadow-sm transition-all duration-200 ${
                   isOwn
                     ? "bg-gray-300 text-gray-900 self-end"
                     : isChef
@@ -200,7 +206,7 @@ export default function ChatWindow({
                     : "bg-gray-100 text-gray-900 self-start"
                 }`}
               >
-                <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center justify-between mb-1 ">
                   <span className="font-semibold text-xs">
                     {msg.fromUserName}
                   </span>
@@ -212,12 +218,14 @@ export default function ChatWindow({
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
+                    - {new Date(msg.created).toLocaleDateString()}
                   </time>
                 </div>
                 <p className="whitespace-pre-line leading-relaxed">
                   {msg.content}
                 </p>
               </div>
+              <div ref={bottomRef} />
             </div>
           );
         })}

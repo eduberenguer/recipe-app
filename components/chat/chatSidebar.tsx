@@ -169,6 +169,7 @@ export default function ChatSidebar({
             }}
             isAi={false}
             isLoading={false}
+            firstMessage={true}
           />
         </div>
       )}
