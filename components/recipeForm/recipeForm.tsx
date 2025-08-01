@@ -127,7 +127,7 @@ export default function RecipeForm() {
   };
 
   return (
-    <div className="p-6 max-w-lg mx-auto">
+    <div className="p-6 max-w-2xl mx-auto">
       <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
         Recipe Form
       </h2>
@@ -177,13 +177,13 @@ export default function RecipeForm() {
             {recipe.photo ? recipe.photo.name : "Select an image"}
           </label>
           {previewImage && (
-            <div>
+            <div className="w-40 h-30 flex items-center justify-center rounded-lg shadow-md overflow-hidden bg-gray-100">
               <Image
                 src={previewImage}
                 width={100}
                 height={100}
                 alt="Preview"
-                className="w-full h-auto rounded-lg shadow-md"
+                className="object-cover w-full h-full"
               />
             </div>
           )}
@@ -229,7 +229,7 @@ export default function RecipeForm() {
           </Button>
         </div>
         <textarea
-          placeholder="Description"
+          placeholder="Description for numbered steps..."
           value={recipe.description}
           onChange={(e) => updateRecipes("description", e.target.value)}
           rows={7}

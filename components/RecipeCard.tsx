@@ -6,6 +6,11 @@ import { RecipeWithRating } from "@/types/recipes";
 import { AuthUser } from "@/app/hooks/useAuth";
 import ForkRating from "@/components/ForkRating";
 import { MdDeleteForever } from "react-icons/md";
+import { useContext, useEffect, useState } from "react";
+import {
+  UserInteractionsContext,
+  UserInteractionsContextType,
+} from "@/app/context/context";
 
 export default function RecipeCard({
   recipe,
@@ -22,6 +27,28 @@ export default function RecipeCard({
   isFavourite?: boolean;
   isFromMain?: boolean;
 }) {
+  const contextUserInteraction = useContext<UserInteractionsContextType | null>(
+    UserInteractionsContext
+  );
+  const [commentCount, setCommentCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (recipe.id) {
+      const fetchCommentCount = async () => {
+        try {
+          const count =
+            await contextUserInteraction?.retrieveCommentCountByRecipeId(
+              recipe?.id ?? ""
+            );
+          setCommentCount(count ?? 0);
+        } catch (err) {
+          setCommentCount(0);
+        }
+      };
+      fetchCommentCount();
+    }
+  }, [recipe.id]);
+
   return (
     <div className="bg-white rounded-3xl transition-all duration-300 w-full max-w-[370px] h-[450px] flex flex-col overflow-hidden">
       <div className="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden flex items-center justify-center">
@@ -57,11 +84,14 @@ export default function RecipeCard({
             <h3 className="text-xl font-bold text-gray-900 line-clamp-2 group-hover:underline">
               {recipe.title}
             </h3>
+            <span className="text-sm text-gray-500">
+              {recipe.expand?.owner?.name}
+            </span>
           </Link>
           {user?.id && (
             <button
               aria-label="Toggle favourite"
-              className="transition-transform duration-200 hover:scale-125 cursor-pointer"
+              className="transition-transform duration-200 hover:scale-125 cursor-pointer border border-gray-200 rounded-full px-2 py-1"
               onClick={() =>
                 user?.id &&
                 recipe.id &&
@@ -69,24 +99,32 @@ export default function RecipeCard({
               }
             >
               {isFavourite ? (
-                <span className="text-xl text-indigo-500">♥</span>
+                <span className="text-xl text-indigo-500 cursor-pointer">
+                  ♥
+                </span>
               ) : (
-                <span className="text-xl text-gray-400">♥</span>
+                <span className="text-xl text-gray-400 cursor-pointer">♥</span>
               )}
             </button>
           )}
         </div>
-        <div className="flex items-center gap-2 text-yellow-400">
+        <div className="flex items-center text-yellow-400 justify-between">
           {recipe.rating && recipe.rating.count > 0 ? (
-            <>
+            <div className="flex items-center gap-2">
               <ForkRating rating={recipe.rating.average} />
               <span className="text-sm text-gray-600">
                 ({recipe.rating.count})
               </span>
-            </>
+            </div>
           ) : (
             <p className="text-sm text-gray-400 italic">No ratings</p>
           )}
+          <div className="relative flex items-center border border-gray-200 rounded-full px-2 py-1">
+            <span className="text-lg">💬</span>
+            <span className="absolute -top-2 -right-2 bg-[#6366F1] text-white text-xs font-bold rounded-full px-2 py-0.5 shadow-sm">
+              {commentCount}
+            </span>
+          </div>
         </div>
         <div className="text-gray-500 text-sm line-clamp-2 flex-1 min-h-[48px] pb-1">
           {recipe.description || "No description."}
