@@ -68,7 +68,7 @@ export function useRecipes() {
 
   async function retrieveRecipesByIngredients(
     ingredients: string[]
-  ): Promise<string[]> {
+  ): Promise<Recipe[]> {
     const data = await retrieveRecipesByIngredientsApi(ingredients);
 
     if (data) {
