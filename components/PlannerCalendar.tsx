@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { GripVertical, Eye } from "lucide-react";
 import { Unity } from "@/types/recipes";
+import { useState } from "react";
 
 interface CalendarEvent {
   id: string;
@@ -40,6 +41,14 @@ export default function PlannerCalendar({
     UserInteractionsContext
   );
   const calendarRef = useRef(null);
+
+  const [checked, setChecked] = useState<string[]>([]);
+
+  const toggleChecked = (name: string) => {
+    setChecked((prev) =>
+      prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
+    );
+  };
 
   useEffect(() => {
     const externalRecipes = document.getElementById("external-recipes");
@@ -130,11 +139,41 @@ export default function PlannerCalendar({
           }}
         />
       </div>
-      <div className="w-1/4">
-        <h3 className="font-bold mb-2">Ingredients to buy:</h3>
-        {ingredientsList.map((ingredient) => (
-          <div key={ingredient.name}>{ingredient.name}</div>
-        ))}
+      <div className="w-1/4 bg-white rounded-2xl shadow p-4">
+        <h3 className="font-bold mb-4 flex items-center gap-2 text-lg">
+          <span className="text-2xl">🛒</span>
+          Ingredients to buy:
+        </h3>
+        <ul className="space-y-2 text-sm text-gray-600">
+          {ingredientsList.map((ingredient) => (
+            <li
+              key={ingredient.name}
+              className={`flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-1 text-gray-800 cursor-pointer transition ${
+                checked.includes(ingredient.name) ? "opacity-60" : ""
+              }`}
+              onClick={() => toggleChecked(ingredient.name)}
+            >
+              <span
+                className={`w-5 h-5 flex items-center justify-center rounded-full border-2 transition ${
+                  checked.includes(ingredient.name)
+                    ? "bg-indigo-500 border-indigo-500"
+                    : "border-gray-400 bg-white"
+                }`}
+              >
+                {checked.includes(ingredient.name) && (
+                  <span className="text-white text-base">✔️</span>
+                )}
+              </span>
+              <span
+                className={`ml-1 ${
+                  checked.includes(ingredient.name) ? "line-through" : ""
+                }`}
+              >
+                {ingredient.name}
+              </span>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
