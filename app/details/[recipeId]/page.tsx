@@ -3,8 +3,11 @@ import { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import {
   AuthContext,
+  AuthContextType,
   RecipesContext,
+  RecipesContextType,
   UserInteractionsContext,
+  UserInteractionsContextType,
 } from "../../context/context";
 import { useParams } from "next/navigation";
 import photoSrc from "@/app/utils/photoSrc";
@@ -12,17 +15,32 @@ import CustomSpinner from "@/components/CustomSpinner";
 import RatingForm from "@/components/RatingForm";
 import ForkRating from "@/components/ForkRating";
 import { incrementRecipeViews } from "@/server/recipes";
+import { CommentsRecipe } from "@/types/userInteractions";
+import Comments from "@/components/Comments";
+import { extractTimedSteps } from "@/app/utils/extractTimedSteps";
+import { DescriptionRecipe } from "@/components/DescriptionRecipe";
+import { ALLERGEN_ICONS } from "@/types/recipes";
 
 export default function Details() {
   const { recipeId } = useParams();
-  const contextRecipes = useContext(RecipesContext);
-  const contextUser = useContext(AuthContext);
-  const contextUserInteraction = useContext(UserInteractionsContext);
+  const contextRecipes = useContext<RecipesContextType | null>(RecipesContext);
+  const contextUser = useContext<AuthContextType | null>(AuthContext);
+  const contextUserInteraction = useContext<UserInteractionsContextType | null>(
+    UserInteractionsContext
+  );
   const [rating, setRating] = useState<{
     average: number;
     count: number;
   } | null>(null);
-  const [alreadyRated, setAlreadyRated] = useState(false);
+  const [alreadyRated, setAlreadyRated] = useState<boolean>(false);
+  const [comments, setComments] = useState<CommentsRecipe[]>([]);
+  const [loadingComments, setLoadingComments] = useState<boolean>(true);
+  const [showComments, setShowComments] = useState<boolean>(false);
+  const [activeTimer, setActiveTimer] = useState<{
+    minutes: number;
+    secondsLeft: number;
+    intervalId: NodeJS.Timeout | null;
+  } | null>(null);
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -71,6 +89,26 @@ export default function Details() {
     checkIfRated();
   }, [recipeId, rating]);
 
+  useEffect(() => {
+    const fetchComments = async () => {
+      setLoadingComments(true);
+      try {
+        const allComments =
+          await contextUserInteraction?.retrieveCommentsRecipe(
+            contextUser?.user?.id ?? "",
+            typeof recipeId === "string" ? recipeId : ""
+          );
+
+        setComments(allComments ?? []);
+      } catch {
+        setComments([]);
+      } finally {
+        setLoadingComments(false);
+      }
+    };
+    if (recipeId) fetchComments();
+  }, [recipeId]);
+
   const handleAddRating = async (
     recipeId: string,
     newRating: number
@@ -105,6 +143,10 @@ export default function Details() {
     );
   }
 
+  const steps = extractTimedSteps(
+    contextRecipes?.stateRecipe?.description || ""
+  );
+
   return (
     <main className="bg-gray-50 min-h-screen font-sans">
       <div className="max-w-5xl mx-auto px-4 py-10">
@@ -138,9 +180,70 @@ export default function Details() {
                   </span>
                 )}
               </div>
-              <p className="mt-2 text-gray-600 text-lg leading-relaxed">
-                {contextRecipes.stateRecipe.description}
-              </p>
+              <div className="flex gap-2 mb-6 justify-between w-full">
+                <button
+                  className={`px-6 py-2 rounded-full font-bold shadow transition-all duration-200 cursor-pointer
+                  ${
+                    !showComments
+                      ? "bg-[#6366F1] text-white scale-105"
+                      : "bg-white text-[#6366F1] hover:bg-[#6366F1]/10"
+                  }
+                `}
+                  style={{ boxShadow: "0 2px 8px 0 rgba(99,102,241,0.08)" }}
+                  onClick={() => setShowComments(false)}
+                >
+                  Description
+                </button>
+                <button
+                  className={`px-6 py-2 rounded-full font-bold shadow transition-all duration-200 cursor-pointer
+                  ${
+                    showComments
+                      ? "bg-[#6366F1] text-white scale-105"
+                      : "bg-white text-[#6366F1] hover:bg-[#6366F1]/10"
+                  }
+                `}
+                  style={{ boxShadow: "0 2px 8px 0 rgba(99,102,241,0.08)" }}
+                  onClick={() => setShowComments(true)}
+                >
+                  Comments
+                </button>
+              </div>
+              {showComments ? (
+                <Comments
+                  loadingComments={loadingComments}
+                  comments={comments}
+                  userId={contextUser?.user?.id ?? ""}
+                  recipeId={recipeId as string}
+                  setComments={setComments}
+                />
+              ) : (
+                <DescriptionRecipe
+                  steps={steps.map(({ text, minutes }) => ({
+                    text,
+                    minutes: minutes === null ? 0 : minutes,
+                  }))}
+                  activeTimer={
+                    activeTimer
+                      ? {
+                          secondsLeft: activeTimer.secondsLeft,
+                          intervalId:
+                            activeTimer.intervalId ?? setTimeout(() => {}, 0),
+                        }
+                      : null
+                  }
+                  setActiveTimer={(timer) => {
+                    if (timer) {
+                      setActiveTimer({
+                        minutes: 0,
+                        secondsLeft: timer.secondsLeft,
+                        intervalId: timer.intervalId,
+                      });
+                    } else {
+                      setActiveTimer(null);
+                    }
+                  }}
+                />
+              )}
             </div>
             <div className="flex-1 flex flex-col gap-8">
               <div>
@@ -161,6 +264,29 @@ export default function Details() {
                   )}
                 </ul>
               </div>
+              {contextRecipes.stateRecipe.allergens &&
+                contextRecipes.stateRecipe.allergens.length > 0 && (
+                  <div>
+                    <h2 className="font-semibold text-lg mb-2 text-gray-800">
+                      Allergens
+                    </h2>
+                    <div className="flex flex-wrap gap-2">
+                      {contextRecipes.stateRecipe.allergens.map(
+                        (allergen, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center gap-2 px-3 py-2 bg-red-50 border border-red-200 rounded-full text-red-700 text-sm font-medium"
+                          >
+                            <span className="text-lg">
+                              {ALLERGEN_ICONS[allergen].icon}
+                            </span>
+                            <span className="capitalize">{allergen}</span>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
+                )}
               <div className="mt-4">{renderRatingSection()}</div>
             </div>
           </div>

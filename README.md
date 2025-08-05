@@ -33,10 +33,10 @@ Recipe App (WIP)
 - Dashboard Page (admin Panel for managing recipes)
 - Recipe Rating System
 - Recipe comments and comment likes system
+- Allergens Information
 
 ## Upcoming Features
 
-- Allergens Information
 - Pagination
 - User-generated Recipe Collections
 - Multi-language Support
