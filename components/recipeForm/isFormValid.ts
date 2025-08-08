@@ -7,6 +7,7 @@ export const isFormValid = ({
     ingredients: { name: string; quantity: string; unity: string }[];
     photo: File | null;
     description?: string;
+    duration?: number;
   };
 }): boolean => {
   return (
@@ -15,6 +16,7 @@ export const isFormValid = ({
     Number(recipe.servings) > 0 &&
     recipe.ingredients.length > 0 &&
     recipe.description !== "" &&
-    recipe.photo !== null
+    recipe.photo !== null &&
+    Number(recipe.duration) > 0
   );
 };

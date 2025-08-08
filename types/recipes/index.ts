@@ -49,6 +49,7 @@ export interface Recipe {
   views: number;
   isVisible: boolean;
   created: Date;
+  duration: number;
 }
 export interface RecipeWithRating extends Recipe {
   rating: {
@@ -80,6 +81,7 @@ export interface RecipeChefAI {
     unity: string;
   }[];
   allergens: Allergen[];
+  duration: number;
 }
 
 export interface RecipeRating {
