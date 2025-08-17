@@ -20,6 +20,8 @@ import Comments from "@/components/Comments";
 import { extractTimedSteps } from "@/app/utils/extractTimedSteps";
 import { DescriptionRecipe } from "@/components/DescriptionRecipe";
 import { ALLERGEN_ICONS } from "@/types/recipes";
+import { getDifficultyColor } from "@/app/utils/getDifficultyColor";
+import SendRecipeButton from "@/components/SendRecipeButton";
 
 export default function Details() {
   const { recipeId } = useParams();
@@ -149,7 +151,7 @@ export default function Details() {
 
   return (
     <main className="bg-gray-50 min-h-screen font-sans">
-      <div className="max-w-5xl mx-auto px-4 py-10">
+      <div className="max-w-4npxl mx-auto px-4 py-10">
         {contextRecipes?.stateRecipe &&
         Object.keys(contextRecipes?.stateRecipe).length > 0 ? (
           <div className="bg-white rounded-3xl shadow-xl flex flex-col md:flex-row gap-10 p-8 md:p-12 animate-fadein">
@@ -246,10 +248,29 @@ export default function Details() {
               )}
             </div>
             <div className="flex-1 flex flex-col gap-8">
-              <div>
-                <h1 className="text-3xl font-extrabold text-gray-900 mb-4">
-                  {contextRecipes.stateRecipe.title}
-                </h1>
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center mb-4 gap-4">
+                  <h1 className="text-3xl font-extrabold text-gray-900">
+                    {contextRecipes.stateRecipe.title}
+                  </h1>
+                  <span className="text-sm text-gray-500 p-2">
+                    ⏱ {contextRecipes.stateRecipe.duration}m
+                  </span>
+                  <span
+                    className={`text-sm p-2 rounded-full font-semibold ${getDifficultyColor(
+                      contextRecipes.stateRecipe.difficulty || "easy"
+                    )}`}
+                  >
+                    {contextRecipes.stateRecipe.difficulty || "easy"}
+                  </span>
+                  <span>
+                    <SendRecipeButton
+                      recipeTitle={contextRecipes.stateRecipe.title}
+                      recipeDescription={contextRecipes.stateRecipe.description}
+                      recipeLink={`http://localhost:3000/recipes/${contextRecipes.stateRecipe.id}`}
+                    />
+                  </span>
+                </div>
                 <h2 className="font-semibold text-lg mb-2 text-gray-800">
                   Ingredients
                 </h2>

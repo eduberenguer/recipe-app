@@ -1,3 +1,5 @@
+import { Difficulty } from "@/types/recipes";
+
 export const isFormValid = ({
   recipe,
 }: {
@@ -8,6 +10,7 @@ export const isFormValid = ({
     photo: File | null;
     description?: string;
     duration?: number;
+    difficulty?: Difficulty;
   };
 }): boolean => {
   return (
@@ -17,6 +20,7 @@ export const isFormValid = ({
     recipe.ingredients.length > 0 &&
     recipe.description !== "" &&
     recipe.photo !== null &&
-    Number(recipe.duration) > 0
+    Number(recipe.duration) > 0 &&
+    recipe.difficulty != null
   );
 };

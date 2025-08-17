@@ -4,6 +4,7 @@ export const initialStateForm = {
   title: "",
   servings: "",
   ingredients: [],
+  allergens: [],
   photo: null as File | null,
   description: "",
 };

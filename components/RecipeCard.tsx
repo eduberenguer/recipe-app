@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import checkOwnerRecipe from "@/app/utils/checkOwnerRecipe";
 import photoSrc from "@/app/utils/photoSrc";
-import { RecipeWithRating } from "@/types/recipes";
+import { RecipeWithRating, ALLERGEN_ICONS } from "@/types/recipes";
 import { AuthUser } from "@/app/hooks/useAuth";
 import ForkRating from "@/components/ForkRating";
 import { MdDeleteForever } from "react-icons/md";
@@ -41,7 +41,7 @@ export default function RecipeCard({
               recipe?.id ?? ""
             );
           setCommentCount(count ?? 0);
-        } catch (err) {
+        } catch {
           setCommentCount(0);
         }
       };
@@ -51,7 +51,7 @@ export default function RecipeCard({
 
   return (
     <div className="bg-white rounded-3xl transition-all duration-300 w-full max-w-[370px] h-[450px] flex flex-col overflow-hidden">
-      <div className="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden flex items-center justify-center">
+      <div className="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden flex items-center justify-center group">
         <Link href={`/details/${recipe.id}`}>
           <Image
             src={photoSrc(recipe.id ?? "", (recipe.photo as string) ?? "")}
@@ -63,12 +63,27 @@ export default function RecipeCard({
             sizes="(max-width: 600px) 100vw, 370px"
           />
         </Link>
+        {recipe.allergens && recipe.allergens.length > 0 && (
+          <div className="absolute top-3 left-3 flex flex-wrap gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300 z-20">
+            {recipe.allergens.map((allergen, index) => (
+              <div
+                key={index}
+                className="bg-white bg-opacity-90 rounded-full p-2 shadow-md border border-gray-200 cursor-pointer group/allergen relative"
+              >
+                <span className="text-lg">{ALLERGEN_ICONS[allergen].icon}</span>
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover/allergen:opacity-100 transition-opacity duration-200 whitespace-nowrap z-30 pointer-events-none">
+                  {allergen}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
         {user?.id &&
           checkOwnerRecipe(user.id ?? "", recipe.owner ?? "") &&
           isFromMain && (
             <button
               onClick={() => recipe.id && deleteRecipe(recipe.id)}
-              className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-9 h-9 flex items-center justify-center p-0 shadow-sm transition-all duration-200 hover:scale-110 hover:bg-red-600 cursor-pointer"
+              className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-9 h-9 flex items-center justify-center p-0 shadow-sm transition-all duration-200 hover:scale-110 hover:bg-red-600 cursor-pointer z-10"
               role="button"
               aria-label="Delete recipe"
               title="Delete recipe"
@@ -78,8 +93,8 @@ export default function RecipeCard({
             </button>
           )}
       </div>
-      <div className="p-5 flex flex-col gap-3 flex-1">
-        <div className="flex items-center gap-2 justify-between">
+      <div className="p-3 flex flex-col gap-2 flex-1">
+        <div className="flex items-center gap-1 justify-between">
           <Link href={`/details/${recipe.id}`} className="flex-1">
             <h3 className="text-xl font-bold text-gray-900 line-clamp-2 group-hover:underline">
               {recipe.title}
