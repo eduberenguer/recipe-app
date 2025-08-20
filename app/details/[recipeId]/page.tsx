@@ -263,13 +263,11 @@ export default function Details() {
                   >
                     {contextRecipes.stateRecipe.difficulty || "easy"}
                   </span>
-                  <span>
-                    <SendRecipeButton
-                      recipeTitle={contextRecipes.stateRecipe.title}
-                      recipeDescription={contextRecipes.stateRecipe.description}
-                      recipeLink={`http://localhost:3000/recipes/${contextRecipes.stateRecipe.id}`}
-                    />
-                  </span>
+                  <SendRecipeButton
+                    recipeTitle={contextRecipes.stateRecipe.title}
+                    recipeDescription={contextRecipes.stateRecipe.description}
+                    recipeLink={`http://localhost:3000/recipes/${contextRecipes.stateRecipe.id}`}
+                  />
                 </div>
                 <h2 className="font-semibold text-lg mb-2 text-gray-800">
                   Ingredients

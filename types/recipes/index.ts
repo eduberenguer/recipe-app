@@ -1,5 +1,7 @@
 export type Unity = "kg" | "gr" | "mg" | "litres" | "ml" | "unit";
 
+export type Difficulty = "easy" | "medium" | "hard";
+
 export type Allergen =
   | "gluten"
   | "lactose"
@@ -50,6 +52,7 @@ export interface Recipe {
   isVisible: boolean;
   created: Date;
   duration: number;
+  difficulty: Difficulty;
 }
 export interface RecipeWithRating extends Recipe {
   rating: {
@@ -82,6 +85,7 @@ export interface RecipeChefAI {
   }[];
   allergens: Allergen[];
   duration: number;
+  difficulty: Difficulty;
 }
 
 export interface RecipeRating {

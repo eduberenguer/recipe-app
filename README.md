@@ -34,6 +34,7 @@ Recipe App (WIP)
 - Recipe Rating System
 - Recipe comments and comment likes system
 - Allergens Information
+- Send recipe mail
 
 ## Upcoming Features
 

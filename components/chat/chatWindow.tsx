@@ -17,6 +17,7 @@ import { urlToFile } from "@/app/utils/urlToFile";
 import { customToast } from "@/app/utils/showToast";
 import { usePathname } from "next/navigation";
 import { initialMessageAi } from "@/app/__mocks__/mockInitialMessageAi";
+import { ALLERGEN_ICONS } from "@/types/recipes";
 
 interface ChatWindowProps {
   selectedUserId: string;
@@ -150,7 +151,9 @@ export default function ChatWindow({
       form.append("servings", recipe.servings.toString());
       form.append("owner", user.id);
       form.append("ingredients", JSON.stringify(recipe.ingredients));
-
+      form.append("allergens", JSON.stringify(recipe.allergens));
+      form.append("duration", recipe.duration.toString());
+      form.append("difficulty", recipe.difficulty || "easy");
       if (recipe.photo) {
         if (
           typeof recipe.photo === "string" &&
@@ -239,6 +242,12 @@ export default function ChatWindow({
             <p className="text-yellow-800 font-medium mb-2">
               Servings: {contextUseInteractions.aiRecipe.servings}
             </p>
+            <p className="text-yellow-800 font-medium mb-2">
+              Duration: {contextUseInteractions.aiRecipe.duration}m
+            </p>
+            <p className="text-yellow-800 font-medium mb-2">
+              Difficulty: {contextUseInteractions.aiRecipe.difficulty}
+            </p>
             <ul className="list-disc list-inside text-yellow-900 mb-4">
               {contextUseInteractions.aiRecipe.ingredients?.map((ing, i) => (
                 <li key={i}>
@@ -260,6 +269,27 @@ export default function ChatWindow({
                 className="rounded-xl border border-yellow-300 shadow"
               />
             )}
+            <div className="flex flex-col gap-2">
+              <p className="text-yellow-900 font-medium mb-2 flex flex-row gap-2 items-center">
+                Allergens:
+                {contextUseInteractions.aiRecipe.allergens.map(
+                  (allergen, index) => (
+                    <div
+                      key={index}
+                      className="relative group/allergen cursor-pointer"
+                      title={ALLERGEN_ICONS[allergen].title}
+                    >
+                      <span className="text-lg">
+                        {ALLERGEN_ICONS[allergen].icon}
+                      </span>
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover/allergen:opacity-100 transition-opacity duration-200 whitespace-nowrap z-30 pointer-events-none">
+                        {allergen}
+                      </div>
+                    </div>
+                  )
+                )}
+              </p>
+            </div>
             {isLoading ? (
               <p className="text-pink-600 font-medium animate-pulse">
                 Generating new recipe...
