@@ -13,4 +13,9 @@ export const mockUserInteractionContext: UserInteractionsContextType = {
   checkUserHasRated: jest.fn(),
   sendMessageAi: jest.fn(),
   aiRecipe: null,
+  setAiRecipe: jest.fn(),
+  retrieveCommentsRecipe: jest.fn(),
+  createNewCommentRecipe: jest.fn(),
+  toggleLikeCommentRecipe: jest.fn(),
+  retrieveCommentCountByRecipeId: jest.fn(),
 };

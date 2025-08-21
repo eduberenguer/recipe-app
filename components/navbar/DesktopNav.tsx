@@ -6,8 +6,8 @@ export default function DesktopNav({ logout }: { logout: () => void }) {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-30 bg-white">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-10 py-4">
+    <header className="sticky top-0 z-30 bg-white w-full">
+      <div className="mx-full flex items-center px-10 py-4">
         <nav className="flex-1 flex justify-center gap-4">
           <NavLink href="/main" isActive={pathname === "/main"}>
             Recipes

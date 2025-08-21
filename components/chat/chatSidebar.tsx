@@ -17,9 +17,7 @@ interface ChatSidebarProps {
   setRefreshChatsTrigger: (value: number) => void;
 }
 
-// Simulación de mensajes no leídos (en real, vendría del backend)
 function getUnreadCount(userId: string) {
-  // Ejemplo: para el primero, 2 mensajes no leídos, para el resto 0
   if (userId.endsWith("1")) return 2;
   return 0;
 }

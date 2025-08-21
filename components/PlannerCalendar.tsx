@@ -85,7 +85,7 @@ export default function PlannerCalendar({
 
   return (
     <div className="flex gap-8 p-4">
-      <div id="external-recipes" className="w-1/4">
+      <div id="external-recipes" className="w-0.6/4">
         <h3 className="font-bold mb-2">Your favorites recipes:</h3>
         {contextUserInteraction?.favouritesRecipes.map((interaction) => (
           <div
@@ -106,7 +106,7 @@ export default function PlannerCalendar({
           </div>
         ))}
       </div>
-      <div className="flex-1">
+      <div className="flex-1 w-3/4">
         <FullCalendar
           ref={calendarRef}
           plugins={[dayGridPlugin, interactionPlugin]}
@@ -139,7 +139,7 @@ export default function PlannerCalendar({
           }}
         />
       </div>
-      <div className="w-1/4 bg-white rounded-2xl shadow p-4">
+      <div className="w-0.5/4 bg-white rounded-2xl shadow p-4">
         <h3 className="font-bold mb-4 flex items-center gap-2 text-lg">
           <span className="text-2xl">🛒</span>
           Ingredients to buy:

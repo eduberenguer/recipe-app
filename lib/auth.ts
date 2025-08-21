@@ -9,7 +9,7 @@ export async function registerUser(
     const user = await pb.collection("users").create({
       email,
       password,
-      passwordConfirm: password, // PocketBase lo requiere
+      passwordConfirm: password,
       name,
     });
     return user;

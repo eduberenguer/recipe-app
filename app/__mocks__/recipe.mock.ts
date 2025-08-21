@@ -36,6 +36,10 @@ export const mockRecipeWithIdv1: RecipeWithRating = {
   },
   views: 7,
   isVisible: true,
+  allergens: [],
+  created: new Date(),
+  duration: 30,
+  difficulty: "medium",
 };
 
 export const mockRecipeWithIdv2 = [

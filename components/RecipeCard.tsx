@@ -50,7 +50,7 @@ export default function RecipeCard({
   }, [recipe.id]);
 
   return (
-    <div className="bg-white rounded-3xl transition-all duration-300 w-full max-w-[370px] h-[450px] flex flex-col overflow-hidden">
+    <div className="bg-white rounded-3xl transition-all duration-300 w-full max-w-[270px] h-[450px] flex flex-col overflow-hidden">
       <div className="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden flex items-center justify-center group">
         <Link href={`/details/${recipe.id}`}>
           <Image

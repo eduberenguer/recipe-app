@@ -163,8 +163,8 @@ export default function Main() {
         </div>
       </header>
 
-      <section className="max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <section className="max-w-7xl mx-auto px-4 pb-10 flex justify-center">
+        <div className="flex justify-center items-center flex-wrap gap-10">
           {(filteredRecipes ?? contextRecipes.stateAllRecipes).length > 0 ? (
             (filteredRecipes ?? contextRecipes.stateAllRecipes).map(
               (recipe) => (
