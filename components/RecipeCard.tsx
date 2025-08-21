@@ -51,7 +51,7 @@ export default function RecipeCard({
 
   return (
     <div className="bg-white rounded-3xl transition-all duration-300 w-full max-w-[270px] h-[450px] flex flex-col overflow-hidden">
-      <div className="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden flex items-center justify-center group">
+      <div className="relative w-full aspect-[5/6] bg-gray-100 overflow-hidden flex items-center justify-center group">
         <Link href={`/details/${recipe.id}`}>
           <Image
             src={photoSrc(recipe.id ?? "", (recipe.photo as string) ?? "")}
@@ -96,11 +96,11 @@ export default function RecipeCard({
       <div className="p-3 flex flex-col gap-2 flex-1">
         <div className="flex items-center gap-1 justify-between">
           <Link href={`/details/${recipe.id}`} className="flex-1">
-            <h3 className="text-xl font-bold text-gray-900 line-clamp-2 group-hover:underline">
+            <h3 className="text-xl font-bold text-gray-900 group-hover:underline">
               {recipe.title}
             </h3>
-            <span className="text-sm text-gray-500">
-              {recipe.expand?.owner?.name}
+            <span className="text-sm text-gray-500 ita">
+              {recipe.expand?.owner?.name?.toLowerCase() ?? "Unknown"}
             </span>
           </Link>
           {user?.id && (
@@ -141,8 +141,10 @@ export default function RecipeCard({
             </span>
           </div>
         </div>
-        <div className="text-gray-500 text-sm line-clamp-2 flex-1 min-h-[48px] pb-1">
-          {recipe.description || "No description."}
+        <div className="text-gray-500 text-sm flex-1 min-h-[48px] pb-1">
+          <p className="line-clamp-5">
+            {recipe.description || "No description."}
+          </p>
         </div>
       </div>
     </div>
