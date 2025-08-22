@@ -13,3 +13,19 @@ body {
 * {
   box-sizing: inherit;
 }
+
+@keyframes color-slow {
+  0%,
+  100% {
+    opacity: 1;
+    color: #6366f1;
+  }
+  50% {
+    opacity: 0.5;
+    color: #6366F1/90;
+  }
+}
+
+.animate-color-slow {
+  animation: color-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
