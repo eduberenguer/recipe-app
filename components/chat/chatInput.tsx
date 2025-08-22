@@ -85,7 +85,7 @@ export default function ChatInput({
           {isLoading ? (
             <>
               <Loader2 className="animate-spin w-4 h-4" />{" "}
-              <span className="animate-pulse">Cooking...</span>
+              <span className="animate-pulse">Cooking... 👨🏻‍🍳</span>
             </>
           ) : (
             "Send"
