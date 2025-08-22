@@ -21,6 +21,7 @@ Generate a JSON response matching this structure (do you have a recipe with user
 For the title, generate one with a maximum of two words and related to the recipe you have generated.
 For the allergens field, you can ONLY use these specific allergens: "gluten", "lactose", "nuts", "egg", "soy", "fish", "shellfish", "sesame", "mustard". Only include allergens that are actually present in the recipe ingredients.
 For the duration field, add duration in minutes.
+In the description add minutes in the required steps and add jumpline in each step. 
 For the difficulty field, you can ONLY use these specific difficulties: "easy", "medium" or "hard". Only one. 
 Generate a recipe description with max. 300 words. In this field add steps for prepare. Add steps numbers.   
 Do NOT include any actual image URLs. Leave the photo field as an empty string.
