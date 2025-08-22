@@ -255,7 +255,7 @@ export default function ChatWindow({
                 </li>
               ))}
             </ul>
-            <p className="text-yellow-900 whitespace-pre-line">
+            <p className="text-yellow-900 whitespace-pre-line line-clamp-5">
               {contextUseInteractions.aiRecipe.description}
             </p>
           </div>

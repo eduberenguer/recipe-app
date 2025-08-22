@@ -24,26 +24,28 @@ export default function RatingForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+    <form onSubmit={handleSubmit}>
       <label className="text-lg font-semibold" htmlFor="rating">
         Rate this recipe:
       </label>
-      <input
-        type="number"
-        id="rating"
-        name="rating"
-        value={rating}
-        onChange={handleRatingChange}
-        min={1}
-        max={5}
-        className="w-full p-2 border rounded-md"
-      />
-      <button
-        type="submit"
-        className="mt-2 p-2 bg-blue-500 text-white rounded-md"
-      >
-        Submit Rating
-      </button>
+      <div className="flex justify-start gap-3 mt-3">
+        <input
+          type="number"
+          id="rating"
+          name="rating"
+          value={rating}
+          onChange={handleRatingChange}
+          min={1}
+          max={5}
+          className="w-1/4 p-2 border rounded-md"
+        />
+        <button
+          type="submit"
+          className="p-2 bg-[#6366F1] text-white rounded-md w-1/3 hover:bg-[#6366F1]/90 cursor-pointer"
+        >
+          Submit Rating
+        </button>
+      </div>
     </form>
   );
 }

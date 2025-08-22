@@ -130,7 +130,7 @@ export default function Details() {
 
   function renderRatingSection(): React.ReactNode {
     if (contextRecipes?.stateRecipe?.owner === contextUser?.user?.id) {
-      return null;
+      return <p className="italic">You can´t rate your own recipe.</p>;
     }
     if (alreadyRated) {
       return (

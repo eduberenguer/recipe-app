@@ -97,14 +97,14 @@ export default function Main() {
 
   return (
     <main className="bg-gray-50 min-h-screen font-sans">
-      <header className="sticky top-0 z-20 bg-white/90 backdrop-blur shadow-sm py-6 px-8 flex flex-col items-center gap-2 mb-10">
-        <h1 className="text-4xl font-black text-gray-900 tracking-tight mb-1 flex items-center gap-2">
-          <span role="img" aria-label="logo">
-            🍽️
-          </span>{" "}
-          Recipe Explorer
-        </h1>
-        <div className="w-full flex justify-center items-center gap-2 mt-4">
+      <header className="sticky top-26 z-20 bg-white/90 backdrop-blur shadow-sm px-8 py-3 flex flex-col items-center gap-2 mb-10">
+        <div className="w-full flex justify-center items-center gap-5">
+          <h1 className="text-2xl font-black text-gray-900 tracking-tight mb-1 flex justify-around gap-2">
+            <span role="img" aria-label="logo">
+              🍽️
+            </span>{" "}
+            Recipe Explorer
+          </h1>
           <div className="bg-white border border-gray-200 rounded-full px-6 py-2 shadow-lg flex items-center gap-3 w-full max-w-md transition">
             <FilterByName className="flex-1 text-lg font-semibold placeholder-gray-400 p-2 focus:outline-none" />
           </div>

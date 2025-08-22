@@ -22,7 +22,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 bg-white">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-8 py-3">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-8">
         <Link href={auth?.user ? "/main" : "/"} className="flex items-center">
           <Logo />
         </Link>

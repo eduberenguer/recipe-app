@@ -59,7 +59,7 @@ export default function ChatInput({
       className="w-full max-w-2xl mx-auto p-6 bg-white rounded-3xl flex flex-col gap-2 animate-fadein border border-gray-100"
       style={{ position: "static" }}
     >
-      <div className="flex flex-row gap-3 items-end">
+      <div className="flex flex-row gap-3 items-center">
         <textarea
           placeholder="Type your message..."
           value={message}
@@ -84,7 +84,8 @@ export default function ChatInput({
         >
           {isLoading ? (
             <>
-              <Loader2 className="animate-spin w-4 h-4" /> Cooking...
+              <Loader2 className="animate-spin w-4 h-4" />{" "}
+              <span className="animate-pulse">Cooking...</span>
             </>
           ) : (
             "Send"

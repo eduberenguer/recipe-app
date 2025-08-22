@@ -63,19 +63,19 @@ const SendRecipeButton: React.FC<SendRecipeButtonProps> = ({
             placeholder="Enter recipient email"
             value={recipientEmail}
             onChange={(e) => setRecipientEmail(e.target.value)}
-            style={{ padding: "8px", width: "250px", marginRight: "10px" }}
+            style={{ padding: "8px", width: "250px" }}
           />
-          <button
-            className="text-red-500 hover:text-red-700 cursor-pointer"
-            onClick={() => setShowAddEmail(false)}
-          >
-            X
-          </button>
           <button
             className="p-2 bg-[#6366F1] text-white scale-105 transition-colors hover:bg-[#6366F1]/90 rounded cursor-pointer"
             onClick={handleSend}
           >
             Send
+          </button>
+          <button
+            className="bg-red-500 text-white p-2 rounded hover:bg-red-600 cursor-pointer"
+            onClick={() => setShowAddEmail(false)}
+          >
+            X
           </button>
         </div>
       ) : (

@@ -97,7 +97,7 @@ export default function Register() {
         <span>Already have an account? </span>
         <Link
           href="/login"
-          className="text-blue-500 font-semibold hover:underline"
+          className="text-[#6366F1] font-semibold hover:underline"
         >
           Log In
         </Link>

@@ -84,7 +84,7 @@ export default function Login() {
         If you dont have an account, you can sign up here:
         <Link
           href="/register"
-          className="text-blue-500 font-semibold hover:underline"
+          className="text-[#6366F1] font-semibold hover:underline animate-color-slow"
         >
           Sign up
         </Link>
