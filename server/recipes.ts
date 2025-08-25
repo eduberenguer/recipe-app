@@ -22,6 +22,9 @@ export async function createRecipe(
       views: recipeData.views,
       isVisible: recipeData.isVisible,
       created: recipeData.created,
+      allergens: recipeData.allergens,
+      duration: recipeData.duration,
+      difficulty: recipeData.difficulty,
     };
 
     return { success: true, recipe: newRecipe };
@@ -111,6 +114,9 @@ export async function updateRecipe(
       views: updated.views,
       isVisible: updated.isVisible,
       created: updated.created,
+      allergens: updated.allergens,
+      duration: updated.duration,
+      difficulty: updated.difficulty,
     };
 
     return { success: true, recipe: updatedRecipe };
@@ -166,6 +172,7 @@ export async function retrieveRecipesByFilterName(
   try {
     const data = await pb.collection("recipes").getList(1, 50, {
       filter: `title ~ "${filter}" && isVisible = true`,
+      expand: "owner",
     });
 
     return data.items as unknown as Recipe[];
@@ -228,6 +235,7 @@ export async function retrieveRecipesByIngredients(
   try {
     const data = await pb.collection("recipes").getFullList({
       filter: `isVisible = true`,
+      expand: "owner",
     });
 
     const searchSet = new Set(ingredients.map((i) => i.trim().toLowerCase()));
