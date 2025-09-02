@@ -1,5 +1,9 @@
 Recipe App (WIP)
 
+## Demo video
+
+👉 [Watch on YouTube](https://www.youtube.com/watch?v=Qm3sXgEUciU)
+
 # Recipe App (WIP)
 
 ## Technologies
