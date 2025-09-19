@@ -1,4 +1,5 @@
 "use client";
+
 import { useContext, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -31,18 +32,18 @@ export default function Header() {
             <nav className="hidden md:flex flex-1 justify-center">
               <DesktopNav logout={logout} />
             </nav>
+
             <div className="flex items-center md:hidden">
               <Button
                 backgroundColor="bg-[#6366F1] text-white"
                 hoverColor="hover:bg-[#6366F1]/90"
                 aria-label="Toggle menu"
-                onClick={() => {
-                  setIsMenuOpen(!isMenuOpen);
-                }}
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
                 {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
               </Button>
             </div>
+
             <MobileNav
               logout={logout}
               isMenuOpen={isMenuOpen}

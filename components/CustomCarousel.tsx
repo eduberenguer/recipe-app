@@ -24,61 +24,37 @@ export default function CustomCarousel() {
     },
   };
 
+  const images = [
+    "/images/carousel/carousel-1.jpg",
+    "/images/carousel/carousel-2.jpg",
+    "/images/carousel/carousel-3.jpg",
+    "/images/carousel/carousel-4.jpg",
+    "/images/carousel/carousel-5.jpg",
+  ];
+
   return (
     <Carousel
       responsive={responsive}
-      infinite={true}
-      autoPlay={true}
+      infinite
+      autoPlay
       autoPlaySpeed={3000}
       arrows={false}
       customTransition="all 1s ease-in-out"
       transitionDuration={1000}
     >
-      <div className="w-full h-[300px] overflow-hidden">
-        <Image
-          src="/images/carousel/carousel-1.jpg"
-          alt="1"
-          width={500}
-          height={300}
-          className="object-cover w-full h-full"
-        />
-      </div>
-      <div className="w-full h-[300px] overflow-hidden">
-        <Image
-          src="/images/carousel/carousel-2.jpg"
-          alt="2"
-          width={500}
-          height={300}
-          className="object-cover w-full h-full"
-        />
-      </div>
-      <div className="w-full h-[300px] overflow-hidden">
-        <Image
-          src="/images/carousel/carousel-3.jpg"
-          alt="3"
-          width={500}
-          height={300}
-          className="object-cover w-full h-full"
-        />
-      </div>
-      <div className="w-full h-[300px] overflow-hidden">
-        <Image
-          src="/images/carousel/carousel-4.jpg"
-          alt="4"
-          width={500}
-          height={300}
-          className="object-cover w-full h-full"
-        />
-      </div>
-      <div className="w-full h-[300px] overflow-hidden">
-        <Image
-          src="/images/carousel/carousel-5.jpg"
-          alt="5"
-          width={500}
-          height={300}
-          className="object-cover w-full h-full"
-        />
-      </div>
+      {images.map((src, index) => (
+        <div key={index} className="w-full h-[300px] overflow-hidden">
+          <Image
+            src={src}
+            alt={`Carousel image ${index + 1}`}
+            width={500}
+            height={300}
+            className="object-cover w-full h-full"
+            style={{ width: "100%", height: "auto" }}
+            priority
+          />
+        </div>
+      ))}
     </Carousel>
   );
 }

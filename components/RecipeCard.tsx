@@ -52,7 +52,10 @@ export default function RecipeCard({
   return (
     <div className="bg-white rounded-3xl transition-all duration-300 w-full max-w-[270px] h-[450px] flex flex-col overflow-hidden">
       <div className="relative w-full aspect-[5/6] bg-gray-100 overflow-hidden flex items-center justify-center group">
-        <Link href={`/details/${recipe.id}`}>
+        <Link
+          href={`/details/${recipe.id}`}
+          className="relative w-full h-full block"
+        >
           <Image
             src={photoSrc(recipe.id ?? "", (recipe.photo as string) ?? "")}
             alt={recipe.title ?? "Recipe image"}
@@ -61,6 +64,7 @@ export default function RecipeCard({
             draggable={false}
             style={{ borderRadius: "1.5rem 1.5rem 0 0" }}
             sizes="(max-width: 600px) 100vw, 370px"
+            priority
           />
         </Link>
         {recipe.allergens && recipe.allergens.length > 0 && (

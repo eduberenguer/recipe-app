@@ -39,6 +39,7 @@ export default function RecipeCardExpanded({
             draggable={false}
             style={{ borderRadius: "1.5rem 1.5rem 0 0" }}
             sizes="(max-width: 600px) 100vw, 370px"
+            priority
           />
         </Link>
         {user?.id &&

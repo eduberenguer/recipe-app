@@ -164,6 +164,7 @@ export default function Details() {
                   )}
                   alt={contextRecipes.stateRecipe.title || "Recipe image"}
                   fill
+                  sizes="100vw"
                   className="object-cover"
                   priority
                 />
