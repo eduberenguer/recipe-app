@@ -6,7 +6,7 @@ import { systemMessage } from "./promptAi";
 import { retrieveRecipesByIngredients } from "@/server/recipes";
 
 const openai = new OpenAI({
-  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
@@ -83,7 +83,7 @@ export async function POST(req: Request): Promise<Response> {
       if (toolCall.type !== "function") continue;
       const result = await runTool(
         toolCall.function.name,
-        toolCall.function.arguments
+        toolCall.function.arguments,
       );
       messages.push({
         role: "tool",
@@ -105,7 +105,7 @@ export async function POST(req: Request): Promise<Response> {
     console.error("OpenAI error:", err);
     return NextResponse.json(
       { error: "Error querying the AI" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -11,7 +11,7 @@
   "editor.suggest.selectionMode": "whenQuickSuggestion",
   "editor.wordBasedSuggestions": "on",
   "editor.parameterHints.enabled": true,
-  "editor.hover.enabled": true,
+  "editor.hover.enabled": "on",
   "typescript.suggest.autoImports": true,
   "typescript.suggest.includeCompletionsForModuleExports": true,
   "typescript.suggest.includeCompletionsWithSnippetText": true,

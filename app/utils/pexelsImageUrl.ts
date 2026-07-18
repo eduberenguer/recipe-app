@@ -1,5 +1,5 @@
 export async function fetchPexelsImageUrl(query: string): Promise<string> {
-  const apiKey = process.env.NEXT_PUBLIC_PEXELS_API_KEY;
+  const apiKey = process.env.PEXELS_API_KEY;
   if (!apiKey) {
     console.error("No Pexels API key found.");
     return "";
@@ -8,13 +8,13 @@ export async function fetchPexelsImageUrl(query: string): Promise<string> {
   try {
     const res = await fetch(
       `https://api.pexels.com/v1/search?query=${encodeURIComponent(
-        query
+        query,
       )}&per_page=3`,
       {
         headers: {
           Authorization: apiKey,
         },
-      }
+      },
     );
 
     if (!res.ok) {

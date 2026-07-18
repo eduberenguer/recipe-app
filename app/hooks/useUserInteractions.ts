@@ -36,7 +36,7 @@ import {
 import { RecipesContext, RecipesContextType } from "../context/context";
 import { AuthContext, AuthContextType } from "../context/context";
 import { useEffect } from "react";
-import { fetchPexelsImageUrl } from "../utils/pexelsImageUrl";
+import { fetchPexelsImageUrlApi } from "@/lib/api/images";
 import { getUserLikedCommentIds } from "@/server/userInteractions";
 
 export function useUserInteractions() {
@@ -49,7 +49,7 @@ export function useUserInteractions() {
   const contextAuth = useContext<AuthContextType | null>(AuthContext);
   const [state, dispatch] = useReducer(
     userInteractionsReducer,
-    initialUserInteractionsState
+    initialUserInteractionsState,
   );
   const [aiRecipe, setAiRecipe] = useState<RecipeChefAI | null>(null);
 
@@ -66,7 +66,7 @@ export function useUserInteractions() {
 
   async function addFavouriteRecipe(
     userId: string,
-    recipeId: string
+    recipeId: string,
   ): Promise<Recipe | false> {
     const newAddFavourite: ToggleFavouriteRecipe = {
       userId,
@@ -96,7 +96,7 @@ export function useUserInteractions() {
 
   async function removeFavouriteRecipe(
     userId: string,
-    recipeId: string
+    recipeId: string,
   ): Promise<ToggleFavouriteRecipe> {
     const newRemoveFavourite: ToggleFavouriteRecipe = {
       userId,
@@ -114,7 +114,7 @@ export function useUserInteractions() {
   }
 
   async function retrieveRecipeRatings(
-    recipeId: string
+    recipeId: string,
   ): Promise<RecipeRating> {
     const data = await retrieveRecipeRatingsApi(recipeId);
 
@@ -125,7 +125,7 @@ export function useUserInteractions() {
   }
 
   async function addRecipeRating(
-    addRecipeRating: AddRecipeRating
+    addRecipeRating: AddRecipeRating,
   ): Promise<boolean> {
     await addRecipeRatingApi(addRecipeRating);
 
@@ -134,7 +134,7 @@ export function useUserInteractions() {
 
   async function checkUserHasRated(
     userId: string,
-    recipeId: string
+    recipeId: string,
   ): Promise<boolean> {
     const response = await checkUserHasRatedApi(userId, recipeId);
 
@@ -144,7 +144,7 @@ export function useUserInteractions() {
   async function sendMessage(
     fromUserId: string,
     toUserId: string,
-    content: string
+    content: string,
   ): Promise<BaseMessage> {
     const sendMessage = await sendMessageApi(fromUserId, toUserId, content);
 
@@ -163,7 +163,7 @@ export function useUserInteractions() {
       !photoUrl.startsWith("http")
     ) {
       const firstIngredient = aiRecipe.ingredients?.[0]?.name || "food";
-      photoUrl = await fetchPexelsImageUrl(firstIngredient);
+      photoUrl = await fetchPexelsImageUrlApi(firstIngredient);
     }
 
     aiRecipe.photo =
@@ -174,7 +174,7 @@ export function useUserInteractions() {
 
   async function retrieveCommentsRecipe(
     userId: string,
-    recipeId: string
+    recipeId: string,
   ): Promise<CommentsRecipe[]> {
     const allComments = await retrieveCommentsRecipeApi(recipeId);
     const likedIds = await getUserLikedCommentIds(userId);
@@ -189,7 +189,7 @@ export function useUserInteractions() {
   }
 
   async function createNewCommentRecipe(
-    PartialNewCommentRecipe: Partial<NewCommentRecipe>
+    PartialNewCommentRecipe: Partial<NewCommentRecipe>,
   ): Promise<{ success: boolean; error?: string }> {
     const newCommentRecipe: NewCommentRecipe = {
       content: PartialNewCommentRecipe.content!,
@@ -204,7 +204,7 @@ export function useUserInteractions() {
   }
 
   async function toggleLikeCommentRecipe(
-    toggleLikeCommentRecipe: ToogleLikeCommentRecipe
+    toggleLikeCommentRecipe: ToogleLikeCommentRecipe,
   ): Promise<{ success: boolean; error?: string }> {
     const result = await toggleLikeCommentRecipeApi(toggleLikeCommentRecipe);
 
@@ -212,9 +212,8 @@ export function useUserInteractions() {
   }
 
   async function retrieveCommentCountByRecipeId(recipeId: string) {
-    const totalComments: number = await retrieveCommentCountByRecipeIdApi(
-      recipeId
-    );
+    const totalComments: number =
+      await retrieveCommentCountByRecipeIdApi(recipeId);
 
     return totalComments;
   }

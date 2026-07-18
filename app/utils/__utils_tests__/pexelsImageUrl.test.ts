@@ -6,7 +6,7 @@ describe("fetchPexelsImageUrl", () => {
 
   beforeEach(() => {
     jest.resetModules();
-    process.env = { ...originalEnv, NEXT_PUBLIC_PEXELS_API_KEY: apiKey };
+    process.env = { ...originalEnv, PEXELS_API_KEY: apiKey };
     global.fetch = jest.fn();
   });
 
@@ -33,7 +33,7 @@ describe("fetchPexelsImageUrl", () => {
   });
 
   it("should return empty string if no API key", async () => {
-    process.env.NEXT_PUBLIC_PEXELS_API_KEY = "";
+    process.env.PEXELS_API_KEY = "";
     const url = await fetchPexelsImageUrl("bread");
     expect(url).toBe("");
   });
