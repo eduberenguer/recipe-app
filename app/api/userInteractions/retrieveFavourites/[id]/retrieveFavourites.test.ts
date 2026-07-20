@@ -38,7 +38,7 @@ describe("GET /api/userInteractions/retrieveFavourites", () => {
         headers: req.headers as HeadersInit,
       });
 
-      const result = await GET(request, { params: { id } });
+      const result = await GET(request, { params: Promise.resolve({ id }) });
 
       if (!result || typeof result.status !== "number") {
         res.statusCode = 500;
@@ -60,7 +60,7 @@ describe("GET /api/userInteractions/retrieveFavourites", () => {
     (retrieveFavourites as jest.Mock).mockResolvedValue([mockRecipe]);
 
     const response = await request(server).get(
-      "/api/recipes/retrieveFavourites/user123"
+      "/api/recipes/retrieveFavourites/user123",
     );
 
     expect(retrieveFavourites).toHaveBeenCalledWith("user123");
@@ -72,7 +72,7 @@ describe("GET /api/userInteractions/retrieveFavourites", () => {
     (retrieveFavourites as jest.Mock).mockResolvedValue(null);
 
     const response = await request(server).get(
-      "/api/userInteractions/retrieveFavourites/"
+      "/api/userInteractions/retrieveFavourites/",
     );
 
     expect(retrieveFavourites).not.toHaveBeenCalled();
@@ -84,7 +84,7 @@ describe("GET /api/userInteractions/retrieveFavourites", () => {
     (retrieveFavourites as jest.Mock).mockResolvedValue(null);
 
     const response = await request(server).get(
-      "/api/userInteractions/retrieveFavourites/user-not-found"
+      "/api/userInteractions/retrieveFavourites/user-not-found",
     );
 
     expect(retrieveFavourites).toHaveBeenCalledWith("user-not-found");
@@ -93,11 +93,11 @@ describe("GET /api/userInteractions/retrieveFavourites", () => {
 
   it("should return 500 when is Internal server Error", async () => {
     (retrieveFavourites as jest.Mock).mockRejectedValue(
-      new Error("Database error")
+      new Error("Database error"),
     );
 
     const response = await request(server).get(
-      "/api/userInteractions/retrieveFavourites/request-crash"
+      "/api/userInteractions/retrieveFavourites/request-crash",
     );
 
     expect(retrieveFavourites).toHaveBeenCalledWith("request-crash");

@@ -38,7 +38,9 @@ describe("GET /api/recipes/retrieveRecipe", () => {
         headers: req.headers as HeadersInit,
       });
 
-      const result = await GET(request, { params: { recipeId } });
+      const result = await GET(request, {
+        params: Promise.resolve({ recipeId }),
+      });
 
       if (!result || typeof result.status !== "number") {
         res.statusCode = 500;

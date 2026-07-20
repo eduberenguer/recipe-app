@@ -37,7 +37,9 @@ describe("GET /api/userInteractions/retrieveRecipeRatings", () => {
         headers: req.headers as HeadersInit,
       });
 
-      const result = await GET(request, { params: { recipeId } });
+      const result = await GET(request, {
+        params: Promise.resolve({ recipeId }),
+      });
 
       if (!result || typeof result.status !== "number") {
         res.statusCode = 500;
@@ -62,7 +64,7 @@ describe("GET /api/userInteractions/retrieveRecipeRatings", () => {
     });
 
     const response = await request(server).get(
-      "/api/recipes/retrieveRecipeRatings/recipe123"
+      "/api/recipes/retrieveRecipeRatings/recipe123",
     );
 
     expect(retrieveRecipeRatings).toHaveBeenCalledWith("recipe123");
@@ -77,7 +79,7 @@ describe("GET /api/userInteractions/retrieveRecipeRatings", () => {
     (retrieveRecipeRatings as jest.Mock).mockResolvedValue(null);
 
     const response = await request(server).get(
-      "/api/userInteractions/retrieveRecipeRatings/"
+      "/api/userInteractions/retrieveRecipeRatings/",
     );
 
     expect(retrieveRecipeRatings).not.toHaveBeenCalled();
@@ -87,11 +89,11 @@ describe("GET /api/userInteractions/retrieveRecipeRatings", () => {
 
   it("should return 500 when is Internal server Error", async () => {
     (retrieveRecipeRatings as jest.Mock).mockRejectedValue(
-      new Error("Database error")
+      new Error("Database error"),
     );
 
     const response = await request(server).get(
-      "/api/userInteractions/retrieveRecipeRatings/request-crash"
+      "/api/userInteractions/retrieveRecipeRatings/request-crash",
     );
 
     expect(retrieveRecipeRatings).toHaveBeenCalledWith("request-crash");

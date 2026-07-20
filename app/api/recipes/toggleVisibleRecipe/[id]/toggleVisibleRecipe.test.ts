@@ -46,7 +46,7 @@ describe("PATCH /api/recipes/toggleVisibleRecipe", () => {
         body: bodyText,
       });
 
-      const result = await PATCH(request, { params: { id } });
+      const result = await PATCH(request, { params: Promise.resolve({ id }) });
 
       if (!result || typeof result.status !== "number") {
         res.statusCode = 500;

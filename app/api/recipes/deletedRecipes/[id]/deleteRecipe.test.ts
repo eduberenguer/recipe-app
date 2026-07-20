@@ -36,7 +36,7 @@ describe("DELETE /api/recipes/deleteRecipe", () => {
         headers: req.headers as HeadersInit,
       });
 
-      const result = await DELETE(request, { params: { id } });
+      const result = await DELETE(request, { params: Promise.resolve({ id }) });
 
       if (!result || typeof result.status !== "number") {
         res.statusCode = 500;
@@ -59,7 +59,7 @@ describe("DELETE /api/recipes/deleteRecipe", () => {
     (deleteRecipeById as jest.Mock).mockResolvedValue(mockResponse);
 
     const response = await request(server).delete(
-      "/api/recipes/deleteRecipe/recipe123"
+      "/api/recipes/deleteRecipe/recipe123",
     );
 
     expect(deleteRecipeById).toHaveBeenCalledWith("recipe123");
@@ -76,11 +76,11 @@ describe("DELETE /api/recipes/deleteRecipe", () => {
 
   it("should return 500 when is Internal server Error", async () => {
     (deleteRecipeById as jest.Mock).mockRejectedValue(
-      new Error("Error deleting recipe")
+      new Error("Error deleting recipe"),
     );
 
     const response = await request(server).delete(
-      "/api/recipes/deleteRecipe/recipe-crash"
+      "/api/recipes/deleteRecipe/recipe-crash",
     );
 
     expect(deleteRecipeById).toHaveBeenCalledWith("recipe-crash");

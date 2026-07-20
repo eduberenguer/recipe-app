@@ -38,7 +38,9 @@ describe("DELETE /api/userInteractions/removeFavourite", () => {
         headers: req.headers as HeadersInit,
       });
 
-      const result = await DELETE(request, { params: { userId, recipeId } });
+      const result = await DELETE(request, {
+        params: Promise.resolve({ userId, recipeId }),
+      });
 
       if (!result || typeof result.status !== "number") {
         res.statusCode = 500;
@@ -61,7 +63,7 @@ describe("DELETE /api/userInteractions/removeFavourite", () => {
     (removeFavourite as jest.Mock).mockResolvedValue(mockResponse);
 
     const response = await request(server).delete(
-      "/api/userInteractions/removeFavourite/user123/recipe123"
+      "/api/userInteractions/removeFavourite/user123/recipe123",
     );
 
     expect(removeFavourite).toHaveBeenCalledWith("user123", "recipe123");
@@ -70,7 +72,7 @@ describe("DELETE /api/userInteractions/removeFavourite", () => {
 
   it("should return 400 when no exist ID", async () => {
     const response = await request(server).delete(
-      "/api/userInteractions/removeFavourite/"
+      "/api/userInteractions/removeFavourite/",
     );
 
     expect(removeFavourite).not.toHaveBeenCalled();
@@ -80,16 +82,16 @@ describe("DELETE /api/userInteractions/removeFavourite", () => {
 
   it("should return 500 when is Internal server Error", async () => {
     (removeFavourite as jest.Mock).mockRejectedValue(
-      new Error('Error removing favourite: "recipe-crash"')
+      new Error('Error removing favourite: "recipe-crash"'),
     );
 
     const response = await request(server).delete(
-      "/api/userInteractions/removeFavourite/removeFavourite/request-crash"
+      "/api/userInteractions/removeFavourite/removeFavourite/request-crash",
     );
 
     expect(removeFavourite).toHaveBeenCalledWith(
       "removeFavourite",
-      "request-crash"
+      "request-crash",
     );
     expect(response.status).toBe(500);
     expect(response.body).toEqual({
