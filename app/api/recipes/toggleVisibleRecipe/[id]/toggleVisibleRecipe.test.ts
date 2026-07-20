@@ -82,7 +82,7 @@ describe("PATCH /api/recipes/toggleVisibleRecipe", () => {
 
   it("should return 500 and error message", async () => {
     (updateRecipe as jest.Mock).mockRejectedValue(
-      new Error("Error updating recipe")
+      new Error("Error updating recipe"),
     );
 
     const response = await request(server)

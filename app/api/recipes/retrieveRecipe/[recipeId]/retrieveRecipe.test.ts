@@ -60,7 +60,7 @@ describe("GET /api/recipes/retrieveRecipe", () => {
     (retrieveRecipeById as jest.Mock).mockResolvedValue(mockRecipeWithIdv1);
 
     const response = await request(server).get(
-      "/api/recipes/retrieveRecipe/recipe123"
+      "/api/recipes/retrieveRecipe/recipe123",
     );
 
     expect(retrieveRecipeById).toHaveBeenCalledWith("recipe123");
@@ -81,7 +81,7 @@ describe("GET /api/recipes/retrieveRecipe", () => {
   it("should return 404 when is not found recipe", async () => {
     (retrieveRecipeById as jest.Mock).mockResolvedValue(null);
     const response = await request(server).get(
-      "/api/recipes/retrieveRecipe/recipe-not-found"
+      "/api/recipes/retrieveRecipe/recipe-not-found",
     );
 
     expect(retrieveRecipeById).toHaveBeenCalledWith("recipe-not-found");
@@ -90,11 +90,11 @@ describe("GET /api/recipes/retrieveRecipe", () => {
 
   it("should return 500 when is Internal server Error", async () => {
     (retrieveRecipeById as jest.Mock).mockRejectedValue(
-      new Error("Database down")
+      new Error("Database down"),
     );
 
     const response = await request(server).get(
-      "/api/recipes/retrieveRecipe/recipe-crash"
+      "/api/recipes/retrieveRecipe/recipe-crash",
     );
 
     expect(retrieveRecipeById).toHaveBeenCalledWith("recipe-crash");

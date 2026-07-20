@@ -56,7 +56,7 @@ describe("RecipeForm component", () => {
     const { container } = render(<RecipeForm />);
 
     const fileInput = container.querySelector(
-      'input[type="file"]'
+      'input[type="file"]',
     ) as HTMLInputElement;
 
     const file = new File(["dummy content"], "example.png", {
@@ -120,7 +120,7 @@ describe("RecipeForm component", () => {
         <RecipesContext.Provider value={mockRecipesValue}>
           <RecipeForm />
         </RecipesContext.Provider>
-      </AuthContext.Provider>
+      </AuthContext.Provider>,
     );
 
     const titleInput = screen.getByPlaceholderText("Recipe title");
@@ -151,7 +151,7 @@ describe("RecipeForm component", () => {
     await waitFor(() => {
       expect(customToast).toHaveBeenCalledWith(
         "Recipe created successfully",
-        "success"
+        "success",
       );
     });
   });
