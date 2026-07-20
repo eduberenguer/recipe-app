@@ -78,7 +78,7 @@ describe("RecipeForm component", () => {
 
     const ingredientInput = screen.getByPlaceholderText("Ingredient");
     const quantityInput = screen.getByPlaceholderText("Quantity");
-    const unitySelect = screen.getByRole("combobox");
+    const unitySelect = screen.getAllByRole("combobox")[1];
 
     fireEvent.change(ingredientInput, { target: { value: "Tomato" } });
     fireEvent.change(quantityInput, { target: { value: "2" } });
@@ -94,7 +94,7 @@ describe("RecipeForm component", () => {
 
     const ingredientInput = screen.getByPlaceholderText("Ingredient");
     const quantityInput = screen.getByPlaceholderText("Quantity");
-    const unitySelect = screen.getByRole("combobox");
+    const unitySelect = screen.getAllByRole("combobox")[1];
     const addButton = screen.getByText("+");
 
     fireEvent.change(ingredientInput, { target: { value: "Tomato" } });
@@ -106,7 +106,7 @@ describe("RecipeForm component", () => {
     const ingredientItem = screen.getByText("2 kg Tomato");
     expect(ingredientItem).toBeInTheDocument();
 
-    const deleteButton = screen.getByText("X");
+    const deleteButton = screen.getByText("×");
     fireEvent.click(deleteButton);
 
     expect(ingredientItem).not.toBeInTheDocument();
@@ -127,8 +127,10 @@ describe("RecipeForm component", () => {
     const servingsInput = screen.getByPlaceholderText("Servings");
     const ingredientInput = screen.getByPlaceholderText("Ingredient");
     const quantityInput = screen.getByPlaceholderText("Quantity");
-    const unitySelect = screen.getByRole("combobox");
-    const descriptioInput = screen.getByPlaceholderText("Description");
+    const unitySelect = screen.getAllByRole("combobox")[1];
+    const descriptioInput = screen.getByPlaceholderText(
+      "Description for numbered steps...",
+    );
     const addButton = screen.getByText("+");
     const saveButton = screen.getByText("Save Recipe");
 

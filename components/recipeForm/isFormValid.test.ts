@@ -15,6 +15,8 @@ describe("isFormValid test", () => {
         ],
         photo: new File([""], "recipe_photo.jpg"),
         description: "Recipe description",
+        duration: 30,
+        difficulty: "medium",
       },
     });
     expect(result).toEqual(true);

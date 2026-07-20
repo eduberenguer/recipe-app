@@ -76,7 +76,7 @@ describe("PATCH /api/recipes/toggleVisibleRecipe", () => {
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
       success: true,
-      recipe: mockRecipeWithIdv1,
+      recipe: JSON.parse(JSON.stringify(mockRecipeWithIdv1)),
     });
   });
 

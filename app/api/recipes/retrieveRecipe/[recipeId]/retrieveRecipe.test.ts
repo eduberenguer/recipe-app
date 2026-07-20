@@ -65,7 +65,9 @@ describe("GET /api/recipes/retrieveRecipe", () => {
 
     expect(retrieveRecipeById).toHaveBeenCalledWith("recipe123");
     expect(response.status).toBe(200);
-    expect(response.body).toEqual(mockRecipeWithIdv1);
+    expect(response.body).toEqual(
+      JSON.parse(JSON.stringify(mockRecipeWithIdv1)),
+    );
   });
 
   it("should return 400 when isn´t recipe ID", async () => {
