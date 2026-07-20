@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { userId?: string; recipeId?: string } }
+  { params }: { params: Promise<{ userId?: string; recipeId?: string }> },
 ): Promise<Response> {
   try {
     const { userId, recipeId } = await params;
@@ -18,7 +18,7 @@ export async function DELETE(
   } catch (error) {
     return NextResponse.json(
       { success: false, error: `Error removing favourite: ${error}` },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id?: string } }
+  { params }: { params: Promise<{ id?: string }> },
 ): Promise<Response> {
   try {
     const { id } = await params;
@@ -19,7 +19,7 @@ export async function DELETE(
     console.error(error);
     return NextResponse.json(
       { success: false, error: "Error deleting recipe" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

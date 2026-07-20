@@ -3,7 +3,7 @@ import { retrieveCommentCountByRecipeId } from "@/server/userInteractions";
 
 export async function GET(
   request: Request,
-  { params }: { params: { recipeId?: string } }
+  { params }: { params: Promise<{ recipeId?: string }> },
 ): Promise<Response> {
   try {
     const { recipeId } = await params;
@@ -23,7 +23,7 @@ export async function GET(
         success: false,
         error: (error as Error).message,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

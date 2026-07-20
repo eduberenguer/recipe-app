@@ -3,7 +3,7 @@ import { updateRecipe } from "@/server/recipes";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> },
 ): Promise<Response> {
   try {
     const { id } = await params;
@@ -14,7 +14,7 @@ export async function PATCH(
   } catch (error) {
     return NextResponse.json(
       { success: false, error: (error as Error).message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

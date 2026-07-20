@@ -3,7 +3,7 @@ import { retrieveFavourites } from "@/server/userInteractions";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id?: string } }
+  { params }: { params: Promise<{ id?: string }> },
 ): Promise<Response> {
   try {
     const { id } = await params;
@@ -23,7 +23,7 @@ export async function GET(
         success: false,
         error: (error as Error).message,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
