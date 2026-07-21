@@ -8,6 +8,7 @@ import Favourites from "./page";
 import { mockRecipeWithIdv1 } from "../__mocks__/recipe.mock";
 import { mockRecipesContext } from "../__mocks__/mockRecipesContext";
 import { mockUserInteractionContext } from "../__mocks__/mockUseInteractionContext";
+import { retrieveFavourites } from "@/server/userInteractions";
 
 jest.mock("next/image", () => ({
   __esModule: true,
@@ -17,56 +18,82 @@ jest.mock("next/image", () => ({
   },
 }));
 
+jest.mock("next/headers", () => ({
+  cookies: jest.fn(),
+}));
+
+jest.mock("@/server/userInteractions", () => ({
+  retrieveFavourites: jest.fn(),
+}));
+
 describe("Favourites component", () => {
-  const customRender = (user = { id: "user123", name: "Test User" }) => {
-    const mockAuthContext = {
-      user,
-      register: jest.fn(),
-      login: jest.fn(),
-      logout: jest.fn(),
-    };
+  const mockAuthContext = {
+    user: { id: "user123", name: "Test User" },
+    register: jest.fn(),
+    login: jest.fn(),
+    logout: jest.fn(),
+  };
+
+  const mockCookie = (
+    authUser: { id: string; name: string } | null = {
+      id: "user123",
+      name: "Test User",
+    },
+  ) => {
+    const { cookies } = jest.requireMock("next/headers");
+    (cookies as jest.Mock).mockResolvedValue({
+      get: () => (authUser ? { value: JSON.stringify(authUser) } : undefined),
+    });
+  };
+
+  const customRender = async () => {
+    const ui = await Favourites();
 
     return render(
       <RecipesContext.Provider value={mockRecipesContext}>
         <AuthContext.Provider value={mockAuthContext}>
           <UserInteractionsContext.Provider value={mockUserInteractionContext}>
-            <Favourites />
+            {ui}
           </UserInteractionsContext.Provider>
         </AuthContext.Provider>
-      </RecipesContext.Provider>
+      </RecipesContext.Provider>,
     );
   };
 
-  it("should call retrieveFavouritesList on mount", async () => {
-    customRender();
-
-    await waitFor(() => {
-      expect(
-        mockUserInteractionContext.retrieveFavouritesList
-      ).toHaveBeenCalled();
-    });
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockCookie();
+    (retrieveFavourites as jest.Mock).mockResolvedValue([]);
   });
 
-  it("should call retrieveFavouritesList and render title after loading", async () => {
-    customRender();
+  it("should read the userId from the authUser cookie and call retrieveFavourites", async () => {
+    await customRender();
 
-    const title = await screen.findByText("My favourites recipes");
-
-    expect(title).toBeInTheDocument();
-    expect(
-      mockUserInteractionContext.retrieveFavouritesList
-    ).toHaveBeenCalled();
+    expect(retrieveFavourites).toHaveBeenCalledWith("user123");
   });
 
-  it("should call toggleFavourite", async () => {
-    const mockToggleFavourite = jest.fn();
-    mockUserInteractionContext.favouritesRecipes = [mockRecipeWithIdv1];
-    mockUserInteractionContext.addFavouriteRecipe = mockToggleFavourite;
-    mockUserInteractionContext.removeFavouriteRecipe = mockToggleFavourite;
+  it("should render the title and the favourite recipes", async () => {
+    (retrieveFavourites as jest.Mock).mockResolvedValue([mockRecipeWithIdv1]);
 
-    customRender();
+    await customRender();
 
-    await screen.findByText("My favourites recipes");
+    expect(screen.getByText("My favourites recipes")).toBeInTheDocument();
+    expect(screen.getByText("Pasta Carbonara")).toBeInTheDocument();
+  });
+
+  it("should render 'No recipes available' when there is no authUser cookie", async () => {
+    mockCookie(null);
+
+    await customRender();
+
+    expect(retrieveFavourites).not.toHaveBeenCalled();
+    expect(screen.getByText("No recipes available")).toBeInTheDocument();
+  });
+
+  it("should call removeFavouriteRecipe when toggling a favourite", async () => {
+    (retrieveFavourites as jest.Mock).mockResolvedValue([mockRecipeWithIdv1]);
+
+    await customRender();
 
     const favouriteButton = screen.getByRole("button", {
       name: "Toggle favourite",
@@ -75,7 +102,9 @@ describe("Favourites component", () => {
     fireEvent.click(favouriteButton);
 
     await waitFor(() => {
-      expect(mockToggleFavourite).toHaveBeenCalled();
+      expect(
+        mockUserInteractionContext.removeFavouriteRecipe,
+      ).toHaveBeenCalledWith("user123", mockRecipeWithIdv1.id);
     });
   });
 });

@@ -11,9 +11,12 @@ import {
   ToogleLikeCommentRecipe,
 } from "@/types/userInteractions";
 import { Recipe } from "@/types/recipes";
+import { RecipeWithRating } from "@/types/recipes";
 import { User, UserWithName } from "@/types/auth";
 
-export async function retrieveFavourites(userId: string): Promise<Recipe[]> {
+export async function retrieveFavourites(
+  userId: string,
+): Promise<RecipeWithRating[]> {
   try {
     if (!userId) {
       throw new Error("User ID is required");
@@ -35,7 +38,7 @@ export async function retrieveFavourites(userId: string): Promise<Recipe[]> {
           ...recipe,
           rating,
         };
-      })
+      }),
     );
 
     return recipesWithRatings;
@@ -45,7 +48,7 @@ export async function retrieveFavourites(userId: string): Promise<Recipe[]> {
 }
 
 export async function addFavouriteRecipe(
-  newAddFavouriteRecipe: ToggleFavouriteRecipe
+  newAddFavouriteRecipe: ToggleFavouriteRecipe,
 ): Promise<UserInteractionsServerResponse> {
   try {
     const result = await pb
@@ -75,7 +78,7 @@ export async function addFavouriteRecipe(
 
 export async function removeFavourite(
   userId: string,
-  recipeId: string
+  recipeId: string,
 ): Promise<boolean> {
   try {
     const favourites = await pb.collection("favourites").getFullList({
@@ -88,7 +91,7 @@ export async function removeFavourite(
     }
 
     const result = await Promise.all(
-      favourites.map((fav) => pb.collection("favourites").delete(fav.id))
+      favourites.map((fav) => pb.collection("favourites").delete(fav.id)),
     );
 
     if (result) {
@@ -108,7 +111,7 @@ export async function removeFavourite(
 }
 
 export async function retrieveRecipeRatings(
-  recipeId: string
+  recipeId: string,
 ): Promise<{ average: number; count: number }> {
   try {
     const result = await pb.collection("ratings").getFullList({
@@ -136,7 +139,7 @@ export async function retrieveRecipeRatings(
 }
 
 export async function addRecipeRating(
-  newRecipeRating: AddRecipeRating
+  newRecipeRating: AddRecipeRating,
 ): Promise<UserInteractionsServerResponse> {
   try {
     const userExists = await pb
@@ -166,7 +169,7 @@ export async function addRecipeRating(
 
 export async function hasUserRatedRecipe(
   userId: string,
-  recipeId: string
+  recipeId: string,
 ): Promise<UserInteractionsServerResponse> {
   if (!userId) {
     return { success: false, error: "User not authenticated" };
@@ -189,7 +192,7 @@ export async function hasUserRatedRecipe(
 export async function sendMessage(
   fromUserId: string,
   toUserId: string,
-  content: string
+  content: string,
 ): Promise<BaseMessage> {
   const message = await pb.collection("messages").create({
     from: fromUserId,
@@ -209,7 +212,7 @@ export async function sendMessage(
 }
 
 export async function searchUsersByUsername(
-  query: string
+  query: string,
 ): Promise<UserWithName[]> {
   const results = await pb.collection("users").getList(1, 10, {
     filter: `name ~ "${query}"`,
@@ -223,7 +226,7 @@ export async function searchUsersByUsername(
 
 export async function getMessagesBetweenUsers(
   fromUserId: string,
-  toUserId: string
+  toUserId: string,
 ): Promise<MessageRecord[]> {
   const result = await pb.collection("messages").getFullList<MessageRecord>({
     filter: `(
@@ -264,7 +267,7 @@ export async function getConversationsForUser(userId: string): Promise<User[]> {
 
 export async function getUserLikedComments(
   userId: string,
-  recipeId: string
+  recipeId: string,
 ): Promise<string[]> {
   const comments = await pb.collection("comments").getFullList(undefined, {
     filter: `recipeId="${recipeId}"`,
@@ -281,7 +284,7 @@ export async function getUserLikedComments(
 }
 
 export async function retrieveCommentsRecipe(
-  recipeId: string
+  recipeId: string,
 ): Promise<CommentsRecipe[]> {
   const comments = await pb.collection("comments").getFullList<CommentsRecipe>({
     filter: `recipeId = "${recipeId}"`,
@@ -292,7 +295,7 @@ export async function retrieveCommentsRecipe(
 }
 
 export async function createNewCommentRecipe(
-  newCommentRecipe: NewCommentRecipe
+  newCommentRecipe: NewCommentRecipe,
 ): Promise<UserInteractionsServerResponse> {
   try {
     await pb.collection("comments").create(newCommentRecipe);
@@ -307,7 +310,7 @@ export async function createNewCommentRecipe(
 }
 
 export async function toggleLikeCommentRecipe(
-  data: ToogleLikeCommentRecipe
+  data: ToogleLikeCommentRecipe,
 ): Promise<UserInteractionsServerResponse> {
   try {
     const comment = await pb.collection("comments").getOne(data.commentId);
@@ -342,7 +345,7 @@ export async function toggleLikeCommentRecipe(
 }
 
 export async function getUserLikedCommentIds(
-  userId: string
+  userId: string,
 ): Promise<string[]> {
   const likes = await pb.collection("comment_likes").getFullList({
     filter: `userId = "${userId}"`,
@@ -352,7 +355,7 @@ export async function getUserLikedCommentIds(
 }
 
 export async function retrieveCommentCountByRecipeId(
-  recipeId: string
+  recipeId: string,
 ): Promise<number> {
   try {
     const result = await pb.collection("comments").getList(1, 1, {
