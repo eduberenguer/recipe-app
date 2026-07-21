@@ -28,7 +28,7 @@ export default function Details() {
   const contextRecipes = useContext<RecipesContextType | null>(RecipesContext);
   const contextUser = useContext<AuthContextType | null>(AuthContext);
   const contextUserInteraction = useContext<UserInteractionsContextType | null>(
-    UserInteractionsContext
+    UserInteractionsContext,
   );
   const [rating, setRating] = useState<{
     average: number;
@@ -50,9 +50,8 @@ export default function Details() {
         contextRecipes.clearStateRecipe?.();
         await contextRecipes.retrieveRecipe(recipeId);
         try {
-          const data = await contextUserInteraction?.retrieveRecipeRatings(
-            recipeId
-          );
+          const data =
+            await contextUserInteraction?.retrieveRecipeRatings(recipeId);
           if (data) {
             setRating(data);
           } else {
@@ -80,7 +79,7 @@ export default function Details() {
         try {
           const result = await contextUserInteraction?.checkUserHasRated(
             contextUser?.user.id,
-            recipeId
+            recipeId,
           );
           if (result) {
             setAlreadyRated(result);
@@ -98,7 +97,7 @@ export default function Details() {
         const allComments =
           await contextUserInteraction?.retrieveCommentsRecipe(
             contextUser?.user?.id ?? "",
-            typeof recipeId === "string" ? recipeId : ""
+            typeof recipeId === "string" ? recipeId : "",
           );
 
         setComments(allComments ?? []);
@@ -113,7 +112,7 @@ export default function Details() {
 
   const handleAddRating = async (
     recipeId: string,
-    newRating: number
+    newRating: number,
   ): Promise<void> => {
     try {
       await contextUserInteraction?.addRecipeRating({
@@ -121,14 +120,16 @@ export default function Details() {
         recipeId: recipeId ?? "",
         rating: newRating,
       });
-      const newRatingData = await contextUserInteraction?.retrieveRecipeRatings(
-        recipeId
-      );
+      const newRatingData =
+        await contextUserInteraction?.retrieveRecipeRatings(recipeId);
       setRating(newRatingData ?? null);
     } catch {}
   };
 
   function renderRatingSection(): React.ReactNode {
+    if (!contextUser?.user?.id) {
+      return <p className="italic">Sign in to rate this recipe.</p>;
+    }
     if (contextRecipes?.stateRecipe?.owner === contextUser?.user?.id) {
       return <p className="italic">You can´t rate your own recipe.</p>;
     }
@@ -146,7 +147,7 @@ export default function Details() {
   }
 
   const steps = extractTimedSteps(
-    contextRecipes?.stateRecipe?.description || ""
+    contextRecipes?.stateRecipe?.description || "",
   );
 
   return (
@@ -160,7 +161,7 @@ export default function Details() {
                 <Image
                   src={photoSrc(
                     contextRecipes.stateRecipe.id ?? "",
-                    contextRecipes.stateRecipe.photo as string
+                    contextRecipes.stateRecipe.photo as string,
                   )}
                   alt={contextRecipes.stateRecipe.title || "Recipe image"}
                   fill
@@ -259,7 +260,7 @@ export default function Details() {
                   </span>
                   <span
                     className={`text-sm p-2 rounded-full font-semibold ${getDifficultyColor(
-                      contextRecipes.stateRecipe.difficulty || "easy"
+                      contextRecipes.stateRecipe.difficulty || "easy",
                     )}`}
                   >
                     {contextRecipes.stateRecipe.difficulty || "easy"}
@@ -280,7 +281,7 @@ export default function Details() {
                         <span className="font-medium">{ingredient.name}:</span>{" "}
                         {ingredient.quantity} {ingredient.unity}
                       </li>
-                    )
+                    ),
                   )}
                 </ul>
               </div>
@@ -302,7 +303,7 @@ export default function Details() {
                             </span>
                             <span className="capitalize">{allergen}</span>
                           </div>
-                        )
+                        ),
                       )}
                     </div>
                   </div>

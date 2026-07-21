@@ -20,6 +20,8 @@ export default function Comments({
   const [newComment, setNewComment] = useState<string>("");
 
   const handleToggleLike = async (commentId: string) => {
+    if (!userId) return;
+
     const result = await contextUserInteraction?.toggleLikeCommentRecipe({
       commentId,
       userId,
@@ -39,9 +41,8 @@ export default function Comments({
       recipeId,
     };
 
-    const result = await contextUserInteraction?.createNewCommentRecipe(
-      newCommentRecipe
-    );
+    const result =
+      await contextUserInteraction?.createNewCommentRecipe(newCommentRecipe);
 
     if (result) {
       const updatedComments =
@@ -84,8 +85,10 @@ export default function Comments({
                     </span>
                   </div>
                   <button
-                    className="ml-2 flex items-center gap-1 text-gray-500 hover:text-red-500 transition cursor-pointer hover:scale-110"
+                    className="ml-2 flex items-center gap-1 text-gray-500 hover:text-red-500 transition disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer hover:scale-110"
                     onClick={() => handleToggleLike(comment.id)}
+                    disabled={!userId}
+                    title={userId ? undefined : "Sign in to like comments"}
                   >
                     <span role="img" aria-label="like">
                       {comment.userHasLiked ? "❤️" : "🤍"}
@@ -99,24 +102,30 @@ export default function Comments({
           ))}
         </div>
       )}
-      <div className="flex flex-col gap-2">
-        <input
-          type="text"
-          placeholder="Add a comment"
-          className="w-full p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-        />
-        <button
-          className="bg-[#6366F1] text-white px-4 py-2 rounded-lg w-1/3 self-center cursor-pointer"
-          onClick={(e) => {
-            e.preventDefault();
-            handleAddComment(userId, recipeId);
-          }}
-        >
-          Add comment
-        </button>
-      </div>
+      {userId ? (
+        <div className="flex flex-col gap-2">
+          <input
+            type="text"
+            placeholder="Add a comment"
+            className="w-full p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+          />
+          <button
+            className="bg-[#6366F1] text-white px-4 py-2 rounded-lg w-1/3 self-center cursor-pointer"
+            onClick={(e) => {
+              e.preventDefault();
+              handleAddComment(userId, recipeId);
+            }}
+          >
+            Add comment
+          </button>
+        </div>
+      ) : (
+        <p className="text-sm text-gray-500 italic">
+          Sign in to add a comment.
+        </p>
+      )}
     </div>
   );
 }

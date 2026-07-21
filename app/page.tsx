@@ -16,7 +16,7 @@ import {
 export default function Home() {
   const contextAuth = useContext<AuthContextType | null>(AuthContext);
   const contextUserInteraction = useContext<UserInteractionsContextType | null>(
-    UserInteractionsContext
+    UserInteractionsContext,
   );
   const [showDraftRecipes, setShowDrafRecipes] = useState<Partial<Recipe[]>>();
 
@@ -48,7 +48,12 @@ export default function Home() {
           Discover a variety of recipes, explore new cuisines, and get inspired
           in the kitchen. Start your culinary journey here.
         </p>
-        <NavLink href="/login">Get started</NavLink>
+        <div className="flex items-center justify-center gap-4">
+          <NavLink href="/login">Get started</NavLink>
+          {!contextAuth?.user && (
+            <NavLink href="/recipes">Browse recipes</NavLink>
+          )}
+        </div>
       </section>
       <section className="bg-white py-12 px-4 md:px-16">
         <h3 className="text-2xl font-semibold text-gray-800 text-center mb-8">

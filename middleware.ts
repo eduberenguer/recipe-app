@@ -20,5 +20,11 @@ export function middleware(request: NextRequest) {
     }
   }
 
+  // "/recipes" is a public preview for visitors only; logged-in users
+  // already have the full catalog (with filters and favourites) at "/main".
+  if (request.nextUrl.pathname.startsWith("/recipes") && authUser) {
+    return NextResponse.redirect(new URL("/main", request.url));
+  }
+
   return NextResponse.next();
 }
