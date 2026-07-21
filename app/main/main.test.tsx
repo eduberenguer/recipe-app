@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Main from "./page";
 import {
@@ -17,7 +18,7 @@ jest.mock("../utils/checkOwnerRecipe", () => jest.fn());
 jest.mock("next/image", () => ({
   __esModule: true,
   default: (
-    props: React.ImgHTMLAttributes<HTMLImageElement> & { fill?: boolean }
+    props: React.ImgHTMLAttributes<HTMLImageElement> & { fill?: boolean },
   ) => {
     const { src, alt, ...rest } = props;
     return <img src={src || ""} alt={alt || ""} {...rest} />;
@@ -33,14 +34,22 @@ describe("Main component", () => {
   });
 
   const customRender = () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+
     return render(
-      <AuthContext.Provider value={mockAuthContext}>
-        <RecipesContext.Provider value={mockRecipesContext}>
-          <UserInteractionsContext.Provider value={mockUserInteractionContext}>
-            <Main />
-          </UserInteractionsContext.Provider>
-        </RecipesContext.Provider>
-      </AuthContext.Provider>
+      <QueryClientProvider client={queryClient}>
+        <AuthContext.Provider value={mockAuthContext}>
+          <RecipesContext.Provider value={mockRecipesContext}>
+            <UserInteractionsContext.Provider
+              value={mockUserInteractionContext}
+            >
+              <Main />
+            </UserInteractionsContext.Provider>
+          </RecipesContext.Provider>
+        </AuthContext.Provider>
+      </QueryClientProvider>,
     );
   };
 
@@ -74,7 +83,7 @@ describe("Main component", () => {
 
     expect(recipeImage).toHaveAttribute(
       "src",
-      "undefined/recipe123/undefined/recipe123/test-photo.jpg"
+      "undefined/recipe123/undefined/recipe123/test-photo.jpg",
     );
     expect(screen.getByAltText("Test Recipe")).toBeInTheDocument();
     expect(screen.getByAltText("Test Recipe 2")).toBeInTheDocument();

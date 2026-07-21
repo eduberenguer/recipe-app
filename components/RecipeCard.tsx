@@ -6,7 +6,8 @@ import { RecipeWithRating, ALLERGEN_ICONS } from "@/types/recipes";
 import { AuthUser } from "@/app/hooks/useAuth";
 import ForkRating from "@/components/ForkRating";
 import { MdDeleteForever } from "react-icons/md";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   UserInteractionsContext,
   UserInteractionsContextType,
@@ -30,24 +31,14 @@ export default function RecipeCard({
   const contextUserInteraction = useContext<UserInteractionsContextType | null>(
     UserInteractionsContext
   );
-  const [commentCount, setCommentCount] = useState<number | null>(null);
 
-  useEffect(() => {
-    if (recipe.id) {
-      const fetchCommentCount = async () => {
-        try {
-          const count =
-            await contextUserInteraction?.retrieveCommentCountByRecipeId(
-              recipe?.id ?? ""
-            );
-          setCommentCount(count ?? 0);
-        } catch {
-          setCommentCount(0);
-        }
-      };
-      fetchCommentCount();
-    }
-  }, [recipe.id]);
+  const { data: commentCount } = useQuery({
+    queryKey: ["commentCount", recipe.id],
+    queryFn: () =>
+      contextUserInteraction?.retrieveCommentCountByRecipeId(recipe.id ?? ""),
+    enabled: Boolean(recipe.id) && Boolean(contextUserInteraction),
+    initialData: 0,
+  });
 
   return (
     <div className="bg-white rounded-3xl transition-all duration-300 w-full max-w-[270px] h-[450px] flex flex-col overflow-hidden">

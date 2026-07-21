@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import AppLayout from "./app.layout";
 import "./globals.css";
 import { ContexProvider } from "./context/context";
+import QueryProvider from "./providers/QueryProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,9 +18,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ContexProvider>
-          <AppLayout>{children}</AppLayout>
-        </ContexProvider>
+        <QueryProvider>
+          <ContexProvider>
+            <AppLayout>{children}</AppLayout>
+          </ContexProvider>
+        </QueryProvider>
       </body>
     </html>
   );
