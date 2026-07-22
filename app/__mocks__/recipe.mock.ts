@@ -1,4 +1,4 @@
-import { RecipeWithRating, Unity } from "@/types/recipes";
+import { Recipe, RecipeWithRating, Unity } from "@/types/recipes";
 
 export const mockRecipe: Partial<RecipeWithRating> = {
   title: "Pasta Carbonara",
@@ -42,7 +42,7 @@ export const mockRecipeWithIdv1: RecipeWithRating = {
   difficulty: "medium",
 };
 
-export const mockRecipeWithIdv2 = [
+export const mockRecipeWithIdv2: Recipe[] = [
   {
     id: "recipe123",
     owner: "user1",
@@ -57,6 +57,10 @@ export const mockRecipeWithIdv2 = [
     description: "A test recipe",
     views: 10,
     isVisible: true,
+    allergens: [],
+    created: new Date(),
+    duration: 30,
+    difficulty: "medium",
   },
   {
     id: "recipe456",
@@ -72,5 +76,9 @@ export const mockRecipeWithIdv2 = [
     description: "Another test recipe",
     views: 7,
     isVisible: true,
+    allergens: [],
+    created: new Date(),
+    duration: 20,
+    difficulty: "easy",
   },
 ];

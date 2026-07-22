@@ -1,18 +1,7 @@
-import { Unity } from "@/types/recipes";
+import { Recipe } from "@/types/recipes";
 
 export const mockRecipesContext = {
-  stateAllRecipes: [] as Array<{
-    id: string;
-    owner: string;
-    title: string;
-    servings: number;
-    ingredients: Array<{ name: string; quantity: number; unity: Unity }>;
-    photo: string;
-    favouritesCounter: number;
-    description: string;
-    views: number;
-    isVisible: boolean;
-  }>,
+  stateAllRecipes: [] as Recipe[],
   stateRecipe: {},
   stateUserRecipes: [],
   createRecipe: jest.fn(),

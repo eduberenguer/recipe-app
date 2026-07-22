@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
 import pb from "@/lib/pocketbase";
@@ -13,10 +13,17 @@ export type AuthUser = Pick<User, "id" | "created" | "name" | "email"> & {
 };
 
 export function useAuth() {
-  const [user, setUser] = useState<Partial<AuthUser> | null>(() => {
+  // Start as null on both server and first client render (SSR of this
+  // Client Component has no access to cookies), then hydrate from the
+  // "authUser" cookie after mount to avoid a hydration mismatch.
+  const [user, setUser] = useState<Partial<AuthUser> | null>(null);
+
+  useEffect(() => {
     const storedUser = Cookies.get("authUser");
-    return storedUser ? JSON.parse(storedUser) : null;
-  });
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   async function register(
     userData: Partial<User>

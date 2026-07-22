@@ -37,6 +37,9 @@ const mockRecipesValue = {
   retrieveRecipesByFilterName: jest.fn(),
   retrieveRecipesByUserId: jest.fn(),
   clearStateRecipe: jest.fn(),
+  toggleVisibleRecipe: jest.fn(),
+  retrieveRecipeIngredients: jest.fn(),
+  retrieveRecipesByIngredients: jest.fn(),
 };
 
 describe("RecipeForm component", () => {

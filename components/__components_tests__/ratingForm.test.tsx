@@ -4,12 +4,7 @@ import RatingForm from "../RatingForm";
 
 describe("RatingForm component", () => {
   it("should render the component", () => {
-    render(
-      <RatingForm
-        recipeId="test-recipe-id"
-        handleAddRating={(recipeId, rating) => {}}
-      />
-    );
+    render(<RatingForm recipeId="test-recipe-id" handleAddRating={() => {}} />);
 
     const rateTitle = screen.getByLabelText("Rate this recipe:");
     expect(rateTitle).toBeInTheDocument();
@@ -22,7 +17,7 @@ describe("RatingForm component", () => {
       <RatingForm
         recipeId="test-recipe-id"
         handleAddRating={mockHandleAddRating}
-      />
+      />,
     );
 
     const input = screen.getByLabelText("Rate this recipe:");

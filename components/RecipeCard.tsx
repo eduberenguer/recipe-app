@@ -29,7 +29,7 @@ export default function RecipeCard({
   isFromMain?: boolean;
 }) {
   const contextUserInteraction = useContext<UserInteractionsContextType | null>(
-    UserInteractionsContext
+    UserInteractionsContext,
   );
 
   const { data: commentCount } = useQuery({
