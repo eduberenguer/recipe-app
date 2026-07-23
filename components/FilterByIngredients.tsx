@@ -1,18 +1,15 @@
 import { useState } from "react";
-import { RecipesContextType } from "@/app/context/context";
 
 export default function FilterByIngredients({
   ingredients,
   selectedIngredients,
   setSelectedIngredients,
   onReset,
-  contextRecipes,
 }: {
   ingredients: string[];
   selectedIngredients: string[];
   setSelectedIngredients: React.Dispatch<React.SetStateAction<string[]>>;
   onReset: () => void;
-  contextRecipes: RecipesContextType;
 }) {
   const [search, setSearch] = useState("");
 
@@ -20,21 +17,16 @@ export default function FilterByIngredients({
     let newSelected;
     if (selectedIngredients.includes(ingredient)) {
       newSelected = selectedIngredients.filter(
-        (ingredientSelect) => ingredientSelect !== ingredient
+        (ingredientSelect) => ingredientSelect !== ingredient,
       );
     } else {
       newSelected = [...selectedIngredients, ingredient];
     }
     setSelectedIngredients(newSelected);
-    if (newSelected.length === 0) {
-      contextRecipes?.retrieveRecipesList();
-    } else {
-      contextRecipes?.retrieveRecipesByIngredients(newSelected);
-    }
   };
 
   const filteredIngredients = ingredients.filter((ingredient) =>
-    ingredient.toLowerCase().includes(search.toLowerCase())
+    ingredient.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -67,7 +59,6 @@ export default function FilterByIngredients({
         className="mt-4 bg-indigo-500 text-white px-4 py-2 rounded-full shadow transition text-sm cursor-pointer hover:bg-indigo-600"
         onClick={() => {
           setSelectedIngredients([]);
-          contextRecipes?.retrieveRecipesList();
           if (onReset) onReset();
         }}
       >

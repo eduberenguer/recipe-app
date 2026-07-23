@@ -1,21 +1,16 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 
 import FilterByIngredients from "../FilterByIngredients";
-import { RecipesContext } from "@/app/context/context";
-import { mockContextRecipes } from "@/app/__mocks__/mockContextRecipes";
 
 describe("Filter by ingredients component", () => {
   it("should render the component", () => {
     render(
-      <RecipesContext.Provider value={mockContextRecipes}>
-        <FilterByIngredients
-          ingredients={[]}
-          selectedIngredients={[]}
-          setSelectedIngredients={() => {}}
-          onReset={() => {}}
-          contextRecipes={mockContextRecipes}
-        />
-      </RecipesContext.Provider>
+      <FilterByIngredients
+        ingredients={[]}
+        selectedIngredients={[]}
+        setSelectedIngredients={() => {}}
+        onReset={() => {}}
+      />,
     );
 
     const buttonElement = screen.getByText("Clear filters");
@@ -26,16 +21,18 @@ describe("Filter by ingredients component", () => {
     const onReset = jest.fn();
 
     render(
-      <RecipesContext.Provider value={mockContextRecipes}>
-        <FilterByIngredients
-          ingredients={[]}
-          selectedIngredients={[]}
-          setSelectedIngredients={() => {}}
-          onReset={onReset}
-          contextRecipes={mockContextRecipes}
-        />
-      </RecipesContext.Provider>
+      <FilterByIngredients
+        ingredients={[]}
+        selectedIngredients={[]}
+        setSelectedIngredients={() => {}}
+        onReset={onReset}
+      />,
     );
+
+    const clearFiltersButton = screen.getByText("Clear filters");
+    fireEvent.click(clearFiltersButton);
+
+    expect(onReset).toHaveBeenCalled();
   });
 
   it("should call setSelectedIngredients when an ingredient is clicked", () => {
@@ -44,15 +41,12 @@ describe("Filter by ingredients component", () => {
     const selectedIngredients: string[] = [];
 
     render(
-      <RecipesContext.Provider value={mockContextRecipes}>
-        <FilterByIngredients
-          ingredients={ingredients}
-          selectedIngredients={selectedIngredients}
-          setSelectedIngredients={setSelectedIngredients}
-          onReset={() => {}}
-          contextRecipes={mockContextRecipes}
-        />
-      </RecipesContext.Provider>
+      <FilterByIngredients
+        ingredients={ingredients}
+        selectedIngredients={selectedIngredients}
+        setSelectedIngredients={setSelectedIngredients}
+        onReset={() => {}}
+      />,
     );
 
     const ingredientButton = screen.getByText("ingredient1");
@@ -67,15 +61,12 @@ describe("Filter by ingredients component", () => {
     const selectedIngredients: string[] = ["ingredient1"];
 
     render(
-      <RecipesContext.Provider value={mockContextRecipes}>
-        <FilterByIngredients
-          ingredients={ingredients}
-          selectedIngredients={selectedIngredients}
-          setSelectedIngredients={setSelectedIngredients}
-          onReset={() => {}}
-          contextRecipes={mockContextRecipes}
-        />
-      </RecipesContext.Provider>
+      <FilterByIngredients
+        ingredients={ingredients}
+        selectedIngredients={selectedIngredients}
+        setSelectedIngredients={setSelectedIngredients}
+        onReset={() => {}}
+      />,
     );
 
     const ingredientButton = screen.getByText("ingredient1");
@@ -90,15 +81,12 @@ describe("Filter by ingredients component", () => {
     const selectedIngredients: string[] = ["ingredient1"];
 
     render(
-      <RecipesContext.Provider value={mockContextRecipes}>
-        <FilterByIngredients
-          ingredients={ingredients}
-          selectedIngredients={selectedIngredients}
-          setSelectedIngredients={setSelectedIngredients}
-          onReset={() => {}}
-          contextRecipes={mockContextRecipes}
-        />
-      </RecipesContext.Provider>
+      <FilterByIngredients
+        ingredients={ingredients}
+        selectedIngredients={selectedIngredients}
+        setSelectedIngredients={setSelectedIngredients}
+        onReset={() => {}}
+      />,
     );
 
     const clearFiltersButton = screen.getByText("Clear filters");
@@ -109,42 +97,17 @@ describe("Filter by ingredients component", () => {
 
   it("should setSearch when input is changed", () => {
     render(
-      <RecipesContext.Provider value={mockContextRecipes}>
-        <FilterByIngredients
-          ingredients={[]}
-          selectedIngredients={[]}
-          setSelectedIngredients={() => {}}
-          onReset={() => {}}
-          contextRecipes={mockContextRecipes}
-        />
-      </RecipesContext.Provider>
+      <FilterByIngredients
+        ingredients={[]}
+        selectedIngredients={[]}
+        setSelectedIngredients={() => {}}
+        onReset={() => {}}
+      />,
     );
 
     const inputElement = screen.getByPlaceholderText("Search ingredient...");
     fireEvent.change(inputElement, { target: { value: "ingredient1" } });
 
     expect(inputElement).toHaveValue("ingredient1");
-  });
-
-  it("should call retrieveRecipesList when clear filters button is clicked", () => {
-    const retrieveRecipesList = jest.fn();
-    const mockContext = { ...mockContextRecipes, retrieveRecipesList };
-
-    render(
-      <RecipesContext.Provider value={mockContext}>
-        <FilterByIngredients
-          ingredients={[]}
-          selectedIngredients={[]}
-          setSelectedIngredients={() => {}}
-          onReset={() => {}}
-          contextRecipes={mockContext}
-        />
-      </RecipesContext.Provider>
-    );
-
-    const clearFiltersButton = screen.getByText("Clear filters");
-    fireEvent.click(clearFiltersButton);
-
-    expect(retrieveRecipesList).toHaveBeenCalled();
   });
 });

@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import CreateRecipes from "./page";
 
 jest.mock("next/navigation", () => ({
@@ -13,7 +14,15 @@ describe("Create recipe component", () => {
   });
 
   it("Create recipe is render", () => {
-    render(<CreateRecipes />);
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <CreateRecipes />
+      </QueryClientProvider>,
+    );
 
     const titleCreateRecipe = screen.getByText("Recipe Form");
 

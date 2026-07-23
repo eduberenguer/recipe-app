@@ -1,14 +1,16 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
-import {
-  AuthContext,
-  RecipesContext,
-  UserInteractionsContext,
-} from "../context/context";
+import { useContext, useState } from "react";
+import { AuthContext } from "../context/context";
 import { RecipeWithRating } from "@/types/recipes";
 import { useRouter } from "next/navigation";
 import RecipesTableDesktop from "./RecipesTableDesktop/recipesTableDesktop";
+import {
+  useDeleteRecipeMutation,
+  useToggleVisibleRecipeMutation,
+  useUserRecipesQuery,
+} from "@/app/queries/recipes";
+import { useFavouritesQuery } from "@/app/queries/userInteractions";
 
 const FILTERS = [
   { label: "All", value: "all" },
@@ -20,21 +22,15 @@ const FILTERS = [
 export default function Dashboard() {
   const router = useRouter();
   const contextAuth = useContext(AuthContext);
-  const contextRecipes = useContext(RecipesContext);
-  const contextUserInteractions = useContext(UserInteractionsContext);
+  const { data: userRecipes } = useUserRecipesQuery(contextAuth?.user?.id);
+  const { data: favouritesRecipes } = useFavouritesQuery(contextAuth?.user?.id);
+  const toggleVisibleRecipeMutation = useToggleVisibleRecipeMutation();
+  const deleteRecipeMutation = useDeleteRecipeMutation();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
 
-  useEffect(() => {
-    if (contextAuth?.user?.id && contextRecipes) {
-      contextRecipes.retrieveRecipesByUserId(contextAuth.user.id);
-    }
-  }, [contextAuth?.user?.id]);
-
-  const recipes =
-    (contextRecipes?.stateUserRecipes as RecipeWithRating[]) || [];
-  const favouritesIds =
-    (contextUserInteractions?.favouritesRecipes as RecipeWithRating[]) || [];
+  const recipes = (userRecipes as RecipeWithRating[]) || [];
+  const favouritesIds = (favouritesRecipes as RecipeWithRating[]) || [];
 
   const filteredRecipes = recipes
     .filter((recipe) => {
@@ -128,11 +124,16 @@ export default function Dashboard() {
           <div className="bg-white rounded-3xl shadow-xl overflow-x-auto">
             <RecipesTableDesktop
               recipes={filteredRecipes}
-              toggleVisibleRecipe={
-                contextRecipes?.toggleVisibleRecipe || (() => Promise.resolve())
+              toggleVisibleRecipe={(recipeId, newIsVisible) =>
+                toggleVisibleRecipeMutation
+                  .mutateAsync({
+                    recipeId,
+                    newIsVisible,
+                  })
+                  .then(() => {})
               }
-              deleteRecipe={
-                contextRecipes?.deleteRecipe || (() => Promise.resolve())
+              deleteRecipe={(recipeId) =>
+                deleteRecipeMutation.mutateAsync(recipeId).then(() => {})
               }
             />
           </div>

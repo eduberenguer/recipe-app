@@ -1,54 +1,34 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 
 import FilterByName from "../FilterByName";
-import { RecipesContext } from "@/app/context/context";
 
 describe("Filter by name component", () => {
   it("should render the component", () => {
-    render(<FilterByName />);
+    render(<FilterByName filter="" onFilterChange={() => {}} />);
 
     const inputElement = screen.getByPlaceholderText("Search by name");
     expect(inputElement).toBeInTheDocument();
 
     const textbox = screen.getByRole("textbox");
     expect(textbox).toBeInTheDocument();
-
-    fireEvent.change(inputElement, { target: { value: "Pasta" } });
-    expect(inputElement).toHaveValue("Pasta");
   });
 
-  it("should call retrieveRecipesList when input is cleared", () => {
-    const mockRetrieveRecipesByFilterName = jest.fn();
-    const mockRetrieveRecipesList = jest.fn();
+  it("should call onFilterChange when the input changes", () => {
+    const onFilterChange = jest.fn();
 
-    render(
-      <RecipesContext.Provider
-        value={{
-          stateAllRecipes: [],
-          stateRecipe: {},
-          createRecipe: jest.fn(),
-          retrieveRecipesList: mockRetrieveRecipesList,
-          deleteRecipe: jest.fn(),
-          retrieveRecipe: jest.fn(),
-          retrieveRecipesByFilterName: mockRetrieveRecipesByFilterName,
-          stateUserRecipes: [],
-          retrieveRecipesByUserId: jest.fn(),
-          clearStateRecipe: jest.fn(),
-          toggleVisibleRecipe: jest.fn(),
-          retrieveRecipeIngredients: jest.fn(),
-          retrieveRecipesByIngredients: jest.fn(),
-        }}
-      >
-        <FilterByName />
-      </RecipesContext.Provider>
-    );
+    render(<FilterByName filter="" onFilterChange={onFilterChange} />);
 
     const inputElement = screen.getByPlaceholderText("Search by name");
 
     fireEvent.change(inputElement, { target: { value: "Pasta" } });
-    fireEvent.change(inputElement, { target: { value: "" } });
 
-    expect(mockRetrieveRecipesList).toHaveBeenCalled();
-    expect(mockRetrieveRecipesByFilterName).toHaveBeenCalled();
+    expect(onFilterChange).toHaveBeenCalledWith("Pasta");
+  });
+
+  it("should reflect the filter prop as the input value", () => {
+    render(<FilterByName filter="Pasta" onFilterChange={() => {}} />);
+
+    const inputElement = screen.getByPlaceholderText("Search by name");
+    expect(inputElement).toHaveValue("Pasta");
   });
 });

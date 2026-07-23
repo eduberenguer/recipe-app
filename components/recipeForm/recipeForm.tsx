@@ -1,5 +1,5 @@
 "use client";
-import { AuthContext, RecipesContext } from "@/app/context/context";
+import { AuthContext } from "@/app/context/context";
 import { useContext, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -17,10 +17,11 @@ import { customToast } from "@/app/utils/showToast";
 import { initialStateForm, initialStateIngredient } from "./initialStateForm";
 import { isFormValid } from "./isFormValid";
 import CustomSpinner from "../CustomSpinner";
+import { useCreateRecipeMutation } from "@/app/queries/recipes";
 
 export default function RecipeForm() {
   const contextUser = useContext(AuthContext);
-  const contextRecipes = useContext(RecipesContext);
+  const createRecipeMutation = useCreateRecipeMutation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -71,7 +72,7 @@ export default function RecipeForm() {
 
   const updateIngredient = (
     key: "name" | "quantity" | "unity",
-    value: string
+    value: string,
   ) => {
     setIngredients((prev) => ({
       ...prev,
@@ -94,7 +95,7 @@ export default function RecipeForm() {
     const ingredientsList = recipe.ingredients;
 
     const newIngredientsList = ingredientsList.filter(
-      (ingredients) => ingredient !== ingredients.name
+      (ingredients) => ingredient !== ingredients.name,
     );
 
     setRecipe((prev) => ({
@@ -127,7 +128,7 @@ export default function RecipeForm() {
       formData.append("photo", recipe.photo);
     }
 
-    const newRecipe = await contextRecipes?.createRecipe(formData);
+    const newRecipe = await createRecipeMutation.mutateAsync(formData);
 
     setLoading(false);
 
@@ -187,7 +188,7 @@ export default function RecipeForm() {
             onChange={(e) =>
               updateRecipes(
                 "servings",
-                e.target.value === "" ? "" : Number(e.target.value)
+                e.target.value === "" ? "" : Number(e.target.value),
               )
             }
             required
@@ -229,7 +230,7 @@ export default function RecipeForm() {
             onChange={(e) =>
               updateRecipes(
                 "duration",
-                e.target.value === "" ? undefined : Number(e.target.value)
+                e.target.value === "" ? undefined : Number(e.target.value),
               )
             }
             required
@@ -317,7 +318,7 @@ export default function RecipeForm() {
                     "allergens",
                     recipe.allergens.includes(allergen)
                       ? recipe.allergens.filter((a) => a !== allergen)
-                      : [...recipe.allergens, allergen]
+                      : [...recipe.allergens, allergen],
                   )
                 }
               >

@@ -1,11 +1,9 @@
 "use client";
 import { useContext, useState } from "react";
 import PlannerCalendar from "@/components/PlannerCalendar";
-import { Unity } from "@/types/recipes";
-import {
-  UserInteractionsContext,
-  UserInteractionsContextType,
-} from "../context/context";
+import { RecipeWithRating, Unity } from "@/types/recipes";
+import { AuthContext, AuthContextType } from "../context/context";
+import { useFavouritesQuery } from "@/app/queries/userInteractions";
 
 interface CalendarEvent {
   id: string;
@@ -15,9 +13,8 @@ interface CalendarEvent {
 }
 
 export default function PlannerPage() {
-  const contextUserInteraction = useContext<UserInteractionsContextType | null>(
-    UserInteractionsContext
-  );
+  const contextAuth = useContext<AuthContextType | null>(AuthContext);
+  const { data: favouritesRecipes } = useFavouritesQuery(contextAuth?.user?.id);
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [ingredientsList, setIngredientsList] = useState<
     { name: string; quantity: number; unity: Unity }[]
@@ -31,8 +28,8 @@ export default function PlannerPage() {
       return [...prev, { ...newEvent, id }];
     });
 
-    const recipe = contextUserInteraction?.favouritesRecipes.find(
-      (recipe) => recipe.title === newEvent.title
+    const recipe = (favouritesRecipes as RecipeWithRating[] | undefined)?.find(
+      (recipe) => recipe.title === newEvent.title,
     );
     const ingredients = recipe?.ingredients ?? [];
 
@@ -59,9 +56,9 @@ export default function PlannerPage() {
 
     const remainingIngredients = remainingTitles
       .map((title) =>
-        contextUserInteraction?.favouritesRecipes.find(
-          (recipe) => recipe.title === title
-        )
+        (favouritesRecipes as RecipeWithRating[] | undefined)?.find(
+          (recipe) => recipe.title === title,
+        ),
       )
       .filter(Boolean)
       .flatMap((recipe) => recipe!.ingredients);
@@ -80,8 +77,8 @@ export default function PlannerPage() {
   function handleEventMove(movedEvent: CalendarEvent) {
     setEvents((prev) =>
       prev.map((ev) =>
-        ev.id === movedEvent.id ? { ...ev, start: movedEvent.start } : ev
-      )
+        ev.id === movedEvent.id ? { ...ev, start: movedEvent.start } : ev,
+      ),
     );
   }
 
@@ -94,6 +91,7 @@ export default function PlannerPage() {
         onEventDelete={handleEventDelete}
         onEventMove={handleEventMove}
         ingredientsList={ingredientsList}
+        favouritesRecipes={(favouritesRecipes as RecipeWithRating[]) ?? []}
       />
     </div>
   );

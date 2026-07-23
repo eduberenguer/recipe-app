@@ -1,8 +1,11 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactElement } from "react";
 
 import RecipeForm from "./recipeForm";
 import { customToast } from "@/app/utils/showToast";
-import { AuthContext, RecipesContext } from "@/app/context/context";
+import { AuthContext } from "@/app/context/context";
+import { createNewRecipesApi } from "@/lib/api/recipes";
 
 jest.mock("next/navigation", () => ({
   useRouter: jest.fn(() => ({
@@ -18,6 +21,8 @@ jest.mock("./isFormValid", () => ({
   isFormValid: () => true,
 }));
 
+jest.mock("@/lib/api/recipes");
+
 const mockAuthValue = {
   user: { id: "123", name: "Test User" },
   isAuthenticated: true,
@@ -26,20 +31,16 @@ const mockAuthValue = {
   logout: jest.fn(),
 };
 
-const mockRecipesValue = {
-  stateAllRecipes: [],
-  stateRecipe: null,
-  stateUserRecipes: [],
-  createRecipe: jest.fn(),
-  retrieveRecipesList: jest.fn(),
-  deleteRecipe: jest.fn(),
-  retrieveRecipe: jest.fn(),
-  retrieveRecipesByFilterName: jest.fn(),
-  retrieveRecipesByUserId: jest.fn(),
-  clearStateRecipe: jest.fn(),
-  toggleVisibleRecipe: jest.fn(),
-  retrieveRecipeIngredients: jest.fn(),
-  retrieveRecipesByIngredients: jest.fn(),
+const renderWithProviders = (ui: ReactElement) => {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <AuthContext.Provider value={mockAuthValue}>{ui}</AuthContext.Provider>
+    </QueryClientProvider>,
+  );
 };
 
 describe("RecipeForm component", () => {
@@ -56,7 +57,7 @@ describe("RecipeForm component", () => {
   });
 
   it("recipeForm is render", () => {
-    const { container } = render(<RecipeForm />);
+    const { container } = renderWithProviders(<RecipeForm />);
 
     const fileInput = container.querySelector(
       'input[type="file"]',
@@ -77,7 +78,7 @@ describe("RecipeForm component", () => {
   });
 
   it("should update ingredients state when inputs change", () => {
-    render(<RecipeForm />);
+    renderWithProviders(<RecipeForm />);
 
     const ingredientInput = screen.getByPlaceholderText("Ingredient");
     const quantityInput = screen.getByPlaceholderText("Quantity");
@@ -93,7 +94,7 @@ describe("RecipeForm component", () => {
   });
 
   it("should add/delete ingredient to the list when clicking the add button/delete ingredient", () => {
-    render(<RecipeForm />);
+    renderWithProviders(<RecipeForm />);
 
     const ingredientInput = screen.getByPlaceholderText("Ingredient");
     const quantityInput = screen.getByPlaceholderText("Quantity");
@@ -116,15 +117,9 @@ describe("RecipeForm component", () => {
   });
 
   it("should ok when all ingredients are add", async () => {
-    mockRecipesValue.createRecipe.mockResolvedValue({ id: "recipe123" });
+    (createNewRecipesApi as jest.Mock).mockResolvedValue({ id: "recipe123" });
 
-    render(
-      <AuthContext.Provider value={mockAuthValue}>
-        <RecipesContext.Provider value={mockRecipesValue}>
-          <RecipeForm />
-        </RecipesContext.Provider>
-      </AuthContext.Provider>,
-    );
+    renderWithProviders(<RecipeForm />);
 
     const titleInput = screen.getByPlaceholderText("Recipe title");
     const servingsInput = screen.getByPlaceholderText("Servings");

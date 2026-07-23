@@ -3,15 +3,11 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import type { EventContentArg } from "@fullcalendar/core";
 import interactionPlugin, { Draggable } from "@fullcalendar/interaction";
-import { useContext, useEffect, useRef } from "react";
-import {
-  UserInteractionsContext,
-  UserInteractionsContextType,
-} from "@/app/context/context";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { GripVertical, Eye } from "lucide-react";
-import { Unity } from "@/types/recipes";
+import { RecipeWithRating, Unity } from "@/types/recipes";
 import { useState } from "react";
 
 interface CalendarEvent {
@@ -27,6 +23,7 @@ type PlannerCalendarProps = {
   onEventDelete: (event: CalendarEvent) => void;
   onEventMove: (event: CalendarEvent) => void;
   ingredientsList: { name: string; quantity: number; unity: Unity }[];
+  favouritesRecipes: RecipeWithRating[];
 };
 
 export default function PlannerCalendar({
@@ -35,18 +32,16 @@ export default function PlannerCalendar({
   onEventDelete,
   onEventMove,
   ingredientsList,
+  favouritesRecipes,
 }: PlannerCalendarProps) {
   const router = useRouter();
-  const contextUserInteraction = useContext<UserInteractionsContextType | null>(
-    UserInteractionsContext
-  );
   const calendarRef = useRef(null);
 
   const [checked, setChecked] = useState<string[]>([]);
 
   const toggleChecked = (name: string) => {
     setChecked((prev) =>
-      prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
+      prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name],
     );
   };
 
@@ -87,7 +82,7 @@ export default function PlannerCalendar({
     <div className="flex gap-8 p-4">
       <div id="external-recipes" className="w-0.6/4">
         <h3 className="font-bold mb-2">Your favorites recipes:</h3>
-        {contextUserInteraction?.favouritesRecipes.map((interaction) => (
+        {favouritesRecipes.map((interaction) => (
           <div
             key={interaction.id}
             className="fc-draggable p-2 mb-2 bg-blue-100 rounded cursor-move hover:bg-blue-200 transition-shadow shadow-sm hover:shadow-md"

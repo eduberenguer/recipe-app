@@ -1,69 +1,45 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
 import Image from "next/image";
-import {
-  AuthContext,
-  AuthContextType,
-  RecipesContext,
-  RecipesContextType,
-  UserInteractionsContext,
-  UserInteractionsContextType,
-} from "../../context/context";
+import { AuthContext, AuthContextType } from "../../context/context";
 import { useParams } from "next/navigation";
 import photoSrc from "@/app/utils/photoSrc";
 import CustomSpinner from "@/components/CustomSpinner";
 import RatingForm from "@/components/RatingForm";
 import ForkRating from "@/components/ForkRating";
 import { incrementRecipeViews } from "@/server/recipes";
-import { CommentsRecipe } from "@/types/userInteractions";
 import Comments from "@/components/Comments";
 import { extractTimedSteps } from "@/app/utils/extractTimedSteps";
 import { DescriptionRecipe } from "@/components/DescriptionRecipe";
 import { ALLERGEN_ICONS } from "@/types/recipes";
 import { getDifficultyColor } from "@/app/utils/getDifficultyColor";
 import SendRecipeButton from "@/components/SendRecipeButton";
+import { useRecipeQuery } from "@/app/queries/recipes";
+import {
+  useAddRecipeRatingMutation,
+  useCheckUserHasRatedQuery,
+  useRecipeRatingsQuery,
+} from "@/app/queries/userInteractions";
 
 export default function Details() {
   const { recipeId } = useParams();
-  const contextRecipes = useContext<RecipesContextType | null>(RecipesContext);
+  const recipeIdStr = typeof recipeId === "string" ? recipeId : undefined;
   const contextUser = useContext<AuthContextType | null>(AuthContext);
-  const contextUserInteraction = useContext<UserInteractionsContextType | null>(
-    UserInteractionsContext,
+
+  const { data: recipe } = useRecipeQuery(recipeIdStr);
+  const { data: rating } = useRecipeRatingsQuery(recipeIdStr);
+  const { data: alreadyRated } = useCheckUserHasRatedQuery(
+    contextUser?.user?.id,
+    recipeIdStr,
   );
-  const [rating, setRating] = useState<{
-    average: number;
-    count: number;
-  } | null>(null);
-  const [alreadyRated, setAlreadyRated] = useState<boolean>(false);
-  const [comments, setComments] = useState<CommentsRecipe[]>([]);
-  const [loadingComments, setLoadingComments] = useState<boolean>(true);
+  const addRecipeRatingMutation = useAddRecipeRatingMutation();
+
   const [showComments, setShowComments] = useState<boolean>(false);
   const [activeTimer, setActiveTimer] = useState<{
     minutes: number;
     secondsLeft: number;
     intervalId: NodeJS.Timeout | null;
   } | null>(null);
-
-  useEffect(() => {
-    const fetchRecipe = async () => {
-      if (typeof recipeId === "string" && contextRecipes) {
-        contextRecipes.clearStateRecipe?.();
-        await contextRecipes.retrieveRecipe(recipeId);
-        try {
-          const data =
-            await contextUserInteraction?.retrieveRecipeRatings(recipeId);
-          if (data) {
-            setRating(data);
-          } else {
-            setRating(null);
-          }
-        } catch {
-          setRating(null);
-        }
-      }
-    };
-    fetchRecipe();
-  }, [recipeId]);
 
   useEffect(() => {
     if (typeof recipeId !== "string") return;
@@ -73,56 +49,16 @@ export default function Details() {
     sessionStorage.setItem(viewedKey, "true");
   }, [recipeId]);
 
-  useEffect(() => {
-    const checkIfRated = async () => {
-      if (contextUser?.user?.id && typeof recipeId === "string") {
-        try {
-          const result = await contextUserInteraction?.checkUserHasRated(
-            contextUser?.user.id,
-            recipeId,
-          );
-          if (result) {
-            setAlreadyRated(result);
-          }
-        } catch {}
-      }
-    };
-    checkIfRated();
-  }, [recipeId, rating]);
-
-  useEffect(() => {
-    const fetchComments = async () => {
-      setLoadingComments(true);
-      try {
-        const allComments =
-          await contextUserInteraction?.retrieveCommentsRecipe(
-            contextUser?.user?.id ?? "",
-            typeof recipeId === "string" ? recipeId : "",
-          );
-
-        setComments(allComments ?? []);
-      } catch {
-        setComments([]);
-      } finally {
-        setLoadingComments(false);
-      }
-    };
-    if (recipeId) fetchComments();
-  }, [recipeId]);
-
   const handleAddRating = async (
     recipeId: string,
     newRating: number,
   ): Promise<void> => {
     try {
-      await contextUserInteraction?.addRecipeRating({
+      await addRecipeRatingMutation.mutateAsync({
         userId: contextUser?.user?.id ?? "",
         recipeId: recipeId ?? "",
         rating: newRating,
       });
-      const newRatingData =
-        await contextUserInteraction?.retrieveRecipeRatings(recipeId);
-      setRating(newRatingData ?? null);
     } catch {}
   };
 
@@ -130,7 +66,7 @@ export default function Details() {
     if (!contextUser?.user?.id) {
       return <p className="italic">Sign in to rate this recipe.</p>;
     }
-    if (contextRecipes?.stateRecipe?.owner === contextUser?.user?.id) {
+    if (recipe?.owner === contextUser?.user?.id) {
       return <p className="italic">You can´t rate your own recipe.</p>;
     }
     if (alreadyRated) {
@@ -146,24 +82,18 @@ export default function Details() {
     );
   }
 
-  const steps = extractTimedSteps(
-    contextRecipes?.stateRecipe?.description || "",
-  );
+  const steps = extractTimedSteps(recipe?.description || "");
 
   return (
     <main className="bg-gray-50 min-h-screen font-sans">
       <div className="max-w-4npxl mx-auto px-4 py-10">
-        {contextRecipes?.stateRecipe &&
-        Object.keys(contextRecipes?.stateRecipe).length > 0 ? (
+        {recipe ? (
           <div className="bg-white rounded-3xl shadow-xl flex flex-col md:flex-row gap-10 p-8 md:p-12 animate-fadein">
             <div className="md:w-1/2 w-full flex flex-col gap-6">
               <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-md">
                 <Image
-                  src={photoSrc(
-                    contextRecipes.stateRecipe.id ?? "",
-                    contextRecipes.stateRecipe.photo as string,
-                  )}
-                  alt={contextRecipes.stateRecipe.title || "Recipe image"}
+                  src={photoSrc(recipe.id ?? "", recipe.photo as string)}
+                  alt={recipe.title || "Recipe image"}
                   fill
                   sizes="100vw"
                   className="object-cover"
@@ -214,11 +144,8 @@ export default function Details() {
               </div>
               {showComments ? (
                 <Comments
-                  loadingComments={loadingComments}
-                  comments={comments}
                   userId={contextUser?.user?.id ?? ""}
                   recipeId={recipeId as string}
-                  setComments={setComments}
                 />
               ) : (
                 <DescriptionRecipe
@@ -253,61 +180,56 @@ export default function Details() {
               <div className="flex flex-col gap-4">
                 <div className="flex items-center mb-4 gap-4">
                   <h1 className="text-3xl font-extrabold text-gray-900">
-                    {contextRecipes.stateRecipe.title}
+                    {recipe.title}
                   </h1>
                   <span className="text-sm text-gray-500 p-2">
-                    ⏱ {contextRecipes.stateRecipe.duration}m
+                    ⏱ {recipe.duration}m
                   </span>
                   <span
                     className={`text-sm p-2 rounded-full font-semibold ${getDifficultyColor(
-                      contextRecipes.stateRecipe.difficulty || "easy",
+                      recipe.difficulty || "easy",
                     )}`}
                   >
-                    {contextRecipes.stateRecipe.difficulty || "easy"}
+                    {recipe.difficulty || "easy"}
                   </span>
                   <SendRecipeButton
-                    recipeTitle={contextRecipes.stateRecipe.title}
-                    recipeDescription={contextRecipes.stateRecipe.description}
-                    recipeLink={`http://localhost:3000/recipes/${contextRecipes.stateRecipe.id}`}
+                    recipeTitle={recipe.title}
+                    recipeDescription={recipe.description}
+                    recipeLink={`http://localhost:3000/recipes/${recipe.id}`}
                   />
                 </div>
                 <h2 className="font-semibold text-lg mb-2 text-gray-800">
                   Ingredients
                 </h2>
                 <ul className="list-disc pl-6 space-y-2">
-                  {contextRecipes.stateRecipe.ingredients?.map(
-                    (ingredient, index) => (
-                      <li key={index} className="text-gray-700 text-base">
-                        <span className="font-medium">{ingredient.name}:</span>{" "}
-                        {ingredient.quantity} {ingredient.unity}
-                      </li>
-                    ),
-                  )}
+                  {recipe.ingredients?.map((ingredient, index) => (
+                    <li key={index} className="text-gray-700 text-base">
+                      <span className="font-medium">{ingredient.name}:</span>{" "}
+                      {ingredient.quantity} {ingredient.unity}
+                    </li>
+                  ))}
                 </ul>
               </div>
-              {contextRecipes.stateRecipe.allergens &&
-                contextRecipes.stateRecipe.allergens.length > 0 && (
-                  <div>
-                    <h2 className="font-semibold text-lg mb-2 text-gray-800">
-                      Allergens
-                    </h2>
-                    <div className="flex flex-wrap gap-2">
-                      {contextRecipes.stateRecipe.allergens.map(
-                        (allergen, index) => (
-                          <div
-                            key={index}
-                            className="flex items-center gap-2 px-3 py-2 bg-red-50 border border-red-200 rounded-full text-red-700 text-sm font-medium"
-                          >
-                            <span className="text-lg">
-                              {ALLERGEN_ICONS[allergen].icon}
-                            </span>
-                            <span className="capitalize">{allergen}</span>
-                          </div>
-                        ),
-                      )}
-                    </div>
+              {recipe.allergens && recipe.allergens.length > 0 && (
+                <div>
+                  <h2 className="font-semibold text-lg mb-2 text-gray-800">
+                    Allergens
+                  </h2>
+                  <div className="flex flex-wrap gap-2">
+                    {recipe.allergens.map((allergen, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 px-3 py-2 bg-red-50 border border-red-200 rounded-full text-red-700 text-sm font-medium"
+                      >
+                        <span className="text-lg">
+                          {ALLERGEN_ICONS[allergen].icon}
+                        </span>
+                        <span className="capitalize">{allergen}</span>
+                      </div>
+                    ))}
                   </div>
-                )}
+                </div>
+              )}
               <div className="mt-4">{renderRatingSection()}</div>
             </div>
           </div>

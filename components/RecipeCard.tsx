@@ -6,12 +6,7 @@ import { RecipeWithRating, ALLERGEN_ICONS } from "@/types/recipes";
 import { AuthUser } from "@/app/hooks/useAuth";
 import ForkRating from "@/components/ForkRating";
 import { MdDeleteForever } from "react-icons/md";
-import { useContext } from "react";
-import { useQuery } from "@tanstack/react-query";
-import {
-  UserInteractionsContext,
-  UserInteractionsContextType,
-} from "@/app/context/context";
+import { useCommentCountQuery } from "@/app/queries/userInteractions";
 
 export default function RecipeCard({
   recipe,
@@ -28,17 +23,7 @@ export default function RecipeCard({
   isFavourite?: boolean;
   isFromMain?: boolean;
 }) {
-  const contextUserInteraction = useContext<UserInteractionsContextType | null>(
-    UserInteractionsContext,
-  );
-
-  const { data: commentCount } = useQuery({
-    queryKey: ["commentCount", recipe.id],
-    queryFn: () =>
-      contextUserInteraction?.retrieveCommentCountByRecipeId(recipe.id ?? ""),
-    enabled: Boolean(recipe.id) && Boolean(contextUserInteraction),
-    initialData: 0,
-  });
+  const { data: commentCount } = useCommentCountQuery(recipe.id);
 
   return (
     <div className="bg-white rounded-3xl transition-all duration-300 w-full max-w-[270px] h-[450px] flex flex-col overflow-hidden">

@@ -1,10 +1,12 @@
 import { render, screen } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Dashboard from "./page";
 import { mockAuthContext } from "../__mocks__/mockAuthContext";
-import { mockRecipesContext } from "../__mocks__/mockRecipesContext";
 import { mockRecipeWithIdv2 } from "../__mocks__/recipe.mock";
-import { AuthContext, RecipesContext } from "../context/context";
+import { AuthContext } from "../context/context";
 import { useIsMobile } from "../hooks/useIsMobile";
+import { retrieveRecipesByUserIdApi } from "@/lib/api/recipes";
+import { retrieveFavouritesApi } from "@/lib/api/userInteractions";
 
 jest.mock("../hooks/useIsMobile", () => ({
   useIsMobile: jest.fn(),
@@ -14,23 +16,34 @@ jest.mock("next/navigation", () => ({
   useRouter: jest.fn(),
 }));
 
+jest.mock("@/lib/api/recipes");
+jest.mock("@/lib/api/userInteractions");
+
 describe("Main component", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+
+    (retrieveRecipesByUserIdApi as jest.Mock).mockResolvedValue(
+      mockRecipeWithIdv2,
+    );
+    (retrieveFavouritesApi as jest.Mock).mockResolvedValue([]);
   });
 
   const customRender = () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+
     return render(
-      <AuthContext.Provider value={mockAuthContext}>
-        <RecipesContext.Provider value={mockRecipesContext}>
+      <QueryClientProvider client={queryClient}>
+        <AuthContext.Provider value={mockAuthContext}>
           <Dashboard />
-        </RecipesContext.Provider>
-      </AuthContext.Provider>
+        </AuthContext.Provider>
+      </QueryClientProvider>,
     );
   };
 
   it("Dashboard is render", () => {
-    mockRecipesContext.stateAllRecipes = mockRecipeWithIdv2;
     mockAuthContext.user = { id: "test-id", name: "John" };
 
     customRender();
