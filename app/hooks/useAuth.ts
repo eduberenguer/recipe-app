@@ -26,7 +26,7 @@ export function useAuth() {
   }, []);
 
   async function register(
-    userData: Partial<User>
+    userData: Partial<User>,
   ): Promise<ApiResponseLogin | undefined> {
     try {
       const newUser = await registerUserApi(userData);
@@ -42,7 +42,6 @@ export function useAuth() {
 
   async function login(
     user: Partial<User>,
-    retrieveFavouritesList?: (id: string) => void
   ): Promise<ApiResponseLogin | undefined> {
     try {
       const data = await loginUserApi(user);
@@ -59,10 +58,6 @@ export function useAuth() {
         setUser(authUser);
 
         Cookies.set("authUser", JSON.stringify(authUser), { expires: 7 });
-
-        if (retrieveFavouritesList) {
-          retrieveFavouritesList(data.user.id);
-        }
 
         return data;
       }

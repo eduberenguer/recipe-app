@@ -1,12 +1,11 @@
 "use client";
 import { useContext, useState } from "react";
-import {
-  AuthContext,
-  RecipesContext,
-  UserInteractionsContext,
-} from "../context/context";
+import { AuthContext } from "../context/context";
 import { RecipeWithRating } from "@/types/recipes";
 import RecipeCardExpanded from "@/components/RecipeCardExpanded";
+import { retrieveRecipeRatingsApi } from "@/lib/api/userInteractions";
+import { useDeleteRecipeMutation } from "@/app/queries/recipes";
+import { useRemoveFavouriteMutation } from "@/app/queries/userInteractions";
 
 export default function FavouritesList({
   initialRecipes,
@@ -16,14 +15,14 @@ export default function FavouritesList({
   userId?: string;
 }) {
   const contextAuth = useContext(AuthContext);
-  const contextRecipes = useContext(RecipesContext);
-  const contextUserInteraction = useContext(UserInteractionsContext);
+  const deleteRecipeMutation = useDeleteRecipeMutation();
+  const removeFavouriteMutation = useRemoveFavouriteMutation();
   const [recipes, setRecipes] = useState<RecipeWithRating[]>(initialRecipes);
 
   async function toggleFavourite(recipeId: string): Promise<void> {
-    if (!userId || !contextUserInteraction) return;
+    if (!userId) return;
 
-    await contextUserInteraction.removeFavouriteRecipe(userId, recipeId);
+    await removeFavouriteMutation.mutateAsync({ userId, recipeId });
     setRecipes((prev) => prev.filter((recipe) => recipe.id !== recipeId));
   }
 
@@ -35,13 +34,10 @@ export default function FavouritesList({
             key={recipe.id}
             recipe={recipe}
             user={contextAuth?.user}
-            deleteRecipe={contextRecipes?.deleteRecipe ?? (() => {})}
+            deleteRecipe={(recipeId) => deleteRecipeMutation.mutate(recipeId)}
             toggleFavourite={() => toggleFavourite(recipe.id)}
             isFavourite
-            retrieveRecipeRating={
-              contextUserInteraction?.retrieveRecipeRatings ||
-              (async () => null)
-            }
+            retrieveRecipeRating={retrieveRecipeRatingsApi}
             isFromMain={false}
           />
         ))

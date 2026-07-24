@@ -1,13 +1,6 @@
 "use client";
-import { useContext, useEffect, useState } from "react";
-import {
-  AuthContext,
-  AuthContextType,
-  RecipesContext,
-  RecipesContextType,
-  UserInteractionsContext,
-  UserInteractionsContextType,
-} from "../context/context";
+import { useContext, useState } from "react";
+import { AuthContext, AuthContextType } from "../context/context";
 
 import FilterByName from "@/components/FilterByName";
 import CustomSpinner from "@/components/CustomSpinner";
@@ -16,84 +9,69 @@ import FilterByIngredients from "@/components/FilterByIngredients";
 import { RiFridgeFill } from "react-icons/ri";
 import { Allergen } from "@/types/recipes";
 import FilterByAllergens from "@/components/FilterByAllergens";
+import {
+  useRecipeIngredientsQuery,
+  useRecipesQuery,
+  useDeleteRecipeMutation,
+} from "@/app/queries/recipes";
+import {
+  useAddFavouriteMutation,
+  useFavouritesQuery,
+  useRemoveFavouriteMutation,
+} from "@/app/queries/userInteractions";
 
 export default function Main() {
   const contextAuth = useContext<AuthContextType | null>(AuthContext);
-  const contextRecipes = useContext<RecipesContextType | null>(RecipesContext);
-  const contextUserInteraction = useContext<UserInteractionsContextType | null>(
-    UserInteractionsContext
-  );
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [ingredients, setIngredients] = useState<string[]>([]);
+  const [nameFilter, setNameFilter] = useState<string>("");
   const [showFilter, setShowFilter] = useState(false);
   const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
-  const [filteredRecipes, setFilteredRecipes] = useState<Array<{
-    id: string;
-    allergens: Allergen[];
-  }> | null>(null);
   const [activeAllergens, setActiveAllergens] = useState<Allergen[]>([]);
 
-  useEffect(() => {
-    if (contextRecipes) {
-      contextRecipes.retrieveRecipesList();
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    const handleIngredients = async () => {
-      const result = await contextRecipes?.retrieveRecipeIngredients();
-      setIngredients(result ?? []);
-    };
-
-    handleIngredients();
-  }, [contextRecipes]);
+  const { data: recipes, isLoading } = useRecipesQuery({
+    name: nameFilter,
+    ingredients: selectedIngredients,
+  });
+  const { data: ingredients } = useRecipeIngredientsQuery();
+  const { data: favouritesRecipes } = useFavouritesQuery(contextAuth?.user?.id);
+  const addFavouriteMutation = useAddFavouriteMutation();
+  const removeFavouriteMutation = useRemoveFavouriteMutation();
+  const deleteRecipeMutation = useDeleteRecipeMutation();
 
   async function toggleFavourite(recipeId: string): Promise<void> {
-    if (!contextAuth?.user?.id || !contextUserInteraction) return;
+    if (!contextAuth?.user?.id) return;
 
-    const isFav = contextUserInteraction.favouritesRecipes.some(
-      (fav) => fav.id === recipeId
-    );
+    const isFav = (favouritesRecipes ?? []).some((fav) => fav.id === recipeId);
 
     if (isFav) {
-      await contextUserInteraction.removeFavouriteRecipe(
-        contextAuth.user.id,
-        recipeId
-      );
+      await removeFavouriteMutation.mutateAsync({
+        userId: contextAuth.user.id,
+        recipeId,
+      });
     } else {
-      await contextUserInteraction.addFavouriteRecipe(
-        contextAuth.user.id,
-        recipeId
-      );
+      await addFavouriteMutation.mutateAsync({
+        userId: contextAuth.user.id,
+        recipeId,
+      });
     }
   }
 
-  if (isLoading || !contextAuth || !contextRecipes || !contextUserInteraction) {
+  if (isLoading || !contextAuth) {
     return <CustomSpinner message={"Loading recipes..."} />;
   }
 
   function filterByAllergen(newAllergen: Allergen) {
-    if (!contextRecipes) return;
-
-    const newActiveAllergens = activeAllergens.includes(newAllergen)
-      ? activeAllergens.filter((allergen) => allergen !== newAllergen)
-      : [...activeAllergens, newAllergen];
-
-    setActiveAllergens(newActiveAllergens);
-
-    if (newActiveAllergens.length === 0) {
-      setFilteredRecipes(null);
-    } else {
-      const filtered = contextRecipes.stateAllRecipes.filter(
-        (recipe) =>
-          !recipe.allergens.some((allergen) =>
-            newActiveAllergens.includes(allergen)
-          )
-      );
-      setFilteredRecipes(filtered);
-    }
+    setActiveAllergens((current) =>
+      current.includes(newAllergen)
+        ? current.filter((allergen) => allergen !== newAllergen)
+        : [...current, newAllergen],
+    );
   }
+
+  const visibleRecipes = (recipes ?? []).filter(
+    (recipe) =>
+      activeAllergens.length === 0 ||
+      !recipe.allergens.some((allergen) => activeAllergens.includes(allergen)),
+  );
 
   return (
     <main className="bg-gray-50 min-h-screen font-sans">
@@ -106,7 +84,11 @@ export default function Main() {
             Recipe Explorer
           </h1>
           <div className="bg-white border border-gray-200 rounded-full px-6 py-2 shadow-lg flex items-center gap-3 w-full max-w-md transition">
-            <FilterByName className="flex-1 text-lg font-semibold placeholder-gray-400 p-2 focus:outline-none" />
+            <FilterByName
+              filter={nameFilter}
+              onFilterChange={setNameFilter}
+              className="flex-1 text-lg font-semibold placeholder-gray-400 p-2 focus:outline-none"
+            />
           </div>
           <div>
             <button
@@ -152,10 +134,9 @@ export default function Main() {
             </div>
             <div className="flex-1 flex flex-col">
               <FilterByIngredients
-                ingredients={ingredients}
+                ingredients={ingredients ?? []}
                 selectedIngredients={selectedIngredients}
                 setSelectedIngredients={setSelectedIngredients}
-                contextRecipes={contextRecipes}
                 onReset={() => setShowFilter(false)}
               />
             </div>
@@ -165,26 +146,26 @@ export default function Main() {
 
       <section className="max-w-7xl mx-auto px-4 pb-10 flex justify-center">
         <div className="flex justify-center items-center flex-wrap gap-10">
-          {(filteredRecipes ?? contextRecipes.stateAllRecipes).length > 0 ? (
-            (filteredRecipes ?? contextRecipes.stateAllRecipes).map(
-              (recipe) => (
-                <div
-                  key={recipe.id}
-                  className="transition-transform duration-200 hover:-translate-y-2 hover:shadow-2xl rounded-2xl bg-white shadow-md overflow-hidden flex flex-col cursor-pointer animate-fadein"
-                >
-                  <RecipeCard
-                    recipe={recipe}
-                    user={contextAuth.user}
-                    deleteRecipe={contextRecipes.deleteRecipe}
-                    toggleFavourite={() => toggleFavourite(recipe.id)}
-                    isFavourite={contextUserInteraction?.favouritesRecipes.some(
-                      (fav) => fav.id === recipe.id
-                    )}
-                    isFromMain={true}
-                  />
-                </div>
-              )
-            )
+          {visibleRecipes.length > 0 ? (
+            visibleRecipes.map((recipe) => (
+              <div
+                key={recipe.id}
+                className="transition-transform duration-200 hover:-translate-y-2 hover:shadow-2xl rounded-2xl bg-white shadow-md overflow-hidden flex flex-col cursor-pointer animate-fadein"
+              >
+                <RecipeCard
+                  recipe={recipe}
+                  user={contextAuth.user}
+                  deleteRecipe={(recipeId) =>
+                    deleteRecipeMutation.mutate(recipeId)
+                  }
+                  toggleFavourite={() => toggleFavourite(recipe.id)}
+                  isFavourite={(favouritesRecipes ?? []).some(
+                    (fav) => fav.id === recipe.id,
+                  )}
+                  isFromMain={true}
+                />
+              </div>
+            ))
           ) : (
             <div className="col-span-full flex flex-col items-center justify-center h-64 text-gray-400 text-xl font-semibold">
               <span className="text-5xl mb-2">😕</span>

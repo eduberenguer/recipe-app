@@ -2,21 +2,13 @@
 import { useContext, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  AuthContext,
-  AuthContextType,
-  UserInteractionsContext,
-  UserInteractionsContextType,
-} from "../context/context";
+import { AuthContext, AuthContextType } from "../context/context";
 import Button from "@/components/Button";
 import { customToast } from "../utils/showToast";
 import { UserCredentials } from "@/types/auth";
 
 export default function Login() {
   const contextAuth = useContext<AuthContextType | null>(AuthContext);
-  const contextUserInteraction = useContext<UserInteractionsContextType | null>(
-    UserInteractionsContext
-  );
   const router = useRouter();
   const [user, setUser] = useState<UserCredentials>({
     email: "",
@@ -24,7 +16,7 @@ export default function Login() {
   });
 
   const handleSubmit = async (
-    event: React.FormEvent<HTMLFormElement>
+    event: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     event.preventDefault();
 
@@ -34,10 +26,7 @@ export default function Login() {
     }
 
     try {
-      const data = await contextAuth?.login(
-        user,
-        contextUserInteraction?.retrieveFavouritesList
-      );
+      const data = await contextAuth?.login(user);
 
       if (data?.success) {
         customToast("Login successfully", "success");

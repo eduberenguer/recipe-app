@@ -1,11 +1,15 @@
 import {
   AddRecipeRating,
+  CommentsRecipe,
   NewCommentRecipe,
   ToggleFavouriteRecipe,
   ToogleLikeCommentRecipe,
 } from "@/types/userInteractions";
+import { RecipeWithRating } from "@/types/recipes";
 
-export async function retrieveFavouritesApi(id: string) {
+export async function retrieveFavouritesApi(
+  id: string,
+): Promise<RecipeWithRating[]> {
   const res = await fetch(`/api/userInteractions/retrieveFavourites/${id}`);
 
   if (!res.ok) {
@@ -17,7 +21,7 @@ export async function retrieveFavouritesApi(id: string) {
 }
 
 export async function addFavouriteRecipeApi(
-  newAddFavourite: ToggleFavouriteRecipe
+  newAddFavourite: ToggleFavouriteRecipe,
 ) {
   const res = await fetch("/api/userInteractions/addFavouriteRecipe", {
     method: "POST",
@@ -36,7 +40,7 @@ export async function removeRecipeApi(newAddFavourite: ToggleFavouriteRecipe) {
     `/api/userInteractions/removeFavouriteRecipe/${newAddFavourite.userId}/${newAddFavourite.recipeId}`,
     {
       method: "DELETE",
-    }
+    },
   );
 
   if (!res.ok) {
@@ -52,7 +56,7 @@ export async function retrieveRecipeRatingsApi(recipeId: string) {
     `/api/userInteractions/retrieveRecipeRatings/${recipeId}`,
     {
       method: "GET",
-    }
+    },
   );
 
   if (!res.ok) {
@@ -82,7 +86,7 @@ export async function addRecipeRatingApi(addRecipeRating: AddRecipeRating) {
 
 export async function checkUserHasRatedApi(userId: string, recipeId: string) {
   const res = await fetch(
-    `/api/userInteractions/hasUserRatedRecipe?userId=${userId}&recipeId=${recipeId}`
+    `/api/userInteractions/hasUserRatedRecipe?userId=${userId}&recipeId=${recipeId}`,
   );
   if (!res.ok) {
     const error = await res.json();
@@ -94,7 +98,7 @@ export async function checkUserHasRatedApi(userId: string, recipeId: string) {
 export async function sendMessageApi(
   fromUserId: string,
   toUserId: string,
-  content: string
+  content: string,
 ) {
   const response = await fetch("/api/userInteractions/sendMessage", {
     method: "POST",
@@ -127,12 +131,14 @@ export async function sendMessageAiApi(content: string) {
   return result.message;
 }
 
-export async function retrieveCommentsRecipeApi(recipeId: string) {
+export async function retrieveCommentsRecipeApi(
+  recipeId: string,
+): Promise<CommentsRecipe[]> {
   const res = await fetch(
     `/api/userInteractions/retrieveCommentsRecipe/${recipeId}`,
     {
       method: "GET",
-    }
+    },
   );
 
   if (!res.ok) {
@@ -144,7 +150,7 @@ export async function retrieveCommentsRecipeApi(recipeId: string) {
 }
 
 export async function createCommentRecipeApi(
-  newCommentRecipe: NewCommentRecipe
+  newCommentRecipe: NewCommentRecipe,
 ) {
   const res = await fetch("/api/userInteractions/createNewCommentRecipe", {
     method: "POST",
@@ -160,7 +166,7 @@ export async function createCommentRecipeApi(
 }
 
 export async function toggleLikeCommentRecipeApi(
-  toggleLikeCommentRecipe: ToogleLikeCommentRecipe
+  toggleLikeCommentRecipe: ToogleLikeCommentRecipe,
 ) {
   const res = await fetch("/api/userInteractions/toggleLikeCommentRecipe", {
     method: "POST",
@@ -180,7 +186,7 @@ export async function retrieveCommentCountByRecipeIdApi(recipeId: string) {
     `/api/userInteractions/retrieveCommentCountByRecipeId/${recipeId}`,
     {
       method: "GET",
-    }
+    },
   );
 
   if (!res.ok) {

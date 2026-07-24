@@ -1,13 +1,9 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Chat from "./page";
-import {
-  AuthContext,
-  RecipesContext,
-  UserInteractionsContext,
-} from "../context/context";
+import { AuthContext, UserInteractionsContext } from "../context/context";
 import { mockUserInteractionContext } from "../__mocks__/mockUseInteractionContext";
-import { mockRecipesContext } from "../__mocks__/mockRecipesContext";
 import { mockAuthContext } from "../__mocks__/mockAuthContext";
 
 jest.mock("@/lib/pocketbase", () => ({
@@ -35,14 +31,18 @@ describe("Chat component", () => {
   });
 
   const customRender = () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+
     return render(
-      <AuthContext.Provider value={mockAuthContext}>
-        <RecipesContext.Provider value={mockRecipesContext}>
+      <QueryClientProvider client={queryClient}>
+        <AuthContext.Provider value={mockAuthContext}>
           <UserInteractionsContext.Provider value={mockUserInteractionContext}>
             <Chat />
           </UserInteractionsContext.Provider>
-        </RecipesContext.Provider>
-      </AuthContext.Provider>
+        </AuthContext.Provider>
+      </QueryClientProvider>,
     );
   };
 

@@ -6,29 +6,15 @@ import { Utensils, Flame, Leaf, Cake } from "lucide-react";
 import { draftRecipes } from "./lib/draftRecipes";
 import { Recipe } from "@/types/recipes";
 import { useContext, useEffect, useState } from "react";
-import {
-  AuthContext,
-  AuthContextType,
-  UserInteractionsContext,
-  UserInteractionsContextType,
-} from "./context/context";
+import { AuthContext, AuthContextType } from "./context/context";
 
 export default function Home() {
   const contextAuth = useContext<AuthContextType | null>(AuthContext);
-  const contextUserInteraction = useContext<UserInteractionsContextType | null>(
-    UserInteractionsContext,
-  );
   const [showDraftRecipes, setShowDrafRecipes] = useState<Partial<Recipe[]>>();
 
   useEffect(() => {
     setShowDrafRecipes(draftRecipes);
   }, []);
-
-  useEffect(() => {
-    if (contextAuth?.user?.id) {
-      contextUserInteraction?.retrieveFavouritesList(contextAuth.user.id);
-    }
-  }, [contextAuth?.user?.id]);
 
   return (
     <main className="bg-gray-100 min-h-screen font-sans">

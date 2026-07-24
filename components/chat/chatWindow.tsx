@@ -6,8 +6,6 @@ import Image from "next/image";
 import {
   AuthContext,
   AuthContextType,
-  RecipesContext,
-  RecipesContextType,
   UserInteractionsContext,
   UserInteractionsContextType,
 } from "@/app/context/context";
@@ -18,6 +16,7 @@ import { customToast } from "@/app/utils/showToast";
 import { usePathname } from "next/navigation";
 import { initialMessageAi } from "@/app/__mocks__/mockInitialMessageAi";
 import { ALLERGEN_ICONS } from "@/types/recipes";
+import { useCreateRecipeMutation } from "@/app/queries/recipes";
 
 interface ChatWindowProps {
   selectedUserId: string;
@@ -33,10 +32,9 @@ export default function ChatWindow({
   setIsLoading = () => {},
 }: ChatWindowProps) {
   const { user } = useContext<AuthContextType | null>(AuthContext) || {};
-  const { createRecipe } =
-    useContext<RecipesContextType | null>(RecipesContext) || {};
+  const createRecipeMutation = useCreateRecipeMutation();
   const contextUseInteractions = useContext<UserInteractionsContextType | null>(
-    UserInteractionsContext
+    UserInteractionsContext,
   );
   const [messages, setMessages] = useState<MessageWithSenderName[]>([]);
   const pathname = usePathname();
@@ -131,7 +129,7 @@ export default function ChatWindow({
         .map((i) => `${i.quantity} ${i.unity} of ${i.name}`)
         .join(", ");
       await contextUseInteractions?.sendMessageAi(
-        `${ingList} for ${contextUseInteractions?.aiRecipe?.servings} servings`
+        `${ingList} for ${contextUseInteractions?.aiRecipe?.servings} servings`,
       );
     } catch (error) {
       console.error("Generate recipe error", error);
@@ -162,7 +160,7 @@ export default function ChatWindow({
           const file = await urlToFile(
             recipe.photo,
             "recipe.jpg",
-            "image/jpeg"
+            "image/jpeg",
           );
           form.append("photo", file);
         } else {
@@ -170,7 +168,7 @@ export default function ChatWindow({
         }
       }
 
-      await createRecipe?.(form);
+      await createRecipeMutation.mutateAsync(form);
       customToast("Recipe created successfully", "success");
 
       contextUseInteractions?.setAiRecipe(null);
@@ -205,8 +203,8 @@ export default function ChatWindow({
                   isOwn
                     ? "bg-gray-300 text-gray-900 self-end"
                     : isChef
-                    ? "bg-yellow-50 text-yellow-900 border border-yellow-200"
-                    : "bg-gray-100 text-gray-900 self-start"
+                      ? "bg-yellow-50 text-yellow-900 border border-yellow-200"
+                      : "bg-gray-100 text-gray-900 self-start"
                 }`}
               >
                 <div className="flex items-center justify-between mb-1 ">
@@ -286,7 +284,7 @@ export default function ChatWindow({
                         {allergen}
                       </div>
                     </div>
-                  )
+                  ),
                 )}
               </p>
             </div>

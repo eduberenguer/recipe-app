@@ -1,14 +1,10 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import {
-  AuthContext,
-  RecipesContext,
-  UserInteractionsContext,
-} from "../context/context";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthContext } from "../context/context";
 import Favourites from "./page";
 import { mockRecipeWithIdv1 } from "../__mocks__/recipe.mock";
-import { mockRecipesContext } from "../__mocks__/mockRecipesContext";
-import { mockUserInteractionContext } from "../__mocks__/mockUseInteractionContext";
 import { retrieveFavourites } from "@/server/userInteractions";
+import { removeRecipeApi } from "@/lib/api/userInteractions";
 
 jest.mock("next/image", () => ({
   __esModule: true,
@@ -25,6 +21,8 @@ jest.mock("next/headers", () => ({
 jest.mock("@/server/userInteractions", () => ({
   retrieveFavourites: jest.fn(),
 }));
+
+jest.mock("@/lib/api/userInteractions");
 
 describe("Favourites component", () => {
   const mockAuthContext = {
@@ -48,15 +46,16 @@ describe("Favourites component", () => {
 
   const customRender = async () => {
     const ui = await Favourites();
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
 
     return render(
-      <RecipesContext.Provider value={mockRecipesContext}>
+      <QueryClientProvider client={queryClient}>
         <AuthContext.Provider value={mockAuthContext}>
-          <UserInteractionsContext.Provider value={mockUserInteractionContext}>
-            {ui}
-          </UserInteractionsContext.Provider>
+          {ui}
         </AuthContext.Provider>
-      </RecipesContext.Provider>,
+      </QueryClientProvider>,
     );
   };
 
@@ -64,6 +63,7 @@ describe("Favourites component", () => {
     jest.clearAllMocks();
     mockCookie();
     (retrieveFavourites as jest.Mock).mockResolvedValue([]);
+    (removeRecipeApi as jest.Mock).mockResolvedValue(undefined);
   });
 
   it("should read the userId from the authUser cookie and call retrieveFavourites", async () => {
@@ -90,7 +90,7 @@ describe("Favourites component", () => {
     expect(screen.getByText("No recipes available")).toBeInTheDocument();
   });
 
-  it("should call removeFavouriteRecipe when toggling a favourite", async () => {
+  it("should call removeRecipeApi when toggling a favourite", async () => {
     (retrieveFavourites as jest.Mock).mockResolvedValue([mockRecipeWithIdv1]);
 
     await customRender();
@@ -102,9 +102,10 @@ describe("Favourites component", () => {
     fireEvent.click(favouriteButton);
 
     await waitFor(() => {
-      expect(
-        mockUserInteractionContext.removeFavouriteRecipe,
-      ).toHaveBeenCalledWith("user123", mockRecipeWithIdv1.id);
+      expect(removeRecipeApi).toHaveBeenCalledWith({
+        userId: "user123",
+        recipeId: mockRecipeWithIdv1.id,
+      });
     });
   });
 });

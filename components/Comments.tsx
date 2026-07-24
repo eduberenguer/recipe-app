@@ -1,55 +1,44 @@
-import { useContext, useState } from "react";
-import { CommentsRecipe, NewCommentRecipe } from "@/types/userInteractions";
+import { useState } from "react";
+import { NewCommentRecipe } from "@/types/userInteractions";
 import CustomSpinner from "./CustomSpinner";
-import { UserInteractionsContext } from "@/app/context/context";
+import {
+  useCommentsQuery,
+  useCreateCommentMutation,
+  useToggleCommentLikeMutation,
+} from "@/app/queries/userInteractions";
 
 export default function Comments({
-  loadingComments,
-  comments,
   userId,
   recipeId,
-  setComments,
 }: {
-  loadingComments: boolean;
-  comments: CommentsRecipe[];
   userId: string;
   recipeId: string;
-  setComments: (comments: CommentsRecipe[]) => void;
 }) {
-  const contextUserInteraction = useContext(UserInteractionsContext);
   const [newComment, setNewComment] = useState<string>("");
+  const { data: comments = [], isLoading: loadingComments } = useCommentsQuery(
+    userId,
+    recipeId,
+  );
+  const toggleLikeMutation = useToggleCommentLikeMutation(recipeId);
+  const createCommentMutation = useCreateCommentMutation();
 
-  const handleToggleLike = async (commentId: string) => {
+  const handleToggleLike = (commentId: string) => {
     if (!userId) return;
 
-    const result = await contextUserInteraction?.toggleLikeCommentRecipe({
-      commentId,
-      userId,
-    });
-
-    if (result) {
-      const updatedComments =
-        await contextUserInteraction?.retrieveCommentsRecipe(userId, recipeId);
-      setComments(updatedComments || []);
-    }
+    toggleLikeMutation.mutate({ commentId, userId });
   };
 
-  const handleAddComment = async (userId: string, recipeId: string) => {
-    const newCommentRecipe: Partial<NewCommentRecipe> = {
+  const handleAddComment = (userId: string, recipeId: string) => {
+    const newCommentRecipe: NewCommentRecipe = {
       content: newComment,
       userId,
       recipeId,
+      commentLikes: 0,
     };
 
-    const result =
-      await contextUserInteraction?.createNewCommentRecipe(newCommentRecipe);
-
-    if (result) {
-      const updatedComments =
-        await contextUserInteraction?.retrieveCommentsRecipe(userId, recipeId);
-      setComments(updatedComments || []);
-      setNewComment("");
-    }
+    createCommentMutation.mutate(newCommentRecipe, {
+      onSuccess: () => setNewComment(""),
+    });
   };
 
   return (
