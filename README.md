@@ -14,8 +14,8 @@ Recipe App (WIP)
 - Jest and Supertest
 - Cypress
 - Tailwind CSS
-- React Context API, custom hooks and React Reducer API
-- React Query (TanStack Query) for server state fetching and caching
+- React Context API and custom hooks (auth, chat/AI recipe state)
+- React Query (TanStack Query) for all server state: recipes (list/detail/CRUD/filters), favourites, ratings and comments
 - Next.js Toast Notify / React Multi Carousel
 
 ## Features
@@ -70,7 +70,6 @@ app/api/userInteractions/aiChat/route.ts  → driving adapter (composition root)
 - User-generated Recipe Collections
 - Multi-language Support
 - Dark Mode
-- Migrate remaining manual data fetching (recipes, favourites, ratings) from the Context/Reducer hooks to React Query, following the same pattern already used for the comment count in `RecipeCard`
 
 ## <h3>📊 Test Coverage (work in progress)</h3>
 
